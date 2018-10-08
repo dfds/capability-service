@@ -40,7 +40,7 @@ push_container_image() {
     $(aws ecr get-login --no-include-email)
 
     account_id=$(aws sts get-caller-identity --output text --query 'Account')
-    image_name="${account_id}.dkr.ecr.${REGION}.amazonaws.com/ded/${IMAGE_NAME}:${BUILD_NUMBER}"
+    image_name="${account_id}.dkr.ecr.${REGION}.amazonaws.com/${IMAGE_NAME}:${BUILD_NUMBER}"
 
     echo "Tagging container image..."
     docker tag ${IMAGE_NAME}:latest ${image_name}
