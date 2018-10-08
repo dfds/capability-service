@@ -3,6 +3,6 @@ FROM microsoft/dotnet:2.1.1-aspnetcore-runtime-stretch-slim
 WORKDIR /app
 COPY ./output ./
 
-ENV ASPNETCORE_URLS=http://+:5000
+ENV ASPNETCORE_URLS=http://+:80
 
-ENTRYPOINT [ "dotnet", "Cognito.WebApi.dll" ]
+ENTRYPOINT [ "dotnet", "TeamService.WebApi.dll" ]
