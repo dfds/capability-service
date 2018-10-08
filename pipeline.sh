@@ -8,7 +8,7 @@ set -eu -o pipefail
 
 # build parameters
 readonly REGION=${AWS_DEFAULT_REGION:-"eu-central-1"}
-readonly IMAGE_NAME='ded/TeamSerivce'
+readonly IMAGE_NAME='ded/TeamService'
 readonly BUILD_NUMBER=${1:-"N/A"}
 readonly BUILD_SOURCES_DIRECTORY=${2:-${PWD}}
 
@@ -19,7 +19,7 @@ restore_dependencies() {
 
 run_tests() {
     echo "Running tests..."
-    dotnet build -c Release TeamSerivce.sln
+    dotnet build -c Release TeamService.sln
     dotnet test --logger:"trx;LogFileName=testresults.trx" --results-directory "../" TeamService.Tests/TeamService.Tests.csproj
 }
 
