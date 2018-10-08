@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: blaster
+  namespace: $(kubernetes-namespace)
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blaster
+  template:
+    metadata:
+      labels:
+        app: blaster
+    spec:
+      containers:
+      - name: blaster
+        image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/blaster:$(Build.BuildId)
+        ports:
+        - containerPort: 80
+          name: web
+        env:
+          - name:  blaster_message
+            value: banana
+          - name: blaster_apikey
+            value: $(blaster_apikey)
+          - name: BLASTER_DASHBOARD_SERVICE_URL
+            value: http://dash
+          - name: BLASTER_COGNITO_POOL_ID
+            value: $(BLASTER_COGNITO_POOL_ID)
+          - name: BLASTER_COGNITO_REGION
+            value: $(BLASTER_COGNITO_REGION)
+          - name: BLASTER_COGNITO_CLIENT_ID
+            value: $(BLASTER_COGNITO_CLIENT_ID)
+          - name: BLASTER_COGNITO_CLIENT_SECRET
+            value: $(BLASTER_COGNITO_CLIENT_SECRET)
+          - name: BLASTER_COGNITO_API_URL
+            value: http://localhost:5000
+      - name: cognito
+        image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/cognito-api:$(Build.BuildId)
+        ports:
+        - containerPort: 5000
+        env:
+          - name:  AWS_COGNITO_ACCESS_KEY
+            value: $(AWS_COGNITO_ACCESS_KEY)
+          - name:  AWS_COGNITO_SECRET_ACCESS_KEY
+            value: $(AWS_COGNITO_SECRET_ACCESS_KEY)
+          - name:  AWS_COGNITO_USER_POOL_ID
+            value: $(BLASTER_COGNITO_POOL_ID)
+          - name: AWS_COGNITO_LOGIN_PROVIDER_NAME
+            value: $(AWS_COGNITO_LOGIN_PROVIDER_NAME)
+          - name: AWS_COGNITO_IDENTITY_POOL_ID
+            value: $(AWS_COGNITO_IDENTITY_POOL_ID)
