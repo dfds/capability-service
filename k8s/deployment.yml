@@ -13,6 +13,7 @@ spec:
       labels:
         app: team-service
     spec:
+      containers:
       - name: team-service
         image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/team-service:$(Build.BuildId)
         ports:
