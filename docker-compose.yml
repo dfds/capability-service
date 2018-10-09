@@ -31,6 +31,8 @@ services:
     networks:
       - bridge-network
     environment:
+    - VALIDATE_ENVIRONMENT_VARIABLES=false
+    - TEAM_DATABASE_CONNECTIONSTRING='Host=database;Username=postgres;Password=p;Database=team-database'
       
 
 networks:
