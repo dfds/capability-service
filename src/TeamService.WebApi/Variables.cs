@@ -20,7 +20,10 @@ namespace DFDS.TeamService.WebApi
 
         private const string AwsCognitoIdentityPoolIdIdentifier = "AWS_COGNITO_IDENTITY_POOL_ID";
         public string AwsCognitoIdentityPoolId { get; }
-       
+
+        private const string TeamDatabaseConnectionStringIdentifier = "TEAM_DATABASE_CONNECTIONSTRING";
+        public string TeamDatabaseConnectionString { get; }
+        
         public Variables()
         {
             AwsCognitoAccessKey = Environment.GetEnvironmentVariable(AwsCognitoAccessKeyIdentifier);
@@ -29,6 +32,8 @@ namespace DFDS.TeamService.WebApi
 
             AwsCognitoLoginProviderName = Environment.GetEnvironmentVariable(AwsCognitoLoginProviderNameIdentifier);
             AwsCognitoIdentityPoolId = Environment.GetEnvironmentVariable(AwsCognitoIdentityPoolIdIdentifier);
+
+            TeamDatabaseConnectionString = Environment.GetEnvironmentVariable(TeamDatabaseConnectionStringIdentifier);
         }
 
         public void Validate()
@@ -41,6 +46,9 @@ namespace DFDS.TeamService.WebApi
             if (string.IsNullOrWhiteSpace(AwsCognitoLoginProviderName)) { errors.Add(createVariableNotSetString(AwsCognitoLoginProviderNameIdentifier)); }
             if (string.IsNullOrWhiteSpace(AwsCognitoIdentityPoolId)) { errors.Add(createVariableNotSetString(AwsCognitoIdentityPoolIdIdentifier)); }
 
+            if (string.IsNullOrWhiteSpace(TeamDatabaseConnectionString)) { errors.Add(createVariableNotSetString(TeamDatabaseConnectionStringIdentifier)); }
+            
+            
             if (errors.Any() == false) { return; }
 
             var errorMessage = Environment.NewLine + string.Join(Environment.NewLine, errors);

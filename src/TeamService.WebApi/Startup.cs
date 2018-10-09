@@ -1,4 +1,5 @@
-﻿using DFDS.TeamService.WebApi.Clients;
+﻿using System;
+using DFDS.TeamService.WebApi.Clients;
 using DFDS.TeamService.WebApi.Controllers;
 using DFDS.TeamService.WebApi.Services;
 using Microsoft.AspNetCore.Builder;
@@ -54,7 +55,10 @@ namespace DFDS.TeamService.WebApi
             
             
             var variables = new Variables();
-            variables.Validate();
+            if (Environment.GetEnvironmentVariable("VALIDATE_ENVIRONMENT_VARIABLES")?.ToLower() != "false")
+            {
+                variables.Validate();
+            }
             services.AddSingleton<IVariables>(variables);
 
             services.AddTransient<UserPoolClient>((s) =>
