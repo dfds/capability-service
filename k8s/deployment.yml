@@ -16,7 +16,8 @@ spec:
       - name: team-service
         image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/team-service:$(Build.BuildId)
         ports:
-        - containerPort: 5000
+        - containerPort: 80
+          name: web
         env:
         - name:  AWS_COGNITO_ACCESS_KEY
           value: $(AWS_COGNITO_ACCESS_KEY)
