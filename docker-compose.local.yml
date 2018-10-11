@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:latest
+    ports:
+    - 5432:5432
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=p
+
+  db-migration:
+    build: ./db
+    depends_on:
+    - database
+    environment:
+    - LOCAL_DEVELOPMENT=1
+    - PGDATABASE=teamservice
+    - PGHOST=database
+    - PGPORT=5432
+    - PGUSER=postgres
+    - PGPASSWORD=p
