@@ -5,7 +5,7 @@ using DFDS.TeamService.Tests.TestDoubles;
 using DFDS.TeamService.WebApi.Features.Teams;
 using Xunit;
 
-namespace DFDS.TeamService.Tests
+namespace DFDS.TeamService.Tests.Features.Teams
 {
     public class TestTeamsRoutes
     {
