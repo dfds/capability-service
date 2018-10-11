@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider.Model;
 using DFDS.TeamService.WebApi.Features.Teams;
-using DFDS.TeamService.WebApi.Model;
 
 namespace DFDS.TeamService.Tests.TestDoubles
 {

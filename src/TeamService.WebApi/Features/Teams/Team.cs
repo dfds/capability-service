@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DFDS.TeamService.WebApi.Model
+namespace DFDS.TeamService.WebApi.Features.Teams
 {
     public class Team
     {

@@ -6,7 +6,6 @@ using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
 using Amazon.Runtime;
 using DFDS.TeamService.WebApi.Failures;
-using DFDS.TeamService.WebApi.Model;
 
 namespace DFDS.TeamService.WebApi.Clients
 {

@@ -1,4 +1,4 @@
-namespace DFDS.TeamService.WebApi.Model
+namespace DFDS.TeamService.WebApi.Clients
 {
     public class Nothing
     {

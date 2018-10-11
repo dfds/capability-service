@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using DFDS.TeamService.WebApi.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.TeamService.WebApi.Features.Teams
@@ -16,7 +15,7 @@ namespace DFDS.TeamService.WebApi.Features.Teams
             _teamService = teamService;
         }
 
-        [HttpGet]
+        [HttpGet("")]
         public async Task<ActionResult<TeamList>> GetAllTeams()
         {
             var teams = await _teamService.GetAllTeams();
@@ -45,19 +44,13 @@ namespace DFDS.TeamService.WebApi.Features.Teams
         {
             if (string.IsNullOrWhiteSpace(createTeam.Name))
             {
-                return BadRequest(new
-                {
-                    Message = "Required field \"name\" is missing."
-                });
+                return BadRequest(new ErrorMessage("Required field \"name\" is missing."));
             }
 
             var alreadExists = await _teamService.Exists(createTeam.Name);
             if (alreadExists)
             {
-                return Conflict(new
-                {
-                    Message = $"A team with the given name of \"{createTeam.Name}\" already exists."
-                });
+                return Conflict(new ErrorMessage($"A team with the given name of \"{createTeam.Name}\" already exists."));
             }
 
             return CreatedAtAction(nameof(GetTeam), new {id = "1"}, "2");
@@ -68,10 +61,7 @@ namespace DFDS.TeamService.WebApi.Features.Teams
         {
             if (string.IsNullOrWhiteSpace(joinTeam.UserId))
             {
-                return BadRequest(new
-                {
-                    Message = "Required field \"userId\" is missing."
-                });
+                return BadRequest(new ErrorMessage("Required field \"userId\" is missing."));
             }
 
             try
@@ -86,11 +76,18 @@ namespace DFDS.TeamService.WebApi.Features.Teams
             }
             catch (AlreadyJoinedException)
             {
-                return Conflict(new
-                {
-                    Message = $"User with id \"{joinTeam.UserId}\" already member of team with id \"{id}\""
-                });
+                return Conflict(new ErrorMessage($"User with id \"{joinTeam.UserId}\" already member of team with id \"{id}\""));
             }
+        }
+
+        private class ErrorMessage
+        {
+            public ErrorMessage(string message)
+            {
+                Message = message;
+            }
+
+            public string Message { get; }
         }
     }
 }
