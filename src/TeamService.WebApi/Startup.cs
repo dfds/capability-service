@@ -3,6 +3,7 @@ using DFDS.TeamService.WebApi.Controllers;
 using DFDS.TeamService.WebApi.Features.Teams.Application;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
 using DFDS.TeamService.WebApi.Features.Teams.Infrastructure;
+using DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;

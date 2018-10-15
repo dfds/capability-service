@@ -1,8 +1,7 @@
-﻿using System;
-using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
+﻿using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure
+namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence
 {
     public class TeamServiceDbContext : DbContext
     {

@@ -3,7 +3,7 @@ using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure
+namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence
 {
     public class DbUserRepository : IUserRepository
     {

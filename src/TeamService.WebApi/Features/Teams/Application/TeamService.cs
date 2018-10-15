@@ -5,6 +5,7 @@ using DFDS.TeamService.WebApi.Features.Teams.Domain.Events;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
 using DFDS.TeamService.WebApi.Features.Teams.Infrastructure;
+using DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence;
 
 namespace DFDS.TeamService.WebApi.Features.Teams.Application
 {
