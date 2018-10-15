@@ -39,6 +39,11 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Domain.Models
         public IEnumerable<User> Members => _memberships.Select(x => x.User);
         public IEnumerable<Membership> Memberships => _memberships;
 
+        public User FindMemberById(string id)
+        {
+            return Members.SingleOrDefault(x => x.Id == id);
+        }
+
         public void StartMembership(User user, MembershipType membershipType)
         {
             var membership = Membership.Start(user, membershipType);

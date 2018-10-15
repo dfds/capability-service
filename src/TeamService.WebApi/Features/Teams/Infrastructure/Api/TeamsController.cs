@@ -80,7 +80,7 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Api
                 await _teamService.JoinTeam(id, joinTeam.UserId);
 
                 var team = await _teamService.GetTeam(id);
-                var member = team.Members.Single(x => x.Id == joinTeam.UserId);
+                var member = team.FindMemberById(joinTeam.UserId);
 
                 var dto = DtoHelper.ConvertToDto(member);
 
