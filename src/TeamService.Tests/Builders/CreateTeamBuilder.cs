@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using DFDS.TeamService.WebApi.Features.Teams;
+using DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Api;
 
 namespace DFDS.TeamService.Tests.Builders
 {

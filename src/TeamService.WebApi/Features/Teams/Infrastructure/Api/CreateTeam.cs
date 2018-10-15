@@ -1,4 +1,4 @@
-namespace DFDS.TeamService.WebApi.Features.Teams
+namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Api
 {
     public class CreateTeam
     {
