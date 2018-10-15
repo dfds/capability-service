@@ -1,9 +1,12 @@
 ﻿using DFDS.TeamService.WebApi.Clients;
 using DFDS.TeamService.WebApi.Controllers;
-using DFDS.TeamService.WebApi.Features.Teams;
+using DFDS.TeamService.WebApi.Features.Teams.Application;
+using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
+using DFDS.TeamService.WebApi.Features.Teams.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,6 +24,13 @@ namespace DFDS.TeamService.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services
+                .AddEntityFrameworkNpgsql()
+                .AddDbContext<TeamServiceDbContext>(options =>
+                {
+                    options.UseNpgsql("User ID=1;Password=1;Host=localhost;Port=1433;Database=teamservice;");
+                });
+           
             services
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -77,8 +87,17 @@ namespace DFDS.TeamService.WebApi
                     vars.AwsCognitoSecretAccessKey
                 );
             });
-            
-            services.AddTransient<ITeamService, Features.Teams.TeamService>();
+
+            services.AddTransient<Features.Teams.Application.TeamService>();
+            services.AddTransient<ITeamService>(serviceProvider =>
+            {
+                var inner = serviceProvider.GetRequiredService<Features.Teams.Application.TeamService>();
+                var dbContext = serviceProvider.GetRequiredService<TeamServiceDbContext>();
+                return new TeamServiceTransactionDecorator(inner, dbContext);
+            });
+
+            services.AddTransient<ITeamRepository, DbTeamRepository>();
+            services.AddTransient<IUserRepository, DbUserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

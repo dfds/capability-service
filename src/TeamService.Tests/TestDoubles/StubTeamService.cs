@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Amazon.CognitoIdentityProvider.Model;
-using DFDS.TeamService.WebApi.Features.Teams;
+using DFDS.TeamService.WebApi.Features.Teams.Application;
+using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 
 namespace DFDS.TeamService.Tests.TestDoubles
 {
@@ -16,29 +17,19 @@ namespace DFDS.TeamService.Tests.TestDoubles
             _alreadyExists = alreadyExists;
             _teams = teams;
         }
-        public Task<List<Team>> GetAllTeams()
+        public Task<IEnumerable<Team>> GetAllTeams()
         {
-            return Task.FromResult(new List<Team>(_teams));
+            return Task.FromResult(_teams.AsEnumerable());
         }
 
-        public Task<Team> GetTeam(string id)
+        public Task<Team> GetTeam(Guid id)
         {
             return Task.FromResult(_teams.FirstOrDefault());
         }
 
-        public User CreateUserFromUserAndAttributes(string username, List<AttributeType> attributes)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public User CreateUserFromUserType(UserType userType)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public Task<Team> CreateTeam(string name, string department)
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(_teams.FirstOrDefault());
         }
 
         public Task<bool> Exists(string teamName)
@@ -46,7 +37,7 @@ namespace DFDS.TeamService.Tests.TestDoubles
             return Task.FromResult(_alreadyExists);
         }
 
-        public Task JoinTeam(string teamId, string userId)
+        public Task JoinTeam(Guid teamId, string userId)
         {
             return Task.CompletedTask;
         }

@@ -1,8 +1,10 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using DFDS.TeamService.Tests.Builders;
 using DFDS.TeamService.Tests.TestDoubles;
-using DFDS.TeamService.WebApi.Features.Teams;
+using DFDS.TeamService.WebApi.Features.Teams.Application;
+using DFDS.TeamService.WebApi.Features.Teams.Domain;
 using Xunit;
 
 namespace DFDS.TeamService.Tests.Features.Teams
@@ -62,7 +64,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
                     .WithService<ITeamService>(new StubTeamService(teams: stubTeam))
                     .Build();
 
-                var response = await client.GetAsync("api/teams/1");
+                var response = await client.GetAsync($"api/teams/{Guid.NewGuid()}");
 
                 Assert.Equal(
                     expected: HttpStatusCode.OK,
@@ -80,7 +82,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
                     .WithService<ITeamService>(new StubTeamService())
                     .Build();
 
-                var response = await client.GetAsync("api/teams/1");
+                var response = await client.GetAsync($"api/teams/{Guid.NewGuid()}");
 
                 Assert.Equal(
                     expected: HttpStatusCode.NotFound,
@@ -94,8 +96,10 @@ namespace DFDS.TeamService.Tests.Features.Teams
         {
             using (var clientBuilder = new HttpClientBuilder())
             {
+                var stubTeam = new TeamBuilder().Build();
+
                 var client = clientBuilder
-                    .WithService<ITeamService>(new StubTeamService())
+                    .WithService<ITeamService>(new StubTeamService(teams: stubTeam))
                     .Build();
 
                 var content = new CreateTeamBuilder().BuildAsJsonContent();
@@ -116,7 +120,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
                 var stubTeam = new TeamBuilder().Build();
 
                 var client = clientBuilder
-                    .WithService<ITeamService>(new StubTeamService())
+                    .WithService<ITeamService>(new StubTeamService(teams: stubTeam))
                     .Build();
 
                 var content = new CreateTeamBuilder().BuildAsJsonContent();
@@ -207,7 +211,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
                     .Build();
 
                 var dummyContent = JsonContent.Empty;
-                var response = await client.PostAsync("/api/teams/1/members", dummyContent);
+                var response = await client.PostAsync($"/api/teams/{Guid.NewGuid()}/members", dummyContent);
 
                 Assert.Equal(
                     expected: HttpStatusCode.BadRequest,
@@ -226,7 +230,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
                     .Build();
 
                 var dummyContent = new JsonContent(new { UserId = 1 });
-                var response = await client.PostAsync("/api/teams/1/members", dummyContent);
+                var response = await client.PostAsync($"/api/teams/{Guid.NewGuid()}/members", dummyContent);
 
                 Assert.Equal(
                     expected: HttpStatusCode.Conflict,

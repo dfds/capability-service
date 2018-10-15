@@ -1,21 +1,23 @@
-﻿using System.Collections.Generic;
-using DFDS.TeamService.WebApi.Features.Teams;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 
 namespace DFDS.TeamService.Tests.Builders
 {
     public class TeamBuilder
     {
-        private string _id;
+        private Guid _id;
         private string _name;
         private string _department;
-        private List<User> _members;
+        private List<Membership> _members;
 
         public TeamBuilder()
         {
-            _id = "1";
+            _id = Guid.Empty;
             _name = "foo";
             _department = "bar";
-            _members = new List<User>();
+            _members = new List<Membership>();
         }
 
         public TeamBuilder WithName(string name)
@@ -26,19 +28,43 @@ namespace DFDS.TeamService.Tests.Builders
 
         public TeamBuilder WithMembers(params User[] members)
         {
-            _members = new List<User>(members);
+            _members = new List<Membership>(members.Select(x => Membership.Start(x, MembershipType.Unknown)));
             return this;
         }
 
         public Team Build()
         {
             return new Team
-            {
-                Id = _id,
-                Name = _name,
-                Department = _department,
-                Members = _members
-            };
+            (
+                id: _id,
+                name: _name,
+                department: _department,
+                memberships: _members
+            );
         }
     }
+
+    public class MembershipBuilder
+    {
+        private Guid _id;
+        private Team _team;
+        private User _user;
+        private MembershipType _type;
+        private DateTime _startedDate;
+
+        public MembershipBuilder()
+        {
+            _id = Guid.Empty;
+            _team = new TeamBuilder().Build();
+            _user = new UserBuilder().Build();
+            _type = MembershipType.Unknown;
+            _startedDate = new DateTime(2000, 1, 1);
+        }
+
+        public Membership Build()
+        {
+            return new Membership(_id, _user, _type, _startedDate);
+        }
+    }
+
 }

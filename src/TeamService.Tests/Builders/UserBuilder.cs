@@ -1,4 +1,4 @@
-﻿using DFDS.TeamService.WebApi.Features.Teams;
+﻿using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 
 namespace DFDS.TeamService.Tests.Builders
 {
@@ -7,11 +7,11 @@ namespace DFDS.TeamService.Tests.Builders
         public User Build()
         {
             return new User
-            {
-                Id = "1",
-                Name = "foo",
-                Email = "foo@bar.com"
-            };
+            (
+                id: "1",
+                name: "foo",
+                email: "foo@bar.com"
+            );
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Amazon.CognitoIdentityProvider.Model;
-using DFDS.TeamService.WebApi.Features.Teams;
+using DFDS.TeamService.WebApi.Features.Teams.Application;
+using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 
 namespace DFDS.TeamService.Tests.TestDoubles
 {
@@ -15,22 +15,12 @@ namespace DFDS.TeamService.Tests.TestDoubles
             _exception = exception;
         }
 
-        public Task<List<Team>> GetAllTeams()
+        public Task<IEnumerable<Team>> GetAllTeams()
         {
             throw new NotImplementedException();
         }
 
-        public Task<Team> GetTeam(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public User CreateUserFromUserAndAttributes(string username, List<AttributeType> attributes)
-        {
-            throw new NotImplementedException();
-        }
-
-        public User CreateUserFromUserType(UserType userType)
+        public Task<Team> GetTeam(Guid id)
         {
             throw new NotImplementedException();
         }
@@ -45,7 +35,7 @@ namespace DFDS.TeamService.Tests.TestDoubles
             throw new NotImplementedException();
         }
 
-        public Task JoinTeam(string teamId, string userId)
+        public Task JoinTeam(Guid teamId, string userId)
         {
             throw _exception;
         }
