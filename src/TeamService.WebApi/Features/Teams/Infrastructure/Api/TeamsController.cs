@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DFDS.TeamService.WebApi.Features.Teams.Application;
 using DFDS.TeamService.WebApi.Features.Teams.Domain;
 using Microsoft.AspNetCore.Mvc;
+using static DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Api.DtoHelper;
 
 namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Api
 {
@@ -26,7 +27,7 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Api
             return new TeamList
             {
                 Items = teams
-                    .Select(DtoHelper.ConvertToDto)
+                    .Select(ConvertToDto)
                     .ToArray()
             };
         }
@@ -63,7 +64,7 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Api
             return CreatedAtAction(
                 actionName: nameof(GetTeam),
                 routeValues: new {id = team.Id},
-                value: DtoHelper.ConvertToDto(team)
+                value: ConvertToDto(team)
             );
         }
 
@@ -82,7 +83,7 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Api
                 var team = await _teamService.GetTeam(id);
                 var member = team.FindMemberById(joinTeam.UserId);
 
-                var dto = DtoHelper.ConvertToDto(member);
+                var dto = ConvertToDto(member);
 
                 return Ok(dto);
 
