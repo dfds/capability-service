@@ -7,12 +7,12 @@ using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
 
 namespace DFDS.TeamService.WebApi.Features.Teams.Application
 {
-    public class TeamService : ITeamService
+    public class TeamApplicationService : ITeamService
     {
         private readonly ITeamRepository _teamRepository;
         private readonly IUserRepository _userRepository;
 
-        public TeamService(ITeamRepository teamRepository, IUserRepository userRepository)
+        public TeamApplicationService(ITeamRepository teamRepository, IUserRepository userRepository)
         {
             _teamRepository = teamRepository;
             _userRepository = userRepository;

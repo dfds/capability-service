@@ -6,12 +6,12 @@ using DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence;
 
 namespace DFDS.TeamService.WebApi.Features.Teams.Application
 {
-    public class TeamServiceTransactionDecorator : ITeamService
+    public class TeamApplicationServiceTransactionDecorator : ITeamService
     {
         private readonly ITeamService _inner;
         private readonly TeamServiceDbContext _dbContext;
 
-        public TeamServiceTransactionDecorator(ITeamService inner, TeamServiceDbContext dbContext)
+        public TeamApplicationServiceTransactionDecorator(ITeamService inner, TeamServiceDbContext dbContext)
         {
             _inner = inner;
             _dbContext = dbContext;

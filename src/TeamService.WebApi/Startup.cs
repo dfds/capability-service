@@ -2,7 +2,6 @@
 using DFDS.TeamService.WebApi.Controllers;
 using DFDS.TeamService.WebApi.Features.Teams.Application;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
-using DFDS.TeamService.WebApi.Features.Teams.Infrastructure;
 using DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -89,13 +88,11 @@ namespace DFDS.TeamService.WebApi
                 );
             });
 
-            services.AddTransient<Features.Teams.Application.TeamService>();
-            services.AddTransient<ITeamService>(serviceProvider =>
-            {
-                var inner = serviceProvider.GetRequiredService<Features.Teams.Application.TeamService>();
-                var dbContext = serviceProvider.GetRequiredService<TeamServiceDbContext>();
-                return new TeamServiceTransactionDecorator(inner, dbContext);
-            });
+            services.AddTransient<TeamApplicationService>();
+            services.AddTransient<ITeamService>(serviceProvider => new TeamApplicationServiceTransactionDecorator(
+                inner: serviceProvider.GetRequiredService<TeamApplicationService>(),
+                dbContext: serviceProvider.GetRequiredService<TeamServiceDbContext>()
+            ));
 
             services.AddTransient<ITeamRepository, DbTeamRepository>();
             services.AddTransient<IUserRepository, DbUserRepository>();
