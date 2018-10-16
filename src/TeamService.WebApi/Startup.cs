@@ -1,5 +1,7 @@
-﻿using DFDS.TeamService.WebApi.Clients;
+﻿using Amazon.Runtime;
+using DFDS.TeamService.WebApi.Clients;
 using DFDS.TeamService.WebApi.Controllers;
+using DFDS.TeamService.WebApi.Features.AwsRoles;
 using DFDS.TeamService.WebApi.Features.Teams.Application;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
 using DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence;
@@ -88,12 +90,25 @@ namespace DFDS.TeamService.WebApi
                 );
             });
 
+            services.AddTransient<IAwsIdentityClient>(serviceCollection =>
+                {
+                    var vars = serviceCollection.GetService<IVariables>();
+
+                    var awsCredentials = new BasicAWSCredentials(
+                        vars.AwsCognitoAccessKey,
+                        vars.AwsCognitoSecretAccessKey
+                    );
+                    
+                    
+                    return new AwsIdentityClient(awsCredentials);
+                }
+            );
+         
             services.AddTransient<TeamApplicationService>();
             services.AddTransient<ITeamService>(serviceProvider => new TeamApplicationServiceTransactionDecorator(
                 inner: serviceProvider.GetRequiredService<TeamApplicationService>(),
                 dbContext: serviceProvider.GetRequiredService<TeamServiceDbContext>()
             ));
-
             services.AddTransient<ITeamRepository, DbTeamRepository>();
             services.AddTransient<IUserRepository, DbUserRepository>();
         }

@@ -4,12 +4,14 @@ services:
 
   database:
     image: postgres:latest
+    ports:
+      - "1433:5432"
     restart: always
     networks:
       - bridge-network
     environment:
-    - POSTGRES_USER=postgres
-    - POSTGRES_PASSWORD=p
+    - POSTGRES_USER=1
+    - POSTGRES_PASSWORD=1
 
 
   pgadmin:
