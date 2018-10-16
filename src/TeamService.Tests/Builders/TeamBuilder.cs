@@ -26,6 +26,12 @@ namespace DFDS.TeamService.Tests.Builders
             return this;
         }
 
+        public TeamBuilder WithDepartment(string department)
+        {
+            _department = department;
+            return this;
+        }
+
         public TeamBuilder WithMembers(params User[] members)
         {
             _members = new List<Membership>(members.Select(x => Membership.Start(x, MembershipType.Unknown)));

@@ -36,7 +36,7 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Domain.Models
             Department = newDepartment;
         }
 
-        public IEnumerable<User> Members => _memberships.Select(x => x.User);
+        public IEnumerable<User> Members => _memberships.Select(x => x.User).Distinct(new PropertyEqualityComparer<User>(x => x.Id));
         public IEnumerable<Membership> Memberships => _memberships;
 
         public User FindMemberById(string id)
