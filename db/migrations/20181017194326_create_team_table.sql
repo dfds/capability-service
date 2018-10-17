@@ -1,4 +1,4 @@
--- 2018-10-16 18:26:55 : initial database structure
+-- 2018-10-17 19:43:26 : create team table
 
 CREATE TABLE public."Team" (
     "Id" uuid NOT NULL,

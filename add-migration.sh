@@ -12,9 +12,7 @@ if [ ! -d $dir ]; then
     mkdir $dir
 fi
 
-version=$(ls $dir | sed -E s,^\([0-9]+\).*,\\1,g | sed -E s,^0*,,g | sort -V | tail -1)
-version=$((version + 1))
-printf -v version "%04d" $version
+version=$(date '+%Y%m%d%H%M%S')
 
 file="$dir/${version}_$name.sql"
 

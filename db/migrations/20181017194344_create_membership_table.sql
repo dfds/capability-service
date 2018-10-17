@@ -1,4 +1,4 @@
--- 2018-10-16 18:26:55 : initial database structure
+-- 2018-10-17 19:43:44 : create membership table
 
 CREATE TABLE public."Membership" (
     "Id" uuid NOT NULL,
