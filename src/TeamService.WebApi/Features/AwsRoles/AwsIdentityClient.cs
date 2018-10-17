@@ -30,6 +30,39 @@ namespace DFDS.TeamService.WebApi.Features.AwsRoles
         {
             await EnsureRoleExists(roleName);
 
+            await PutRolePolicyAsync(roleName);
+        }
+
+        
+        private async Task EnsureRoleExists(string roleName)
+        {
+            
+            var amazonSecurityTokenServiceClient = new AmazonSecurityTokenServiceClient(_awsCredentials);
+
+            var identityResponse =
+                await amazonSecurityTokenServiceClient.GetCallerIdentityAsync(new GetCallerIdentityRequest());
+            
+            var accountArn = identityResponse.Account;
+            
+            var createRoleRequest = new CreateRoleRequest();
+            createRoleRequest.RoleName = roleName;
+            createRoleRequest.AssumeRolePolicyDocument =
+                @"{""Version"":""2012-10-17"",""Statement"":[{""Effect"":""Allow"",""Principal"":{""AWS"":"""+ accountArn + @"""},""Action"":""sts:AssumeRole"",""Condition"":{}}]}";
+
+
+            try
+            {
+                await _client.CreateRoleAsync(createRoleRequest);
+            }
+            catch (EntityAlreadyExistsException)
+            {
+                // Role exists we are happy
+            }
+        }
+
+        
+        private async Task PutRolePolicyAsync(string roleName)
+        {
             var rolePolicyRequest = new PutRolePolicyRequest
             {
                 RoleName = roleName,
@@ -51,32 +84,6 @@ namespace DFDS.TeamService.WebApi.Features.AwsRoles
         }
 
         
-        private async Task EnsureRoleExists(string roleName)
-        {
-            
-            var amazonSecurityTokenServiceClient = new AmazonSecurityTokenServiceClient(_awsCredentials);
-
-            var identityResponse =
-                await amazonSecurityTokenServiceClient.GetCallerIdentityAsync(new GetCallerIdentityRequest());
-            var accountArn = identityResponse.Account;
-            
-            var createRoleRequest = new CreateRoleRequest();
-            createRoleRequest.RoleName = roleName;
-            createRoleRequest.AssumeRolePolicyDocument =
-                @"{""Version"":""2012-10-17"",""Statement"":[{""Effect"":""Allow"",""Principal"":{""AWS"":"""+ accountArn + @"""},""Action"":""sts:AssumeRole"",""Condition"":{}}]}";
-
-
-            try
-            {
-                await _client.CreateRoleAsync(createRoleRequest);
-            }
-            catch (EntityAlreadyExistsException)
-            {
-                // Role exists we are happy
-            }
-        }
-
-
         public async Task DeleteRole(string roleName)
         {
                 var policiesResponse =
