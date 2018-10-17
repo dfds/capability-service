@@ -79,24 +79,21 @@ namespace DFDS.TeamService.WebApi.Features.AwsRoles
 
         public async Task DeleteRole(string roleName)
         {
-            using (var client = new AmazonIdentityManagementServiceClient(
-                _awsCredentials,
-                RegionEndpoint.EUCentral1)
-            )
-            {
                 var policiesResponse =
-                    await client.ListRolePoliciesAsync(new ListRolePoliciesRequest {RoleName = roleName});
+                    await _client.ListRolePoliciesAsync(new ListRolePoliciesRequest {RoleName = roleName});
 
                 foreach (var policyName in policiesResponse.PolicyNames)
                 {
-                    await client.DeleteRolePolicyAsync(new DeleteRolePolicyRequest
-                        {RoleName = roleName, PolicyName = policyName});
+                    await _client.DeleteRolePolicyAsync(new DeleteRolePolicyRequest
+                    {
+                        RoleName = roleName, 
+                        PolicyName = policyName
+                    });
                 }
 
-                var deleteRoleRequest = new DeleteRoleRequest {RoleName = roleName};
-                await client.DeleteRoleAsync(deleteRoleRequest);
+                await _client.DeleteRoleAsync(new DeleteRoleRequest {RoleName = roleName});
             }
-        }
+        
 
         public void Dispose()
         {
