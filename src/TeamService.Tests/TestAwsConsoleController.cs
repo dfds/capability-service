@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DFDS.TeamService.WebApi.Controllers;
+using DFDS.TeamService.WebApi.Features.AwsConsoleLogin;
 using Moq;
 using Xunit;
 

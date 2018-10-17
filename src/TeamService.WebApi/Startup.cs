@@ -1,6 +1,6 @@
 ﻿using Amazon.Runtime;
 using DFDS.TeamService.WebApi.Clients;
-using DFDS.TeamService.WebApi.Controllers;
+using DFDS.TeamService.WebApi.Features.AwsConsoleLogin;
 using DFDS.TeamService.WebApi.Features.AwsRoles;
 using DFDS.TeamService.WebApi.Features.Teams.Application;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;

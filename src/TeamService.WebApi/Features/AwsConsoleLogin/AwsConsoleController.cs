@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DFDS.TeamService.WebApi.Controllers
+namespace DFDS.TeamService.WebApi.Features.AwsConsoleLogin
 {
     [Route("")]
     [ApiController]

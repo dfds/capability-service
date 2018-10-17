@@ -10,7 +10,7 @@ using Amazon.SecurityToken.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace DFDS.TeamService.WebApi.Controllers
+namespace DFDS.TeamService.WebApi.Features.AwsConsoleLogin
 {
     public class AwsConsoleLinkBuilder : IAwsConsoleLinkBuilder
     {
