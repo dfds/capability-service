@@ -23,7 +23,7 @@ namespace DFDS.TeamService.IntegrationTests.Features
             }
             finally
             {
-           /    await awsIdentityClient.DeleteRole(roleName);
+               await awsIdentityClient.DeleteRole(roleName);
             }
         }
     }
