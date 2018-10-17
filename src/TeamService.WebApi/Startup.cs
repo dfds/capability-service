@@ -1,5 +1,4 @@
 ﻿using Amazon.Runtime;
-using DFDS.TeamService.WebApi.Clients;
 using DFDS.TeamService.WebApi.Features.AwsConsoleLogin;
 using DFDS.TeamService.WebApi.Features.AwsRoles;
 using DFDS.TeamService.WebApi.Features.Teams.Application;
@@ -69,26 +68,6 @@ namespace DFDS.TeamService.WebApi
             //    variables.Validate();
             //}
             services.AddSingleton<IVariables>(variables);
-
-            services.AddTransient<UserPoolClient>((s) =>
-            {
-                var vars = s.GetRequiredService<IVariables>();
-
-                return new UserPoolClient(
-                    vars.AwsCognitoAccessKey,
-                    vars.AwsCognitoSecretAccessKey,
-                    vars.AwsCognitoUserPoolId);
-            });
-
-            services.AddTransient<CognitoClient>(s =>
-            {
-                var vars = s.GetService<IVariables>();
-                
-                return new CognitoClient(
-                    vars.AwsCognitoAccessKey,
-                    vars.AwsCognitoSecretAccessKey
-                );
-            });
 
             services.AddTransient<IAwsIdentityClient>(serviceCollection =>
                 {

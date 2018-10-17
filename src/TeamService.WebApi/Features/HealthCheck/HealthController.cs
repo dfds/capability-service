@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using DFDS.TeamService.WebApi.Clients;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.TeamService.WebApi.Controllers
@@ -8,11 +7,8 @@ namespace DFDS.TeamService.WebApi.Controllers
     [ApiController]
     public class HealthController : ControllerBase
     {
-        private readonly CognitoClient _cognitoClient;
-
-        public HealthController(CognitoClient cognitoClient)
+        public HealthController()
         {
-            _cognitoClient = cognitoClient;
         }
 
         [HttpGet("health")]
@@ -21,14 +17,16 @@ namespace DFDS.TeamService.WebApi.Controllers
         public async Task<ActionResult<string>> Get(bool deep)
         {
             const string allISWell="Cognito WebApi says this is fine";
-            if (deep == false)
-            {
-                return allISWell;
-            }
-
-            var cognitoIsAlive = await _cognitoClient.IsAlive();
-
-            return cognitoIsAlive ? Ok(allISWell): StatusCode(504, "No connection to AWS cognito can be made");
+            
+            return allISWell;
+//            if (deep == false)
+//            {
+//               
+//            }
+//
+//            var cognitoIsAlive = await _cognitoClient.IsAlive();
+//
+//            return cognitoIsAlive ? Ok(allISWell): StatusCode(504, "No connection to AWS cognito can be made");
         }
     }
 }
