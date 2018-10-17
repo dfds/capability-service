@@ -1,42 +1,23 @@
-version: '3.5'
+version: '3'
 
 services:
-
   database:
     image: postgres:latest
     ports:
-      - "1433:5432"
-    restart: always
-    networks:
-      - bridge-network
+    - 5432:5432
     environment:
-    - POSTGRES_USER=1
-    - POSTGRES_PASSWORD=1
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=p
 
-
-  pgadmin:
-    image: dpage/pgadmin4
-    ports:
-      - "8088:80"
-    networks:
-      - bridge-network
-    restart: always
+  db-migration:
+    build: ./db
+    depends_on:
+    - database
     environment:
-    - PGADMIN_DEFAULT_EMAIL=e
-    - PGADMIN_DEFAULT_PASSWORD=p
-
-
-  team-api:
-    build: .
-    ports: 
-      - "8080:80"
-    networks:
-      - bridge-network
-    environment:
-    - VALIDATE_ENVIRONMENT_VARIABLES=false
-    - TEAM_DATABASE_CONNECTIONSTRING='Host=database;Username=postgres;Password=p;Database=team-database'
-      
-
-networks:
-  bridge-network:
-    driver: bridge
+    - LOCAL_DEVELOPMENT=1       # will try top CREATE DATABASE ${PGDATABASE}
+    - PGDATABASE=teamservice    # database name
+    - PGHOST=database           # same as avove - docker-compose service name
+    - PGPORT=5432               # same as above
+    - PGUSER=postgres           # same as above
+    - PGPASSWORD=p              # same as above
+    - PGSSLMODE=disable         # ignore SSLMODE for local development (overwritten - see ./db/Dockerfile)
