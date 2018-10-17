@@ -1,6 +1,15 @@
-FROM alpine:3.7
+FROM alpine:latest
 
 RUN apk --update add postgresql-client ca-certificates && rm -rf /var/cache/apk/*
+
+# SSL
+RUN wget https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem -O /tmp/rds-combined-ca-bundle.pem \
+    && mv /tmp/rds-combined-ca-bundle.pem /usr/local/share/ca-certificates/rds-combined-ca-bundle.crt \
+    && update-ca-certificates
+
+ENV PGSSLROOTCERT /etc/ssl/certs/ca-certificates.crt
+ENV PGSSLMODE verify-full
+
 # COPY or WGET ./rds-ca-2015-eu-central-1.pem /usr/local/share/ca-certificates/.
 # RUN update-ca-certificates
 
