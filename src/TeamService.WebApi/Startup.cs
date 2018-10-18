@@ -29,9 +29,11 @@ namespace DFDS.TeamService.WebApi
         {
             services
                 .AddEntityFrameworkNpgsql()
-                .AddDbContext<TeamServiceDbContext>(options =>
+                .AddDbContext<TeamServiceDbContext>((serviceProvider, options)  =>
                 {
-                    options.UseNpgsql("User ID=1;Password=1;Host=localhost;Port=1433;Database=teamservice;");
+                    options.UseNpgsql(
+                        serviceProvider.GetService<IVariables>().TeamDatabaseConnectionString
+                    );
                 });
            
             services
@@ -56,9 +58,9 @@ namespace DFDS.TeamService.WebApi
             //{
             //    variables.Validate();
             //}
-            services.AddSingleton<AWSCredentials>(serviceCollection =>
+            services.AddSingleton<AWSCredentials>(serviceProvider =>
             {
-                var vars = serviceCollection.GetService<IVariables>();
+                var vars = serviceProvider.GetService<IVariables>();
 
                 var awsCredentials = new BasicAWSCredentials(
                     vars.AwsCognitoAccessKey,

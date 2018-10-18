@@ -8,7 +8,7 @@ namespace DFDS.TeamService.WebApi
         
         string AwsCognitoLoginProviderName { get; }
         string AwsCognitoIdentityPoolId { get; }
-        
+        string TeamDatabaseConnectionString { get; }
         void Validate();
     }
 }
