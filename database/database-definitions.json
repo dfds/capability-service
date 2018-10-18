@@ -1,8 +1,0 @@
-{
-    "localhost-docker" :{
-        "driver": "pg",
-        "host": "localhost",
-        "database": "teams",
-        "schema": "teams"
-      }
-}
