@@ -17,6 +17,7 @@ namespace DFDS.TeamService.WebApi.Controllers
             _externalDependentServices = externalDependentServices;
         }
 
+        
         [HttpGet("health")]
         [ProducesResponseType(200, Type = typeof(string))]
         [ProducesResponseType(504, Type = typeof(string))]
@@ -29,8 +30,11 @@ namespace DFDS.TeamService.WebApi.Controllers
                 return allISWell;
             }
 
-            var unHealthyServiceStatuses = _externalDependentServices
-                .Select(dependent => dependent.GetStatusAsync().Result)
+            var getStatusTasks = _externalDependentServices
+                .Select(dependent => dependent.GetStatusAsync());
+
+            var statuses = await Task.WhenAll(getStatusTasks);
+            var unHealthyServiceStatuses = statuses
                 .Where(status => status.IsOk == false);
                 
 
