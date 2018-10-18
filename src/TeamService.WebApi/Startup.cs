@@ -1,4 +1,6 @@
-﻿using Amazon.Runtime;
+﻿using System.Linq;
+using System.Reflection;
+using Amazon.Runtime;
 using DFDS.TeamService.WebApi.Features.AwsConsoleLogin;
 using DFDS.TeamService.WebApi.Features.AwsRoles;
 using DFDS.TeamService.WebApi.Features.Teams.Application;
@@ -49,6 +51,24 @@ namespace DFDS.TeamService.WebApi
 
         public void ConfigureDependencyInjectionContainer(IServiceCollection services)
         {
+           var variables = new Variables();
+            //if (Environment.GetEnvironmentVariable("VALIDATE_ENVIRONMENT_VARIABLES")?.ToLower() != "false")
+            //{
+            //    variables.Validate();
+            //}
+            services.AddSingleton<AWSCredentials>(serviceCollection =>
+            {
+                var vars = serviceCollection.GetService<IVariables>();
+
+                var awsCredentials = new BasicAWSCredentials(
+                    vars.AwsCognitoAccessKey,
+                    vars.AwsCognitoSecretAccessKey
+                );
+
+                return awsCredentials;
+            });
+            
+            services.AddSingleton<IVariables>(variables);
             services.AddTransient<IAwsConsoleLinkBuilder>(s =>
             {
                 var vars = s.GetRequiredService<IVariables>();
@@ -60,29 +80,25 @@ namespace DFDS.TeamService.WebApi
 
                 return awsConsoleLinkBuilder;
             });
-            
-            
-            var variables = new Variables();
-            //if (Environment.GetEnvironmentVariable("VALIDATE_ENVIRONMENT_VARIABLES")?.ToLower() != "false")
-            //{
-            //    variables.Validate();
-            //}
-            services.AddSingleton<IVariables>(variables);
+            services.AddTransient<IExternalDependent>(s => (IExternalDependent)s.GetService<IAwsConsoleLinkBuilder>());
+     
+                
+            services.AddTransient<IAwsIdentityClient, AwsIdentityClient>();
+//            services.AddTransient<IAwsIdentityClient>(serviceCollection =>
+//                {
+//                    var vars = serviceCollection.GetService<IVariables>();
+//
+//                    var awsCredentials = new BasicAWSCredentials(
+//                        vars.AwsCognitoAccessKey,
+//                        vars.AwsCognitoSecretAccessKey
+//                    );
+//                    
+//                    
+//                    return new AwsIdentityClient(awsCredentials);
+//                }
+//            );
+       //     services.RegisterAllTypes<IExternalDependent>(new[] { typeof(Startup).Assembly });
 
-            services.AddTransient<IAwsIdentityClient>(serviceCollection =>
-                {
-                    var vars = serviceCollection.GetService<IVariables>();
-
-                    var awsCredentials = new BasicAWSCredentials(
-                        vars.AwsCognitoAccessKey,
-                        vars.AwsCognitoSecretAccessKey
-                    );
-                    
-                    
-                    return new AwsIdentityClient(awsCredentials);
-                }
-            );
-         
             services.AddTransient<TeamApplicationService>();
             services.AddTransient<ITeamService>(serviceProvider => new TeamApplicationServiceTransactionDecorator(
                 inner: serviceProvider.GetRequiredService<TeamApplicationService>(),

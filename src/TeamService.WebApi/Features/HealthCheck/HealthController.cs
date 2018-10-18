@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.TeamService.WebApi.Controllers
@@ -7,8 +10,11 @@ namespace DFDS.TeamService.WebApi.Controllers
     [ApiController]
     public class HealthController : ControllerBase
     {
-        public HealthController()
+        private readonly IEnumerable<IExternalDependent> _externalDependentServices;
+
+        public HealthController(IEnumerable<IExternalDependent> externalDependentServices)
         {
+            _externalDependentServices = externalDependentServices;
         }
 
         [HttpGet("health")]
@@ -18,15 +24,29 @@ namespace DFDS.TeamService.WebApi.Controllers
         {
             const string allISWell="Cognito WebApi says this is fine";
             
-            return allISWell;
-//            if (deep == false)
-//            {
-//               
-//            }
-//
-//            var cognitoIsAlive = await _cognitoClient.IsAlive();
-//
-//            return cognitoIsAlive ? Ok(allISWell): StatusCode(504, "No connection to AWS cognito can be made");
+            if (deep == false)
+            {
+                return allISWell;
+            }
+
+            var unHealthyServiceStatuses = _externalDependentServices
+                .Select(dependent => dependent.GetStatusAsync().Result)
+                .Where(status => status.IsOk == false);
+                
+
+            if (unHealthyServiceStatuses.Any() == false)
+            {
+                return allISWell;
+            }
+
+            var message = "The following dependencies has problems:" + Environment.NewLine +
+                          string.Join(
+                              Environment.NewLine,
+                              unHealthyServiceStatuses.Select(s => s.Message)
+                          );
+            
+            
+            return StatusCode(504, message);
         }
     }
 }
