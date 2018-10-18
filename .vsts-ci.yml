@@ -17,7 +17,7 @@ steps:
   displayName: Publish Test Results
   inputs:
     testRunner: VSTest
-    testResultsFiles: testresult.trx
+    testResultsFiles: testresults.trx
     searchFolder: '$(System.DefaultWorkingDirectory)/src'
   condition: succeededOrFailed()
 
