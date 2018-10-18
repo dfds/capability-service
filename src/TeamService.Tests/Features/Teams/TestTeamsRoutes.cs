@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using DFDS.TeamService.Tests.Builders;
 using DFDS.TeamService.Tests.TestDoubles;
+using DFDS.TeamService.WebApi.Features.AwsRoles;
 using DFDS.TeamService.WebApi.Features.Teams.Application;
 using DFDS.TeamService.WebApi.Features.Teams.Domain;
 using Xunit;
@@ -100,6 +101,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
 
                 var client = clientBuilder
                     .WithService<ITeamService>(new StubTeamService(teams: stubTeam))
+                    .WithService<IAwsIdentityClient>(new StubAwsIdentityClient())
                     .Build();
 
                 var content = new CreateTeamBuilder().BuildAsJsonContent();
@@ -121,6 +123,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
 
                 var client = clientBuilder
                     .WithService<ITeamService>(new StubTeamService(teams: stubTeam))
+                    .WithService<IAwsIdentityClient>(new StubAwsIdentityClient())
                     .Build();
 
                 var content = new CreateTeamBuilder().BuildAsJsonContent();
