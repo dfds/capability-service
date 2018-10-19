@@ -13,13 +13,10 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Api
     [ApiController]
     public class TeamsController : ControllerBase
     {
-        private readonly ITeamService _teamService;
+        private readonly ITeamApplicationService _teamService;
         private readonly IAwsIdentityClient _identityClient;
 
-        public TeamsController(
-            ITeamService teamService, 
-            IAwsIdentityClient identityClient
-        )
+        public TeamsController(ITeamApplicationService teamService, IAwsIdentityClient identityClient)
         {
             _teamService = teamService;
             _identityClient = identityClient;

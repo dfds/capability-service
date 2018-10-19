@@ -5,7 +5,7 @@ using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 
 namespace DFDS.TeamService.WebApi.Features.Teams.Application
 {
-    public interface ITeamService
+    public interface ITeamApplicationService
     {
         Task<IEnumerable<Team>> GetAllTeams();
         Task<Team> GetTeam(Guid id);

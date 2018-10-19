@@ -7,7 +7,7 @@ using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 
 namespace DFDS.TeamService.Tests.TestDoubles
 {
-    public class StubTeamService : ITeamService
+    public class StubTeamService : ITeamApplicationService
     {
         private readonly bool _alreadyExists;
         private readonly Team[] _teams;

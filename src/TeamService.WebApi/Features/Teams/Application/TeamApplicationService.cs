@@ -7,7 +7,7 @@ using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
 
 namespace DFDS.TeamService.WebApi.Features.Teams.Application
 {
-    public class TeamApplicationService : ITeamService
+    public class TeamApplicationService : ITeamApplicationService
     {
         private readonly ITeamRepository _teamRepository;
         private readonly IUserRepository _userRepository;
@@ -68,7 +68,7 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Application
 
     #region old cognito based team service
 
-    //public class CognitoTeamService : ITeamService
+    //public class CognitoTeamService : ITeamApplicationService
     //{
     //    private readonly UserPoolClient _userPoolClient;
 

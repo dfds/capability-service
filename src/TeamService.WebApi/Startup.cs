@@ -102,7 +102,7 @@ namespace DFDS.TeamService.WebApi
        //     services.RegisterAllTypes<IExternalDependent>(new[] { typeof(Startup).Assembly });
 
             services.AddTransient<TeamApplicationService>();
-            services.AddTransient<ITeamService>(serviceProvider => new TeamApplicationServiceTransactionDecorator(
+            services.AddTransient<ITeamApplicationService>(serviceProvider => new TeamApplicationServiceTransactionDecorator(
                 inner: serviceProvider.GetRequiredService<TeamApplicationService>(),
                 dbContext: serviceProvider.GetRequiredService<TeamServiceDbContext>()
             ));

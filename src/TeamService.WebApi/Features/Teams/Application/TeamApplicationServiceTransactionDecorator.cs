@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DFDS.TeamService.WebApi.Features.Teams.Application
 {
-    public class TeamApplicationServiceTransactionDecorator : ITeamService
+    public class TeamApplicationServiceTransactionDecorator : ITeamApplicationService
     {
-        private readonly ITeamService _inner;
+        private readonly ITeamApplicationService _inner;
         private readonly UnitOfWork _unitOfWork;
 
-        public TeamApplicationServiceTransactionDecorator(ITeamService inner, TeamServiceDbContext dbContext)
+        public TeamApplicationServiceTransactionDecorator(ITeamApplicationService inner, TeamServiceDbContext dbContext)
         {
             _inner = inner;
             _unitOfWork = new UnitOfWork(dbContext);

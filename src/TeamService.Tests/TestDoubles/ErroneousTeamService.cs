@@ -6,7 +6,7 @@ using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 
 namespace DFDS.TeamService.Tests.TestDoubles
 {
-    public class ErroneousTeamService : ITeamService
+    public class ErroneousTeamService : ITeamApplicationService
     {
         private readonly Exception _exception;
 

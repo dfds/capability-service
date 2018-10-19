@@ -18,7 +18,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
             using (var builder = new HttpClientBuilder())
             {
                 var client = builder
-                    .WithService<ITeamService>(new StubTeamService())
+                    .WithService<ITeamApplicationService>(new StubTeamService())
                     .Build();
 
                 var response = await client.GetAsync("api/teams");
@@ -42,7 +42,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
                 };
 
                 var client = builder
-                    .WithService<ITeamService>(new StubTeamService(teams: stubTeamList))
+                    .WithService<ITeamApplicationService>(new StubTeamService(teams: stubTeamList))
                     .Build();
 
                 var response = await client.GetAsync("api/teams");
@@ -62,7 +62,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
                 var stubTeam = new TeamBuilder().Build();
 
                 var client = builder
-                    .WithService<ITeamService>(new StubTeamService(teams: stubTeam))
+                    .WithService<ITeamApplicationService>(new StubTeamService(teams: stubTeam))
                     .Build();
 
                 var response = await client.GetAsync($"api/teams/{Guid.NewGuid()}");
@@ -80,7 +80,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
             using (var builder = new HttpClientBuilder())
             {
                 var client = builder
-                    .WithService<ITeamService>(new StubTeamService())
+                    .WithService<ITeamApplicationService>(new StubTeamService())
                     .Build();
 
                 var response = await client.GetAsync($"api/teams/{Guid.NewGuid()}");
@@ -100,7 +100,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
                 var stubTeam = new TeamBuilder().Build();
 
                 var client = clientBuilder
-                    .WithService<ITeamService>(new StubTeamService(teams: stubTeam))
+                    .WithService<ITeamApplicationService>(new StubTeamService(teams: stubTeam))
                     .WithService<IAwsIdentityClient>(new StubAwsIdentityClient())
                     .Build();
 
@@ -122,7 +122,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
                 var stubTeam = new TeamBuilder().Build();
 
                 var client = clientBuilder
-                    .WithService<ITeamService>(new StubTeamService(teams: stubTeam))
+                    .WithService<ITeamApplicationService>(new StubTeamService(teams: stubTeam))
                     .WithService<IAwsIdentityClient>(new StubAwsIdentityClient())
                     .Build();
 
@@ -142,7 +142,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
             using (var clientBuilder = new HttpClientBuilder())
             {
                 var client = clientBuilder
-                    .WithService<ITeamService>(new StubTeamService())
+                    .WithService<ITeamApplicationService>(new StubTeamService())
                     .Build();
 
                 var content = new CreateTeamBuilder()
@@ -164,7 +164,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
             using (var clientBuilder = new HttpClientBuilder())
             {
                 var client = clientBuilder
-                    .WithService<ITeamService>(new StubTeamService(alreadyExists: true))
+                    .WithService<ITeamApplicationService>(new StubTeamService(alreadyExists: true))
                     .Build();
 
                 var content = new CreateTeamBuilder().BuildAsJsonContent();
@@ -189,7 +189,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
                     .Build();
 
                 var client = clientBuilder
-                    .WithService<ITeamService>(new StubTeamService(teams: stubTeam))
+                    .WithService<ITeamApplicationService>(new StubTeamService(teams: stubTeam))
                     .Build();
 
                 var response = await client.PostAsync(
@@ -210,7 +210,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
             using (var clientBuilder = new HttpClientBuilder())
             {
                 var client = clientBuilder
-                    .WithService(Dummy.Of<ITeamService>())
+                    .WithService(Dummy.Of<ITeamApplicationService>())
                     .Build();
 
                 var dummyContent = JsonContent.Empty;
@@ -229,7 +229,7 @@ namespace DFDS.TeamService.Tests.Features.Teams
             using (var clientBuilder = new HttpClientBuilder())
             {
                 var client = clientBuilder
-                    .WithService<ITeamService>(new ErroneousTeamService(new AlreadyJoinedException()))
+                    .WithService<ITeamApplicationService>(new ErroneousTeamService(new AlreadyJoinedException()))
                     .Build();
 
                 var dummyContent = new JsonContent(new { UserId = 1 });
