@@ -11,8 +11,10 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
+      "launchUrl": "api/teams",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "TEAM_DATABASE_CONNECTIONSTRING": "User ID=postgres;Password=p;Host=localhost;Port=5432;Database=teamservice;"
       }
     },
     "TeamService.WebApi": {
