@@ -3,24 +3,8 @@ using System.Text.RegularExpressions;
 
 namespace DFDS.TeamService.WebApi.Features.AwsRoles
 {
-    public class TeamNameToTeamRoleArnConverter
+    public class TeamNameToRoleNameConverter
     {
-        private readonly string _awsAccountIdNumber;
-
-        public TeamNameToTeamRoleArnConverter(string awsAccountIdNumber)
-        {
-            var regex = new Regex("^[0-9]{12}$");
-            var matchResult = regex.Match(awsAccountIdNumber);
-
-            if (matchResult.Success == false)
-            {
-                throw new ArgumentException($"{nameof(awsAccountIdNumber)} must be a 12 digits number");
-            }
-            
-            _awsAccountIdNumber = awsAccountIdNumber;
-        }
-        
-        
         // https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html
         public string Convert(string teamName)
         {
@@ -51,7 +35,7 @@ namespace DFDS.TeamService.WebApi.Features.AwsRoles
             }
 
             
-            return $"arn:aws:iam::{_awsAccountIdNumber}:role/{teamName}";
+            return teamName;
         }
     }
 }

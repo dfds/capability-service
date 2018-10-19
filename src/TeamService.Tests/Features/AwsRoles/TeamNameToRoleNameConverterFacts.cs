@@ -4,24 +4,24 @@ using Xunit;
 
 namespace DFDS.TeamService.Tests.Features.AwsRoles
 {
-    public class TeamNameToTeamRoleArnConverterFacts
+    public class TeamNameToRoleNameConverterFacts
     {
         [Fact]
-        public void GIVEN_simple_string_EXPECT_ARN()
+        public void GIVEN_simple_string_EXPECT_same_string()
         {
             // Arrange
-            var teamNameToArnRoleNameConverter = new TeamNameToTeamRoleArnConverter("123456789012");
+            var teamNameToRoleNameConverter = new TeamNameToRoleNameConverter();
 
             var simpleTeamName = "team";
             
             
             // Act
-            var arnResult = teamNameToArnRoleNameConverter.Convert(simpleTeamName);
+            var arnResult = teamNameToRoleNameConverter.Convert(simpleTeamName);
             
             
             // Assert
-            var expectedArn = "arn:aws:iam::123456789012:role/team";
-            Assert.Equal(expectedArn, arnResult);
+            var roleName = simpleTeamName;
+            Assert.Equal(roleName, arnResult);
         }
 
 
@@ -29,7 +29,7 @@ namespace DFDS.TeamService.Tests.Features.AwsRoles
         public void GIVEN_string_WITH_length_of_65_EXPECT_Exception()
         {
             // Arrange
-            var teamNameToArnRoleNameConverter = new TeamNameToTeamRoleArnConverter("123456789012");
+            var teamNameToRoleNameConverter = new TeamNameToRoleNameConverter();
             
             var longTeamName = (new Guid().ToString() + new Guid() + new Guid()).Substring(0, 65);
 
@@ -37,7 +37,7 @@ namespace DFDS.TeamService.Tests.Features.AwsRoles
             // Act
             // Assert
             Assert.Throws<ArgumentException>(() =>
-                teamNameToArnRoleNameConverter.Convert(longTeamName)
+                teamNameToRoleNameConverter.Convert(longTeamName)
             );
         }
 
@@ -46,7 +46,7 @@ namespace DFDS.TeamService.Tests.Features.AwsRoles
         public void GIVEN_string_WITH_double_dots_EXPECT_Exception()
         {
             // Arrange
-            var teamNameToArnRoleNameConverter = new TeamNameToTeamRoleArnConverter("123456789012");
+            var teamNameToArnRoleNameConverter = new TeamNameToRoleNameConverter();
             
             var teamNameWithDoubleDots = "team..1";
 
@@ -62,7 +62,7 @@ namespace DFDS.TeamService.Tests.Features.AwsRoles
         public void GIVEN_spaces_Expect_double_dots()
         {
             // Arrange
-            var teamNameToArnRoleNameConverter = new TeamNameToTeamRoleArnConverter("123456789012");
+            var teamNameToArnRoleNameConverter = new TeamNameToRoleNameConverter();
 
             var teamNameWithSpaces = "team name with spaces";
             
@@ -72,7 +72,7 @@ namespace DFDS.TeamService.Tests.Features.AwsRoles
             
             
             // Assert
-            var expectedArn = "arn:aws:iam::123456789012:role/team..name..with..spaces";
+            var expectedArn = "team..name..with..spaces";
             Assert.Equal(expectedArn, arnResult);
         }
     }
