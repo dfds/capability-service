@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 using DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace DFDS.TeamService.WebApi.Features.Teams.Application
 {
     public class TeamApplicationServiceTransactionDecorator : ITeamService
     {
         private readonly ITeamService _inner;
-        private readonly TeamServiceDbContext _dbContext;
+        private readonly UnitOfWork _unitOfWork;
 
         public TeamApplicationServiceTransactionDecorator(ITeamService inner, TeamServiceDbContext dbContext)
         {
             _inner = inner;
-            _dbContext = dbContext;
+            _unitOfWork = new UnitOfWork(dbContext);
         }
 
         public Task<IEnumerable<Team>> GetAllTeams()
@@ -27,7 +28,32 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Application
             return _inner.GetTeam(id);
         }
 
-        private async Task WrapInTransaction(Func<Task> action)
+        public async Task<Team> CreateTeam(string name, string department)
+        {
+            return await _unitOfWork.Run(() => _inner.CreateTeam(name, department));
+        }
+
+        public Task<bool> Exists(string teamName)
+        {
+            return _inner.Exists(teamName);
+        }
+
+        public Task JoinTeam(Guid teamId, string userId)
+        {
+            return _unitOfWork.Run(() => _inner.JoinTeam(teamId, userId));
+        }
+    }
+
+    public class UnitOfWork
+    {
+        private readonly DbContext _dbContext;
+
+        public UnitOfWork(DbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        public async Task Run(Func<Task> action)
         {
             using (var transaction = _dbContext.Database.BeginTransaction())
             {
@@ -38,7 +64,7 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Application
             }
         }
 
-        private async Task<T> WrapInTransaction<T>(Func<Task<T>> action)
+        public async Task<TResult> Run<TResult>(Func<Task<TResult>> action)
         {
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
@@ -49,21 +75,6 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Application
 
                 return result;
             }
-        }
-
-        public async Task<Team> CreateTeam(string name, string department)
-        {
-            return await WrapInTransaction(() => _inner.CreateTeam(name, department));
-        }
-
-        public Task<bool> Exists(string teamName)
-        {
-            return _inner.Exists(teamName);
-        }
-
-        public Task JoinTeam(Guid teamId, string userId)
-        {
-            return WrapInTransaction(() => _inner.JoinTeam(teamId, userId));
         }
     }
 }
