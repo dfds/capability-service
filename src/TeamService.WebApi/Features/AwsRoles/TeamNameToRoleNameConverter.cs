@@ -9,22 +9,22 @@ namespace DFDS.TeamService.WebApi.Features.AwsRoles
         public string Convert(string teamName)
         {
 
-            if (teamName.Contains(".."))
+            if (teamName.Contains("+"))
             {
-                throw new ArgumentException($"{nameof(teamName)} may not contain double dots");
+                throw new ArgumentException($"{nameof(teamName)} may not contain plus signs");
 
             }
             if (teamName.Contains(" "))
             {
-                teamName = teamName.Replace(" ", "..");
+                teamName = teamName.Replace(" ", "+");
             }
             
-            var regex = new Regex(@"[\w+=,.@-]+");
+            var regex = new Regex(@"[\w=,.@-]+");
             var matchResult = regex.Match(teamName);
 
             if (matchResult.Success == false)
             {
-                throw new ArgumentException($"{nameof(teamName)} must be match the regex: [ \\w+=,.@-]+");
+                throw new ArgumentException($"{nameof(teamName)} must be match the regular expression: [ \\w=,.@-]+");
             }
 
             var maxTeamNameLength = 64;

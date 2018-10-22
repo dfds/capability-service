@@ -43,23 +43,23 @@ namespace DFDS.TeamService.Tests.Features.AwsRoles
 
         
         [Fact]
-        public void GIVEN_string_WITH_double_dots_EXPECT_Exception()
+        public void GIVEN_string_WITH_plus_sign_EXPECT_Exception()
         {
             // Arrange
             var teamNameToArnRoleNameConverter = new TeamNameToRoleNameConverter();
             
-            var teamNameWithDoubleDots = "team..1";
+            var teamNameWithPlusSign = "team+1";
 
             
             // Act
             // Assert
             Assert.Throws<ArgumentException>(() =>
-                teamNameToArnRoleNameConverter.Convert(teamNameWithDoubleDots)
+                teamNameToArnRoleNameConverter.Convert(teamNameWithPlusSign)
             );
         }
 
         [Fact]
-        public void GIVEN_spaces_Expect_double_dots()
+        public void GIVEN_spaces_Expect_plus_signs()
         {
             // Arrange
             var teamNameToArnRoleNameConverter = new TeamNameToRoleNameConverter();
@@ -72,7 +72,7 @@ namespace DFDS.TeamService.Tests.Features.AwsRoles
             
             
             // Assert
-            var expectedArn = "team..name..with..spaces";
+            var expectedArn = "team+name+with+spaces";
             Assert.Equal(expectedArn, arnResult);
         }
     }
