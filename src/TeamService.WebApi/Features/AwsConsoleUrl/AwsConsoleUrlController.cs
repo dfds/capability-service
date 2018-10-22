@@ -20,7 +20,7 @@ namespace DFDS.TeamService.WebApi.Features.AwsConsoleLogin
         
         [HttpGet("api/teams/{id}/aws/console-url")]
         public async Task<ActionResult<AWSConsoleLinkResponse>> GetConsoleUrl(
-            string id,
+            Guid id,
             [FromQuery] string idToken
         )
         {

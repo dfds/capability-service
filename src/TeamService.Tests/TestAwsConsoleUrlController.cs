@@ -17,7 +17,7 @@ namespace DFDS.TeamService.Tests
 
             teamIdToAwsConsoleUrlBuilder
                 .Setup(c => c.CreateUrlAsync(
-                        It.IsAny<string>(),
+                        It.IsAny<Guid>(),
                         It.IsAny<string>()
                     )
                 )
@@ -25,8 +25,8 @@ namespace DFDS.TeamService.Tests
 
             var sut = new AwsConsoleUrlController(teamIdToAwsConsoleUrlBuilder.Object);
             var tokenId = "myFancyToken";
-            var teamName = "aGreatTeam";
-            var result = await sut.GetConsoleUrl(tokenId, teamName);
+            var teamId = Guid.NewGuid();
+            var result = await sut.GetConsoleUrl(teamId ,tokenId);
 
             Assert.NotNull(result.Value.AbsoluteUrl);
         }

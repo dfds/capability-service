@@ -6,7 +6,7 @@ namespace DFDS.TeamService.WebApi.Features.AwsConsoleLogin
     public interface ITeamIdToAwsConsoleUrl
     {
         Task<Uri> CreateUrlAsync(
-            string teamId,
+            Guid teamId,
             string idToken
         );
     }
