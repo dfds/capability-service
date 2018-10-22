@@ -71,18 +71,18 @@ namespace DFDS.TeamService.WebApi
             });
             
             services.AddSingleton<IVariables>(variables);
-            services.AddTransient<IAwsConsoleLinkBuilder>(s =>
+            services.AddTransient<IAwsConsoleUrlBuilder>(s =>
             {
                 var vars = s.GetRequiredService<IVariables>();
 
-                var awsConsoleLinkBuilder = new AwsConsoleLinkBuilder(
+                var awsConsoleLinkBuilder = new AwsConsoleUrlBuilder(
                     vars.AwsCognitoIdentityPoolId,
                     vars.AwsCognitoLoginProviderName
                 );
 
                 return awsConsoleLinkBuilder;
             });
-            services.AddTransient<IExternalDependent>(s => (IExternalDependent)s.GetService<IAwsConsoleLinkBuilder>());
+            services.AddTransient<IExternalDependent>(s => (IExternalDependent)s.GetService<IAwsConsoleUrlBuilder>());
      
                 
             services.AddTransient<IAwsIdentityClient, AwsIdentityClient>();

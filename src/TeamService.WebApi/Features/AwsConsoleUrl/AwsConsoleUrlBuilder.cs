@@ -15,14 +15,14 @@ using Newtonsoft.Json.Serialization;
 
 namespace DFDS.TeamService.WebApi.Features.AwsConsoleLogin
 {
-    public class AwsConsoleLinkBuilder : IAwsConsoleLinkBuilder, IExternalDependent
+    public class AwsConsoleUrlBuilder : IAwsConsoleUrlBuilder, IExternalDependent
     {
         private readonly string _identityPoolId;
         private readonly string _loginProviderName;
         private readonly RegionEndpoint _regionEndpoint;
         private static readonly HttpClient HttpClient = new HttpClient();
 
-        public AwsConsoleLinkBuilder(
+        public AwsConsoleUrlBuilder(
             string identityPoolId,
             string loginProviderName
         )
@@ -32,19 +32,6 @@ namespace DFDS.TeamService.WebApi.Features.AwsConsoleLogin
             
             _regionEndpoint = RegionEndpoint.GetBySystemName(identityPoolId.Split(':')[0]);
 
-        }
-        
-        
-        /// <summary>Creates a AWS console login uri</summary>
-        /// <param name="identityToken">The token provided by the identity provider.</param>
-        public async Task<Uri> GenerateUriForConsole(string identityToken)
-        {
-            var roleToAssumeArn = "arn:aws:iam::528563840976:role/Cognito_BlasterAuth_Role";
-
-            return await GenerateUriForConsole(
-                identityToken,
-                roleToAssumeArn
-            );
         }
 
         /// <summary>Creates a AWS console login uri</summary>
