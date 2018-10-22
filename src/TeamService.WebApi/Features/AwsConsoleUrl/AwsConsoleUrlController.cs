@@ -31,7 +31,7 @@ namespace DFDS.TeamService.WebApi.Features.AwsConsoleLogin
             );
             
             
-            return new AWSConsoleLinkResponse(url);
+            return new AWSConsoleLinkResponse(url.AbsoluteUri);
         }
     }
 

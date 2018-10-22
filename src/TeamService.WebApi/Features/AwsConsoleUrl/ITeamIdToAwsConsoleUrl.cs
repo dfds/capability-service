@@ -1,10 +1,11 @@
+using System;
 using System.Threading.Tasks;
 
 namespace DFDS.TeamService.WebApi.Features.AwsConsoleLogin
 {
     public interface ITeamIdToAwsConsoleUrl
     {
-        Task<string> CreateUrlAsync(
+        Task<Uri> CreateUrlAsync(
             string teamId,
             string idToken
         );

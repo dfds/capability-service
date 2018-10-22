@@ -21,7 +21,7 @@ namespace DFDS.TeamService.Tests
                         It.IsAny<string>()
                     )
                 )
-                .ReturnsAsync("http://bogus");
+                .ReturnsAsync(new Uri("http://bogus"));
 
             var sut = new AwsConsoleUrlController(teamIdToAwsConsoleUrlBuilder.Object);
             var tokenId = "myFancyToken";
