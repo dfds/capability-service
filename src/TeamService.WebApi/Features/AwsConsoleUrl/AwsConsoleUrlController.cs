@@ -8,33 +8,30 @@ namespace DFDS.TeamService.WebApi.Features.AwsConsoleLogin
     [ApiController]
     public class AwsConsoleUrlController : ControllerBase
     {
-        private readonly IAwsConsoleUrlBuilder _awsConsoleUrlBuilder;
-        private readonly TeamNameToRoleNameConverter _teamNameToRoleNameConverter;
+        private readonly ITeamIdToAwsConsoleUrl _teamIdToAwsConsoleUrl;
         
         public AwsConsoleUrlController(
-            IAwsConsoleUrlBuilder awsConsoleUrlBuilder, 
-            TeamNameToRoleNameConverter teamNameToRoleNameConverter
+            ITeamIdToAwsConsoleUrl teamIdToAwsConsoleUrl
         )
         {
-            _awsConsoleUrlBuilder = awsConsoleUrlBuilder;
-            _teamNameToRoleNameConverter = teamNameToRoleNameConverter;
+            _teamIdToAwsConsoleUrl = teamIdToAwsConsoleUrl;
         }
 
         
-        [HttpGet("aws/console-url")]
+        [HttpGet("api/teams/{id}/aws/console-url")]
         public async Task<ActionResult<AWSConsoleLinkResponse>> GetConsoleUrl(
-            [FromQuery] string idToken,
-            [FromQuery] string teamName
+            string id,
+            [FromQuery] string idToken
         )
         {
-            var roleName = _teamNameToRoleNameConverter.Convert(teamName);
-            var consoleLink = await _awsConsoleUrlBuilder.GenerateUriForConsole(
-                idToken,
-                roleName
+
+            var url = await _teamIdToAwsConsoleUrl.CreateUrlAsync(
+                id,
+                idToken
             );
             
             
-            return new AWSConsoleLinkResponse(consoleLink.AbsoluteUri);
+            return new AWSConsoleLinkResponse(url);
         }
     }
 

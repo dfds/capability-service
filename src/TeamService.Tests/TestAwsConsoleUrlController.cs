@@ -13,17 +13,17 @@ namespace DFDS.TeamService.Tests
         [Fact]
         public async Task get_console_link_returns_url()
         {
-            var consoleBuilder = new Moq.Mock<IAwsConsoleUrlBuilder>();
+            var teamIdToAwsConsoleUrlBuilder = new Moq.Mock<ITeamIdToAwsConsoleUrl>();
 
-            consoleBuilder
-                .Setup(c => c.GenerateUriForConsole(
+            teamIdToAwsConsoleUrlBuilder
+                .Setup(c => c.CreateUrlAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>()
                     )
                 )
-                .Returns(Task.FromResult(new Uri("http://bogus")));
+                .ReturnsAsync("http://bogus");
 
-            var sut = new AwsConsoleUrlController(consoleBuilder.Object, new TeamNameToRoleNameConverter());
+            var sut = new AwsConsoleUrlController(teamIdToAwsConsoleUrlBuilder.Object);
             var tokenId = "myFancyToken";
             var teamName = "aGreatTeam";
             var result = await sut.GetConsoleUrl(tokenId, teamName);

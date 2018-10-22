@@ -31,21 +31,28 @@ paths:
         type: boolean
         description: Test external dependencies 
 
-  /aws/console:
+  /api/teams/{id}/aws/console-url:
     get:
       tags:
       - AWS
-      summary: Construct a link for AWS Console
+      summary: Returns a url for AWS Console
       parameters:
-      - in: query
-        name: idToken
+      - name: id
+        in: path
+        required: true
         type: string
-        description: The numbers of items to return
+        description: Id of team to login as
+      - name: idToken
+        in: query
+        required: true
+        type: string
+        description: Cognito jwt identity pool token
       responses:
         200:
           description: OK - Successful operation
           schema:
             $ref: "#/definitions/AWSConsoleLinkResponse"
+            
   /api/teams:
     get:
       summary: Returns list of available teams
