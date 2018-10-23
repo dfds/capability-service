@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +24,12 @@ namespace DFDS.TeamService.WebApi.Features.AwsConsoleLogin
             [FromQuery] string idToken
         )
         {
-
+            if (string.IsNullOrWhiteSpace(idToken))
+            {
+                return StatusCode((int)HttpStatusCode.BadRequest);
+            }
+            
+            
             var url = await _teamIdToAwsConsoleUrl.CreateUrlAsync(
                 id,
                 idToken
