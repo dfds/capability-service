@@ -24,7 +24,7 @@ namespace DFDS.TeamService.WebApi
         private const string TeamDatabaseConnectionStringIdentifier = "TEAM_DATABASE_CONNECTIONSTRING";
         public string TeamDatabaseConnectionString { get; }
 
-        private const string AccountIdIdentifier = "ACCOUNT_ID";
+        private const string AccountIdIdentifier = "AWS_ACCOUNT_ID";
         public string AwsAccountId { get; }
         
         
