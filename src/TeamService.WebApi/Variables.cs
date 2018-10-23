@@ -23,6 +23,10 @@ namespace DFDS.TeamService.WebApi
 
         private const string TeamDatabaseConnectionStringIdentifier = "TEAM_DATABASE_CONNECTIONSTRING";
         public string TeamDatabaseConnectionString { get; }
+
+        private const string AccountIdIdentifier = "ACCOUNT_ID";
+        public string AwsAccountId { get; }
+        
         
         public Variables()
         {
@@ -34,8 +38,11 @@ namespace DFDS.TeamService.WebApi
             AwsCognitoIdentityPoolId = Environment.GetEnvironmentVariable(AwsCognitoIdentityPoolIdIdentifier);
 
             TeamDatabaseConnectionString = Environment.GetEnvironmentVariable(TeamDatabaseConnectionStringIdentifier);
+           
+            AwsAccountId = Environment.GetEnvironmentVariable(AccountIdIdentifier);
         }
 
+        
         public void Validate()
         {
             var errors = new List<string>();
@@ -47,7 +54,9 @@ namespace DFDS.TeamService.WebApi
             if (string.IsNullOrWhiteSpace(AwsCognitoIdentityPoolId)) { errors.Add(createVariableNotSetString(AwsCognitoIdentityPoolIdIdentifier)); }
 
             if (string.IsNullOrWhiteSpace(TeamDatabaseConnectionString)) { errors.Add(createVariableNotSetString(TeamDatabaseConnectionStringIdentifier)); }
-            
+            if (string.IsNullOrWhiteSpace(AwsAccountId)) { errors.Add(createVariableNotSetString(AccountIdIdentifier)); }
+
+
             
             if (errors.Any() == false) { return; }
 

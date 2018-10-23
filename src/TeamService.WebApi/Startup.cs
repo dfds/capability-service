@@ -86,21 +86,19 @@ namespace DFDS.TeamService.WebApi
      
                 
             services.AddTransient<IAwsIdentityClient, AwsIdentityClient>();
-//            services.AddTransient<IAwsIdentityClient>(serviceCollection =>
-//                {
-//                    var vars = serviceCollection.GetService<IVariables>();
-//
-//                    var awsCredentials = new BasicAWSCredentials(
-//                        vars.AwsCognitoAccessKey,
-//                        vars.AwsCognitoSecretAccessKey
-//                    );
-//                    
-//                    
-//                    return new AwsIdentityClient(awsCredentials);
-//                }
-//            );
-       //     services.RegisterAllTypes<IExternalDependent>(new[] { typeof(Startup).Assembly });
 
+            services.AddSingleton(serviceProvider =>
+            {
+                var vars = serviceProvider.GetService<IVariables>();
+
+                var awsAccountId = new AwsAccountId(vars.AwsAccountId);
+
+
+                return awsAccountId;
+            });
+            services.AddTransient<ITeamIdToAwsConsoleUrl,TeamIdToAwsConsoleUrl>();
+            services.AddTransient<TeamNameToRoleNameConverter>();
+            
             services.AddTransient<TeamApplicationService>();
             services.AddTransient<ITeamApplicationService>(serviceProvider => new TeamApplicationServiceTransactionDecorator(
                 inner: serviceProvider.GetRequiredService<TeamApplicationService>(),

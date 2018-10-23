@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DFDS.TeamService.WebApi.Features.AwsRoles;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.TeamService.WebApi.Features.AwsConsoleLogin
