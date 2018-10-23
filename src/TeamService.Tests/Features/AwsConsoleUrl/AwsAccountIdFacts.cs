@@ -46,7 +46,7 @@ namespace DFDS.TeamService.Tests.Features.AwsConsoleUrl
         
           
         [Fact]
-        public void GIVEN_12_digits_EXPECT_sucess()
+        public void GIVEN_12_digits_EXPECT_success()
         {
             // Arrange
             var accountId = "123456789012";
@@ -57,7 +57,7 @@ namespace DFDS.TeamService.Tests.Features.AwsConsoleUrl
 
             
             // Assert
-            Assert.Equal(accountId, awsAccountId.ToString());
+            Assert.Equal(accountId, awsAccountId);
         }
     }
 }

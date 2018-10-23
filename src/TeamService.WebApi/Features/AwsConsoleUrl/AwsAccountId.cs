@@ -27,5 +27,17 @@ namespace DFDS.TeamService.WebApi.Features.AwsConsoleLogin
         {
             return _awsAccountId;
         }
+        
+     
+        public static implicit operator AwsAccountId (string awsAccountId)
+        {
+            return new AwsAccountId(awsAccountId);
+        }
+        
+        
+        public static implicit operator string (AwsAccountId awsAccountId)
+        {
+            return awsAccountId._awsAccountId;
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace DFDS.TeamService.WebApi.Features.AwsConsoleLogin
             var roleName = _teamNameToRoleNameConverter.Convert(team.Name);
 
             var roleArn = CreateRoleArn(
-                _awsAccountId.ToString(), 
+                _awsAccountId, 
                 roleName
             );
 
