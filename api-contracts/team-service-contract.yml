@@ -30,7 +30,23 @@ paths:
         required: false
         type: boolean
         description: Test external dependencies 
-
+  /api/users/{userId}/services:
+    get:
+      summary: Returns a collection of avalible services grouped by teams
+      tags:
+        - Users
+      parameters:
+      - name: "userId"
+        in: "path"
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/services-team-list"
+        400:
+          description: A used with the given userId could not be found
   /api/teams/{id}/aws/console-url:
     get:
       tags:
@@ -181,4 +197,39 @@ definitions:
     properties:
       absoluteUrl:
         type: string
-        
+  
+  teams:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/services-team"
+
+  services-team-list:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/services-team"
+
+  services-team:
+    type: object
+    properties:
+      name:
+        type: string
+      department:
+        type: string
+      services:
+        type: array
+        items:
+          $ref: "#/definitions/service"
+
+  service:
+    type: object
+    properties:
+      name:
+        type: string
+      location:
+        type: string

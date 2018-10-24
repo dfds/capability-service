@@ -43,7 +43,7 @@ namespace DFDS.TeamService.WebApi.Features.MyServices
             };
 
             var teamsResponse = new TeamsDTO{
-                Teams = new []{
+                Items = new []{
                     teamAwesome, 
                     teamSecond
                 }
