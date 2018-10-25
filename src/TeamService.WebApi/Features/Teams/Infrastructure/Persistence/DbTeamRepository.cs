@@ -26,11 +26,12 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence
         
         public async Task<IEnumerable<Team>> GetByUserId(string userId)
         {
-            return await _context.Teams
-                .Where(t => t.Members.Any(m => m.Id == userId))
+            var teams=  await _context.Teams
                 .Include(x => x.Memberships)
                 .ThenInclude(x => x.User)
                 .ToListAsync();
+
+            return teams.Where(t => t.Members.Any(u => u.Id == userId));
         }
 
         public async Task<Team> GetById(Guid id)

@@ -31,7 +31,7 @@ namespace DFDS.TeamService.WebApi.Features.MyServices
 
             if (user == null)
             {
-                return new ActionResult<TeamsDTO>(NotFound());
+                return new ActionResult<TeamsDTO>(NotFound($"User with id: {userId} not found"));
             }
 
             
