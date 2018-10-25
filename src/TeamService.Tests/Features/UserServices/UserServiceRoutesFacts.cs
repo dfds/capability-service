@@ -22,10 +22,13 @@ namespace DFDS.TeamService.Tests.Features.UserServices
                 userRepositoryBuilder
                     .Setup(teamRepository => teamRepository.GetById(It.IsAny<string>()))
                     .ReturnsAsync((User)null);
-                
+                var teamRepositoryBuilder= new Mock<ITeamRepository>();
+
                 
                 var client = builder
                     .WithService(userRepositoryBuilder.Object)
+                    .WithService(teamRepositoryBuilder.Object)
+
                     .Build();
 
 
@@ -60,10 +63,11 @@ namespace DFDS.TeamService.Tests.Features.UserServices
                 userRepositoryBuilder
                     .Setup(u => u.GetById(It.Is<string>(s => s.Equals(userId))))
                     .ReturnsAsync(user);
-                
+                var teamRepositoryBuilder= new Mock<ITeamRepository>();
                 
                 var client = builder
                     .WithService(userRepositoryBuilder.Object)
+                    .WithService(teamRepositoryBuilder.Object)
                     .Build();
 
 
