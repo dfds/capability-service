@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
@@ -20,6 +21,15 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence
         {
             return await _context.Teams
                 .Include(x => x.Memberships).ThenInclude(x => x.User)
+                .ToListAsync();
+        }
+        
+        public async Task<IEnumerable<Team>> GetByUserId(string userId)
+        {
+            return await _context.Teams
+                .Where(t => t.Members.Any(m => m.Id == userId))
+                .Include(x => x.Memberships)
+                .ThenInclude(x => x.User)
                 .ToListAsync();
         }
 

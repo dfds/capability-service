@@ -23,6 +23,7 @@ namespace DFDS.TeamService.WebApi.Features.MyServices
             _teamRepository = teamRepository;
         }
         
+        
         [HttpGet("api/users/{userId}/services")]
         public async Task<ActionResult<TeamsDTO>> GetServices(string userId)
         {
@@ -33,23 +34,16 @@ namespace DFDS.TeamService.WebApi.Features.MyServices
                 return new ActionResult<TeamsDTO>(NotFound());
             }
 
-            // TODO find membership in the proper way
-//            var teamsWithUser = (await _teamRepository).GetAll().Where(t => t.Members.Any(u => u.Id == userId));
-            var teamsWithUser = await _teamRepository.GetAll();
             
-            if (teamsWithUser.Any() == false)
-            {
-                return new TeamsDTO{Items = new TeamDTO[0]};
-            }
-
-
+            var teamsWithUser = await _teamRepository.GetByUserId(userId);
+     
+            
             var teamsResponse = new TeamsDTO
             {
                 Items = teamsWithUser.Select(t =>
                     CreateTeam(t)
                 )
             };
-            
 
 
             return teamsResponse;
@@ -84,7 +78,7 @@ namespace DFDS.TeamService.WebApi.Features.MyServices
             return new ServiceDTO
             {
                 Name = "AWS Console",
-                Location = $"http://localhost:8080/api/teams/{teamId}/aws/console-url"
+                Location = $"/api/teams/{teamId}/aws/console-url"
             };
         }
     }
