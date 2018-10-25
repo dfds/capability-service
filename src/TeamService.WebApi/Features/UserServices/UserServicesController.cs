@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
 using DFDS.TeamService.WebApi.Features.UserServices.model;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +12,15 @@ namespace DFDS.TeamService.WebApi.Features.MyServices
     public class UserServicesController: ControllerBase
     {
         private readonly IUserRepository _userRepository;
-
-        public UserServicesController(IUserRepository userRepository)
+        private readonly ITeamRepository _teamRepository;
+        
+        public UserServicesController(
+            IUserRepository userRepository, 
+            ITeamRepository teamRepository
+        )
         {
             _userRepository = userRepository;
+            _teamRepository = teamRepository;
         }
         
         [HttpGet("api/users/{userId}/services")]
@@ -23,34 +32,60 @@ namespace DFDS.TeamService.WebApi.Features.MyServices
             {
                 return new ActionResult<TeamsDTO>(NotFound());
             }
+
+            // TODO find membership in the proper way
+//            var teamsWithUser = (await _teamRepository).GetAll().Where(t => t.Members.Any(u => u.Id == userId));
+            var teamsWithUser = await _teamRepository.GetAll();
             
-            var awsConsoleLogin = new ServiceDTO
+            if (teamsWithUser.Any() == false)
             {
-                Name = "AWS Console",
-                Location = "/aws"
-            };
+                return new TeamsDTO{Items = new TeamDTO[0]};
+            }
 
-            var teamAwesome = new TeamDTO{
-                Name = "Awsome",
-                Department = "Swimming",
-                Services = new []{awsConsoleLogin}
-            };
 
-            var teamSecond = new TeamDTO{
-                Name = "Second",
-                Department = "Swimming",
-                Services = new ServiceDTO[0]
+            var teamsResponse = new TeamsDTO
+            {
+                Items = teamsWithUser.Select(t =>
+                    CreateTeam(t)
+                )
             };
-
-            var teamsResponse = new TeamsDTO{
-                Items = new []{
-                    teamAwesome, 
-                    teamSecond
-                }
-            };
+            
 
 
             return teamsResponse;
+        }
+
+        
+        public TeamDTO CreateTeam(Team team)
+        {
+            var teamDTO = new TeamDTO
+            {
+                Name = team.Name,
+                Department = team.Department,
+                Services = CreateServices(team)
+            };
+
+
+            return teamDTO;
+        }
+
+        
+        public IEnumerable<ServiceDTO> CreateServices(Team team)
+        {
+            var services = new List<ServiceDTO>();
+            services.Add(CreateAwsConsoleService(team.Id));
+
+            return services;
+        } 
+        
+        
+        public ServiceDTO CreateAwsConsoleService(Guid teamId)
+        {
+            return new ServiceDTO
+            {
+                Name = "AWS Console",
+                Location = $"http://localhost:8080/api/teams/{teamId}/aws/console-url"
+            };
         }
     }
 }

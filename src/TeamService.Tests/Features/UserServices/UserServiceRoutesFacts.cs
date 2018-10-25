@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using DFDS.TeamService.Tests.Builders;
@@ -19,7 +20,7 @@ namespace DFDS.TeamService.Tests.Features.UserServices
                 // Arrange
                 var userRepositoryBuilder = new Mock<IUserRepository>();
                 userRepositoryBuilder
-                    .Setup(u => u.GetById(It.IsAny<string>()))
+                    .Setup(teamRepository => teamRepository.GetById(It.IsAny<string>()))
                     .ReturnsAsync((User)null);
                 
                 
@@ -62,6 +63,50 @@ namespace DFDS.TeamService.Tests.Features.UserServices
                 
                 
                 var client = builder
+                    .WithService(userRepositoryBuilder.Object)
+                    .Build();
+
+
+                // Act
+                var response = await client.GetAsync($"api/users/{userId}/services");
+            
+                
+                // Assert
+                Assert.Equal(
+                    HttpStatusCode.OK,
+                    response.StatusCode
+                );
+            } 
+        }
+        
+        
+        [Fact]
+        public async Task GIVEN_uerId_NO_team_EXPECT_Ok()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                // Arrange
+                var userId = "user1";
+                var user = new User(
+                    id: userId, 
+                    name: "morten", 
+                    email: "morten47@hotmail.com"
+                );
+                
+                var userRepositoryBuilder = new Mock<IUserRepository>();
+                userRepositoryBuilder
+                    .Setup(u => u.GetById(It.Is<string>(s => s.Equals(userId))))
+                    .ReturnsAsync(user);
+                
+                var teamRepositoryBuilder = new Mock<ITeamRepository>();
+                teamRepositoryBuilder
+                    .Setup(u => u.GetAll())
+                    .ReturnsAsync(Enumerable.Empty<Team>());
+
+                
+                
+                var client = builder
+                    .WithService(teamRepositoryBuilder.Object)
                     .WithService(userRepositoryBuilder.Object)
                     .Build();
 
