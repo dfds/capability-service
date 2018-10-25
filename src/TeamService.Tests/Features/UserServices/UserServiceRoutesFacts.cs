@@ -31,7 +31,6 @@ namespace DFDS.TeamService.Tests.Features.UserServices
                 // Act
                 var userIdThatDoesNotExist = "userIdThatDoesNotExist";
                 var response = await client.GetAsync($"api/users/{userIdThatDoesNotExist}/services");
-                Console.WriteLine("code: " + response.StatusCode);
             
                 
                 // Assert
@@ -40,6 +39,43 @@ namespace DFDS.TeamService.Tests.Features.UserServices
                     response.StatusCode
                 );
             }
+        }
+
+        
+        [Fact]
+        public async Task GIVEN_uerId_EXPECT_Ok()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                // Arrange
+                var userId = "user1";
+                var user = new User(
+                    id: userId, 
+                    name: "morten", 
+                    email: "morten47@hotmail.com"
+                );
+                
+                var userRepositoryBuilder = new Mock<IUserRepository>();
+                userRepositoryBuilder
+                    .Setup(u => u.GetById(It.Is<string>(s => s.Equals(userId))))
+                    .ReturnsAsync(user);
+                
+                
+                var client = builder
+                    .WithService(userRepositoryBuilder.Object)
+                    .Build();
+
+
+                // Act
+                var response = await client.GetAsync($"api/users/{userId}/services");
+            
+                
+                // Assert
+                Assert.Equal(
+                    HttpStatusCode.OK,
+                    response.StatusCode
+                );
+            } 
         }
     }
 }
