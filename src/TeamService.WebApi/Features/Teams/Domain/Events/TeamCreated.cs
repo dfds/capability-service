@@ -1,8 +1,9 @@
 ﻿using System;
+using DFDS.TeamService.WebApi.DomainEvents;
 
 namespace DFDS.TeamService.WebApi.Features.Teams.Domain.Events
 {
-    public class TeamCreated : IDomainEvent
+    public class TeamCreated : DomainEvent
     {
         public TeamCreated(Guid teamId, string teamName, string department)
         {

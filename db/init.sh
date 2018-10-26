@@ -19,7 +19,7 @@ echo "postgres is up - preparing database migrations"
 # recreate database (!! local ONLY !!)
 if [ -n "${LOCAL_DEVELOPMENT+set}" ]; then
     echo -e "Creating database ${PGDATABASE}..."
-    #psql -d postgres -c "DROP DATABASE IF EXISTS ${PGDATABASE};"
+    psql -d postgres -c "DROP DATABASE IF EXISTS ${PGDATABASE};"
     psql -d postgres -c "CREATE DATABASE ${PGDATABASE};"
 fi
 

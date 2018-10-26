@@ -2,22 +2,20 @@ using System;
 
 namespace DFDS.TeamService.WebApi.Features.Teams.Domain.Models
 {
-    public class Membership
+    public class Membership : Entity<Guid>
     {
         private Membership()
         {
             
         }
 
-        public Membership(Guid id, User user, MembershipType type, DateTime startedDate)
+        public Membership(Guid id, User user, MembershipType type, DateTime startedDate) : base(id)
         {
-            Id = id;
             User = user;
             Type = type;
             StartedDate = startedDate;
         }
 
-        public Guid Id { get; private set; }
         public User User { get; private set; }
         public MembershipType Type { get; private set; }
         public DateTime StartedDate { get; private set; }

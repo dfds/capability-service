@@ -1,9 +1,10 @@
 ﻿using System;
+using DFDS.TeamService.WebApi.DomainEvents;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 
 namespace DFDS.TeamService.WebApi.Features.Teams.Domain.Events
 {
-    public class UserJoinedTeam : IDomainEvent
+    public class UserJoinedTeam : DomainEvent
     {
         public UserJoinedTeam(Guid teamId, string userId, MembershipType userHasRole, DateTime startedDate)
         {

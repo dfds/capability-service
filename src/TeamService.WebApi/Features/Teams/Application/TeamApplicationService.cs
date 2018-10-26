@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DFDS.TeamService.WebApi.Features.Teams.Domain.Events;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
 
@@ -31,14 +30,7 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Application
         public async Task<Team> CreateTeam(string name, string department)
         {
             var team = Team.Create(name, department);
-
             await _teamRepository.Add(team);
-
-            DomainEventPublisher.Publish(new TeamCreated(
-                teamId: team.Id,
-                teamName: team.Name,
-                department: team.Department
-            ));
 
             return team;
         }

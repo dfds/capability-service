@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
+using DFDS.TeamService.WebApi.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence

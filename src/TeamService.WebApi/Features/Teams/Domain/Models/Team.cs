@@ -5,7 +5,7 @@ using DFDS.TeamService.WebApi.Features.Teams.Domain.Events;
 
 namespace DFDS.TeamService.WebApi.Features.Teams.Domain.Models
 {
-    public class Team
+    public class Team : AggregateRoot<Guid>
     {
         private readonly List<Membership> _memberships = new List<Membership>();
 
@@ -14,15 +14,12 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Domain.Models
             
         }
 
-        public Team(Guid id, string name, string department, IEnumerable<Membership> memberships)
+        public Team(Guid id, string name, string department, IEnumerable<Membership> memberships) : base(id)
         {
-            Id = id;
             Name = name;
             Department = department;
             _memberships.AddRange(memberships);
         }
-
-        public Guid Id { get; private set; }
 
         public string Name { get; private set; }
         public void ChangeName(string newName)
@@ -36,7 +33,7 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Domain.Models
             Department = newDepartment;
         }
 
-        public IEnumerable<User> Members => _memberships.Select(x => x.User).Distinct(new PropertyEqualityComparer<User>(x => x.Id));
+        public IEnumerable<User> Members => _memberships.Select(x => x.User).Distinct();
         public IEnumerable<Membership> Memberships => _memberships;
 
         public User FindMemberById(string id)
@@ -49,7 +46,7 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Domain.Models
             var membership = Membership.Start(user, membershipType);
             _memberships.Add(membership);
 
-            DomainEventPublisher.Publish(new UserJoinedTeam(
+            RaiseEvent(new UserJoinedTeam(
                 teamId: this.Id,
                 userId: user.Id,
                 userHasRole: membership.Type,
@@ -59,12 +56,20 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Domain.Models
 
         public static Team Create(string name, string department)
         {
-            return new Team(
+            var team = new Team(
                 id: Guid.NewGuid(),
                 name: name,
                 department: department,
                 memberships: Enumerable.Empty<Membership>()
             );
+
+            team.RaiseEvent(new TeamCreated(
+                teamId: team.Id,
+                teamName: team.Name,
+                department: team.Department
+            ));
+
+            return team;
         }
     }
 }

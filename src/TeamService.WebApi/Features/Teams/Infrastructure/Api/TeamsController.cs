@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using DFDS.TeamService.WebApi.Features.AwsRoles;
 using DFDS.TeamService.WebApi.Features.Teams.Application;
 using DFDS.TeamService.WebApi.Features.Teams.Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +13,10 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Api
     public class TeamsController : ControllerBase
     {
         private readonly ITeamApplicationService _teamService;
-        private readonly IAwsIdentityClient _identityClient;
 
-        public TeamsController(ITeamApplicationService teamService, IAwsIdentityClient identityClient)
+        public TeamsController(ITeamApplicationService teamService)
         {
             _teamService = teamService;
-            _identityClient = identityClient;
         }
 
         [HttpGet("")]
@@ -64,8 +61,6 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Api
 
             var team = await _teamService.CreateTeam(createTeam.Name, createTeam.Department);
 
-            await _identityClient.PutRoleAsync(team.Name);
-            
             return CreatedAtAction(
                 actionName: nameof(GetTeam),
                 routeValues: new {id = team.Id},

@@ -1,7 +1,7 @@
 ﻿using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence
+namespace DFDS.TeamService.WebApi.Persistence
 {
     public class TeamServiceDbContext : DbContext
     {
@@ -27,6 +27,7 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence
                 cfg.Property(x => x.Department).IsRequired();
 
                 cfg.Ignore(x => x.Members);
+                cfg.Ignore(x => x.DomainEvents);
 
                 cfg
                     .HasMany(x => x.Memberships)

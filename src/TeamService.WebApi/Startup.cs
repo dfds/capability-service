@@ -1,17 +1,20 @@
-﻿using System.Linq;
-using System.Reflection;
-using Amazon.Runtime;
+﻿using Amazon.Runtime;
+using DFDS.TeamService.WebApi.DomainEvents;
 using DFDS.TeamService.WebApi.Features.AwsConsoleLogin;
 using DFDS.TeamService.WebApi.Features.AwsRoles;
 using DFDS.TeamService.WebApi.Features.Teams.Application;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
 using DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence;
+using DFDS.TeamService.WebApi.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using IApplicationLifetime = Microsoft.Extensions.Hosting.IApplicationLifetime;
 
 namespace DFDS.TeamService.WebApi
 {
@@ -31,9 +34,8 @@ namespace DFDS.TeamService.WebApi
                 .AddEntityFrameworkNpgsql()
                 .AddDbContext<TeamServiceDbContext>((serviceProvider, options)  =>
                 {
-                    options.UseNpgsql(
-                        serviceProvider.GetService<IVariables>().TeamDatabaseConnectionString
-                    );
+                    var connectionString = serviceProvider.GetRequiredService<IVariables>().TeamDatabaseConnectionString;
+                    options.UseNpgsql(connectionString);
                 });
            
             services
@@ -58,6 +60,9 @@ namespace DFDS.TeamService.WebApi
             //{
             //    variables.Validate();
             //}
+
+            services.AddSingleton<IVariables>(variables);
+
             services.AddSingleton<AWSCredentials>(serviceProvider =>
             {
                 var vars = serviceProvider.GetService<IVariables>();
@@ -70,7 +75,6 @@ namespace DFDS.TeamService.WebApi
                 return awsCredentials;
             });
             
-            services.AddSingleton<IVariables>(variables);
             services.AddTransient<IAwsConsoleUrlBuilder>(s =>
             {
                 var vars = s.GetRequiredService<IVariables>();
@@ -99,17 +103,22 @@ namespace DFDS.TeamService.WebApi
             services.AddTransient<ITeamIdToAwsConsoleUrl,TeamIdToAwsConsoleUrl>();
             services.AddTransient<TeamNameToRoleNameConverter>();
             
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddDomainEvents();
+
+            services.AddScoped(typeof(IUnitOfWork<>), typeof(EventDispatchingUnitOfWork<>));
+
             services.AddTransient<TeamApplicationService>();
             services.AddTransient<ITeamApplicationService>(serviceProvider => new TeamApplicationServiceTransactionDecorator(
                 inner: serviceProvider.GetRequiredService<TeamApplicationService>(),
-                dbContext: serviceProvider.GetRequiredService<TeamServiceDbContext>()
+                unitOfWork: serviceProvider.GetRequiredService<IUnitOfWork<TeamServiceDbContext>>()
             ));
             services.AddTransient<ITeamRepository, DbTeamRepository>();
             services.AddTransient<IUserRepository, DbUserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
         {
             if (env.IsDevelopment())
             {
