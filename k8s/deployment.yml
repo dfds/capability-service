@@ -32,4 +32,4 @@ spec:
         - name: TEAM_DATABASE_CONNECTIONSTRING
           value: $(TEAM_DATABASE_CONNECTIONSTRING)
         - name: AWS_ACCOUNT_ID
-          value: $(AWS_ACCOUNT_ID)
+          value: "$(AWS_ACCOUNT_ID)"
