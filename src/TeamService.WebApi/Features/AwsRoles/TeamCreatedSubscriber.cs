@@ -4,11 +4,11 @@ using DFDS.TeamService.WebApi.Features.Teams.Domain.Events;
 
 namespace DFDS.TeamService.WebApi.Features.AwsRoles
 {
-    public class TeamCreatedHandler : IDomainEventSubscriber<TeamCreated>
+    public class TeamCreatedSubscriber : IDomainEventSubscriber<TeamCreated>
     {
         private readonly IAwsIdentityClient _identityClient;
 
-        public TeamCreatedHandler(IAwsIdentityClient identityClient)
+        public TeamCreatedSubscriber(IAwsIdentityClient identityClient)
         {
             _identityClient = identityClient;
         }
