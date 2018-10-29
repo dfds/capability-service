@@ -6,5 +6,6 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories
     public interface IUserRepository
     {
         Task<User> GetById(string userId);
+        Task Add(User user);
     }
 }

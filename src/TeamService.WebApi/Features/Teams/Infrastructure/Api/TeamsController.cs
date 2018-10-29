@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DFDS.TeamService.WebApi.Features.Teams.Application;
 using DFDS.TeamService.WebApi.Features.Teams.Domain;
+using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
+using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using static DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Api.DtoHelper;
 
@@ -92,6 +94,31 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Api
             {
                 return Conflict(new ErrorMessage($"User with id \"{joinTeam.UserId}\" already member of team with id \"{id}\""));
             }
+        }
+    }
+
+    [Route("api/users")]
+    [ApiController]
+    public class UserController : ControllerBase
+    {
+        private readonly IUserRepository _userRepository;
+
+        public UserController(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(string id)
+        {
+            var user = await _userRepository.GetById(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Amazon.Runtime;
+using Amazon.Runtime.CredentialManagement;
 using DFDS.TeamService.WebApi.DomainEvents;
 using DFDS.TeamService.WebApi.Features.AwsConsoleLogin;
 using DFDS.TeamService.WebApi.Features.AwsRoles;
@@ -114,7 +115,23 @@ namespace DFDS.TeamService.WebApi
                 unitOfWork: serviceProvider.GetRequiredService<IUnitOfWork<TeamServiceDbContext>>()
             ));
             services.AddTransient<ITeamRepository, DbTeamRepository>();
-            services.AddTransient<IUserRepository, DbUserRepository>();
+
+            services.AddTransient<CognitoUserProvider>(serviceProvider =>
+            {
+                return new CognitoUserProvider(
+                    awsCredentials: serviceProvider.GetRequiredService<AWSCredentials>(),
+                    userPoolId: serviceProvider.GetRequiredService<IVariables>().AwsCognitoUserPoolId
+                );
+            });
+
+            services.AddTransient<DbUserRepository>();
+            services.AddTransient<IUserRepository>(serviceProvider =>
+            {
+                return new CognitoDecorator(
+                    inner: serviceProvider.GetRequiredService<DbUserRepository>(),
+                    userProvider: serviceProvider.GetRequiredService<CognitoUserProvider>()
+                );
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
