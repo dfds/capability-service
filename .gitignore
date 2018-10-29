@@ -423,3 +423,5 @@ wwwroot/
 output/
 .vscode/
 my-stuff/
+*.trx
+*.orig
