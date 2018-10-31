@@ -425,3 +425,7 @@ output/
 my-stuff/
 *.trx
 *.orig
+
+# terraform
+.terraform/
+.terragrunt-cache

@@ -1,0 +1,3 @@
+team = "ded"
+
+environment = "prod"
