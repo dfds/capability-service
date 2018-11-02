@@ -1,5 +1,6 @@
 using Amazon.Runtime;
 using DFDS.TeamService.WebApi.Features.AwsRoles;
+using DFDS.TeamService.WebApi.Features.AwsRoles.Infrastructure.Persistence;
 
 namespace DFDS.TeamService.IntegrationTests.Features
 {
@@ -7,11 +8,14 @@ namespace DFDS.TeamService.IntegrationTests.Features
     {
         public static AwsIdentityClient CreateFromEnviromentVariables()
         {
+          var awsCredentials = new EnvironmentVariablesAWSCredentials();
+
+            var policyRepository = new PolicyRepository();
             
-            var awsCredentials = new EnvironmentVariablesAWSCredentials();
-            
-            
-            var identityClient = new AwsIdentityClient(awsCredentials);
+            var identityClient = new AwsIdentityClient(
+                awsCredentials,
+                policyRepository
+            );
 
             
             return identityClient;

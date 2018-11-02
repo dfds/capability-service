@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.IdentityManagement;
@@ -13,12 +14,14 @@ namespace DFDS.TeamService.WebApi.Features.AwsRoles
     {
         private readonly AWSCredentials _awsCredentials;
         private readonly AmazonIdentityManagementServiceClient _client;
-
+        private readonly IPolicyRepository _policyRepository;
         public AwsIdentityClient(
-            AWSCredentials credentials
+            AWSCredentials credentials, 
+            IPolicyRepository policyRepository
         )
         {
             _awsCredentials = credentials;
+            _policyRepository = policyRepository;
             _client = new AmazonIdentityManagementServiceClient(
                 _awsCredentials,
                 RegionEndpoint.EUCentral1
@@ -30,7 +33,7 @@ namespace DFDS.TeamService.WebApi.Features.AwsRoles
         {
             await EnsureRoleExists(roleName);
 
-            await PutRolePolicyAsync(roleName);
+            await PutRolePoliciesAsync(roleName);
         }
 
         
@@ -61,26 +64,30 @@ namespace DFDS.TeamService.WebApi.Features.AwsRoles
         }
 
         
-        private async Task PutRolePolicyAsync(string roleName)
+        private async Task PutRolePoliciesAsync(string roleName)
         {
-            var rolePolicyRequest = new PutRolePolicyRequest
+            var policies = await _policyRepository.GetLatestAsync();
+
+            var tasks = new List<Task>();
+
+            foreach (var policy in policies)
             {
-                RoleName = roleName,
-                PolicyName = "InlinePolicy",
-                PolicyDocument = @"{
-                       ""Version"": ""2012-10-17"",
-                       ""Statement"": [
-                           {
-                               ""Effect"": ""Allow"",
-                               ""Action"": ""rds:*"",
-                               ""Resource"": ""*""
-                           }
-                       ]
-                    }"
-            };
-
-
-            await _client.PutRolePolicyAsync(rolePolicyRequest);
+                tasks.Add(Task.Run(async () =>
+                    {
+                        var rolePolicyRequest = new PutRolePolicyRequest
+                        {
+                            RoleName = roleName,
+                            PolicyName = policy.Name,
+                            PolicyDocument = policy.Document
+                        };
+    
+                        await _client.PutRolePolicyAsync(rolePolicyRequest);
+                    })
+                );
+            }
+            
+            
+            Task.WaitAll(tasks.ToArray());
         }
 
         

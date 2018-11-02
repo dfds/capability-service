@@ -3,6 +3,7 @@ using Amazon.Runtime.CredentialManagement;
 using DFDS.TeamService.WebApi.DomainEvents;
 using DFDS.TeamService.WebApi.Features.AwsConsoleLogin;
 using DFDS.TeamService.WebApi.Features.AwsRoles;
+using DFDS.TeamService.WebApi.Features.AwsRoles.Infrastructure.Persistence;
 using DFDS.TeamService.WebApi.Features.Teams.Application;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
 using DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence;
@@ -91,6 +92,7 @@ namespace DFDS.TeamService.WebApi
      
                 
             services.AddTransient<IAwsIdentityClient, AwsIdentityClient>();
+            services.AddTransient<IPolicyRepository, PolicyRepository>();
 
             services.AddSingleton(serviceProvider =>
             {
