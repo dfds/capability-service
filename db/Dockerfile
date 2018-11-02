@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-RUN apk --update add postgresql-client ca-certificates && rm -rf /var/cache/apk/*
+RUN apk --update add postgresql-client ca-certificates tzdata && rm -rf /var/cache/apk/*
 
 # SSL
 RUN wget https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem -O /tmp/rds-combined-ca-bundle.pem \
@@ -9,9 +9,11 @@ RUN wget https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem -O /t
 
 ENV PGSSLROOTCERT /etc/ssl/certs/ca-certificates.crt
 ENV PGSSLMODE verify-full
+ENV PGPORT 5432
 
-# COPY or WGET ./rds-ca-2015-eu-central-1.pem /usr/local/share/ca-certificates/.
-# RUN update-ca-certificates
+# timezone
+ENV TZ=Europe/Copenhagen
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /db
 
