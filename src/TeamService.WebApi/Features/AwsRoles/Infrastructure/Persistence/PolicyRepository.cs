@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using DFDS.TeamService.WebApi.Features.AwsRoles.Model;
 
@@ -7,30 +8,56 @@ namespace DFDS.TeamService.WebApi.Features.AwsRoles.Infrastructure.Persistence
 {
     public class PolicyRepository : IPolicyRepository
     {
+        private readonly PolicyDirectoryLocation _policyDirectoryLocation;
+
+        public PolicyRepository(PolicyDirectoryLocation policyDirectoryLocation)
+        {
+            _policyDirectoryLocation = policyDirectoryLocation;
+        }
+
         public async Task<IEnumerable<Policy>> GetLatestAsync()
         {
-            var policyDocument = await ReadFileAsync("rds-all-v001.json");
+            var policyFiles = GetAllPolicyFiles();
 
-            var rdsPolicy = new Policy(
-                "RDS-All",
-                policyDocument
-            );
+
+            var policyTasks = policyFiles.Select(async filePath =>
+            {
+                {
+                    var policyDocument = await ReadFileAsync(filePath);
+                    var policyName = Path.GetFileNameWithoutExtension(filePath);
+                    
+                    var policy = new Policy(
+                        policyName,
+                        policyDocument
+                    );
+
+                    return policy;
+                }
+            }).ToArray();
             
-            
-            var policies = new[] {rdsPolicy};
+            var policies = await Task.WhenAll(policyTasks);
 
 
             return policies;
         }
 
         
-        public async Task<string> ReadFileAsync(string fileName)
+        public IEnumerable<string> GetAllPolicyFiles()
         {
-            var baseFolder = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var fileFolder = Path.Combine(baseFolder, "Features/AwsRoles/Infrastructure/Persistence/Policies");
-            var filePath = Path.Combine(fileFolder, fileName);
-          
-            var fileContent= await File.ReadAllTextAsync(filePath);
+            var jsonFiles = Directory.EnumerateFiles(
+                _policyDirectoryLocation, 
+                "*.json", 
+                SearchOption.TopDirectoryOnly
+            );
+
+
+            return jsonFiles;
+        }
+
+        
+        public async Task<string> ReadFileAsync(string filePath)
+        {
+            var fileContent = await File.ReadAllTextAsync(filePath);
 
 
             return fileContent;

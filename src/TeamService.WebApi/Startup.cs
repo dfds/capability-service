@@ -92,6 +92,10 @@ namespace DFDS.TeamService.WebApi
      
                 
             services.AddTransient<IAwsIdentityClient, AwsIdentityClient>();
+
+            services.AddSingleton(serviceProvider => PolicyDirectoryLocationFromSolution.Create());
+            services.AddTransient<IPolicyRepository, PolicyRepository>();
+            
             services.AddTransient<IPolicyRepository, PolicyRepository>();
 
             services.AddSingleton(serviceProvider =>
