@@ -74,11 +74,13 @@ namespace DFDS.TeamService.WebApi.Features.AwsRoles
             {
                 tasks.Add(Task.Run(async () =>
                     {
+                        var policyDocumentWithRoleName = policy.Document.Replace("teamName", roleName);
+                        
                         var rolePolicyRequest = new PutRolePolicyRequest
                         {
                             RoleName = roleName,
                             PolicyName = policy.Name,
-                            PolicyDocument = policy.Document
+                            PolicyDocument = policyDocumentWithRoleName
                         };
     
                         await _client.PutRolePolicyAsync(rolePolicyRequest);
@@ -90,6 +92,7 @@ namespace DFDS.TeamService.WebApi.Features.AwsRoles
             Task.WaitAll(tasks.ToArray());
         }
 
+        
         
         public async Task DeleteRole(string roleName)
         {
