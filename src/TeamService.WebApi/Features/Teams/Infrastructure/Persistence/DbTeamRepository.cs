@@ -21,7 +21,8 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence
         public async Task<IEnumerable<Team>> GetAll()
         {
             return await _context.Teams
-                .Include(x => x.Memberships).ThenInclude(x => x.User)
+                .Include(x => x.Memberships)
+                .ThenInclude(x => x.User)
                 .ToListAsync();
         }
         
@@ -37,7 +38,10 @@ namespace DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Persistence
 
         public async Task<Team> GetById(Guid id)
         {
-            return await _context.Teams.SingleOrDefaultAsync(x => x.Id == id);
+            return await _context.Teams
+                .Include(x => x.Memberships)
+                .ThenInclude(x => x.User)
+                .SingleOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task Add(Team team)
