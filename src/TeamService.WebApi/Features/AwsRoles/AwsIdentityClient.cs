@@ -74,7 +74,7 @@ namespace DFDS.TeamService.WebApi.Features.AwsRoles
             {
                 tasks.Add(Task.Run(async () =>
                     {
-                        var policyDocumentWithRoleName = policy.Document.Replace("teamName", roleName);
+                        var policyDocumentWithRoleName = policy.Document.Replace("teamName", roleName.ToLower());
                         
                         var rolePolicyRequest = new PutRolePolicyRequest
                         {
