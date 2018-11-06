@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Features\AwsRoles\Infrastructure\Persistence\Policies\rds-all-v001.json">
+    <Content Update="Features\AwsRoles\Infrastructure\Persistence\Policies\ecr-teamName-v001.json">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
