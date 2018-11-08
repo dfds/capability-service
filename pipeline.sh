@@ -82,6 +82,7 @@ cd ..
 build_container_image
 
 if [[ "${BUILD_NUMBER}" != "N/A" ]]; then
+    login_to_docker
     push_container_image
     push_dbmigration_container_image
 fi
