@@ -32,6 +32,13 @@ spec:
         ports:
         - containerPort: 80
           name: web
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
         env:
         - name:  AWS_COGNITO_ACCESS_KEY
           value: $(AWS_COGNITO_ACCESS_KEY)
