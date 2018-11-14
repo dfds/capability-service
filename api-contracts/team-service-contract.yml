@@ -46,7 +46,7 @@ paths:
           schema:
             $ref: "#/definitions/services-team-list"
         400:
-          description: A used with the given userId could not be found
+          description: A user with the given userId could not be found
   /api/teams/{id}/aws/console-url:
     get:
       tags:
