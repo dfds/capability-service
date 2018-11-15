@@ -10,5 +10,3 @@ terragrunt = {
 }
 
 name = "ts"
-
-master_username = "ts_admin"

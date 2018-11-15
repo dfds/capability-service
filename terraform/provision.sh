@@ -14,7 +14,8 @@ set -o errexit
 set -o pipefail
 
 ##############################################################################
-#
+# encapsulates the dfds terragrunt image, accepting parameters and
+# environment variables
 # Globals:
 #   ENV
 #   AWS_ACCESS_KEY_ID
@@ -31,7 +32,8 @@ docker_run() {
         -w "/terraform/${ENV}" \
         -e AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
         -e AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}" \
-        -e TF_VAR_master_password="${MASTER_PASSWORD}" \
+        -e TF_VAR_master_username="${PGUSER}" \
+        -e TF_VAR_master_password="${PGPASSWORD}" \
         dfdsdk/terragrunt-runner \
         ${1} --terragrunt-non-interactive
 }
