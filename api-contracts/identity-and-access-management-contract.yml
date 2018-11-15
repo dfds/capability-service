@@ -1,0 +1,65 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Identity And Access Management
+basePath: /api
+tags: 
+  - name: Users
+consumes: 
+  - "application/json"
+produces:
+  - "application/json"
+paths:
+  /users/{id}:
+    get:
+      summary: Returns a single user
+      tags:
+      - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/user"
+        404:
+          description: Not Found
+  /users/{id}/services:
+    get:
+      summary: Returns a list of services the user has access to
+      tags:
+      - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  $ref: "#/definitions/service"
+
+definitions:
+  user:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      email:
+        type: string
+  service:
+    type: object
+    properties:
+      serviceId:
+        type: string
