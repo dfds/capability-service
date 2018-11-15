@@ -5,10 +5,13 @@
 ## usage: provision.sh [environment]
 ## 
 
+[[ -n "${DEBUG}" ]] && set -o xtrace
+
 readonly ENV=${1:?"environment not specified"}
 
-set -o errexit
 set -o nounset
+set -o errexit
+set -o pipefail
 
 ##############################################################################
 #
