@@ -9,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.TeamService.WebApi.Features.MyServices
 {
-    public class UserServicesController: ControllerBase
+    [ApiController]
+    public class UserServicesController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
         private readonly ITeamRepository _teamRepository;
@@ -49,8 +50,7 @@ namespace DFDS.TeamService.WebApi.Features.MyServices
             return teamsResponse;
         }
 
-        
-        public TeamDTO CreateTeam(Team team)
+        private TeamDTO CreateTeam(Team team)
         {
             var teamDTO = new TeamDTO
             {
@@ -59,21 +59,18 @@ namespace DFDS.TeamService.WebApi.Features.MyServices
                 Services = CreateServices(team)
             };
 
-
             return teamDTO;
         }
 
-        
-        public IEnumerable<ServiceDTO> CreateServices(Team team)
+        private IEnumerable<ServiceDTO> CreateServices(Team team)
         {
             var services = new List<ServiceDTO>();
             services.Add(CreateAwsConsoleService(team.Id));
 
             return services;
-        } 
-        
-        
-        public ServiceDTO CreateAwsConsoleService(Guid teamId)
+        }
+
+        private ServiceDTO CreateAwsConsoleService(Guid teamId)
         {
             return new ServiceDTO
             {
