@@ -27,7 +27,7 @@ set -o pipefail
 ##############################################################################
 docker_run() {
     docker run \
-        -v ${PWD}/terraform:/terraform \
+        -v ${PWD}:/terraform \
         -w "/terraform/${ENV}" \
         -e AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
         -e AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}" \
