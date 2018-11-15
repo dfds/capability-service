@@ -36,7 +36,6 @@ docker_run() {
         ${1} --terragrunt-non-interactive
 }
 
-# docker_run apply-all
-docker_output=$(docker_run output-all)
+docker_run apply-all
 
-echo $docker_output | sed -E 's/(.*) = (.*)/##vso[task.setvariable variable=\1]\2/g'
+docker_run output-all | awk -F' = ' '{print "##vso[task.setvariable variable=" $1 "]" $2}'
