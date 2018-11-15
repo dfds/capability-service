@@ -56,4 +56,7 @@ spec:
         - name: AWS_ACCOUNT_ID
           value: "$(AWS_ACCOUNT_ID)"
         - name: TEAM_DATABASE_CONNECTIONSTRING
-          value: $(TEAM_DATABASE_CONNECTIONSTRING)
+          valueFrom:
+            secretKeyRef:
+              name: team-service
+              key: connection-string
