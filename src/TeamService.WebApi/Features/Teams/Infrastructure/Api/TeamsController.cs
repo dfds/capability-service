@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using DFDS.TeamService.WebApi.Features.Teams.Application;
 using DFDS.TeamService.WebApi.Features.Teams.Domain;
-using DFDS.TeamService.WebApi.Features.Teams.Domain.Models;
 using DFDS.TeamService.WebApi.Features.Teams.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using static DFDS.TeamService.WebApi.Features.Teams.Infrastructure.Api.DtoHelper;

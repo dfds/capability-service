@@ -14,38 +14,27 @@ namespace DFDS.TeamService.WebApi.Features.MyServices
     {
         private readonly IUserRepository _userRepository;
         private readonly ITeamRepository _teamRepository;
-        
-        public UserServicesController(
-            IUserRepository userRepository, 
-            ITeamRepository teamRepository
-        )
+
+        public UserServicesController(IUserRepository userRepository, ITeamRepository teamRepository)
         {
             _userRepository = userRepository;
             _teamRepository = teamRepository;
         }
-        
-        
+
         [HttpGet("api/users/{userId}/services")]
         public async Task<ActionResult<TeamsDTO>> GetServices(string userId)
         {
             var user = await _userRepository.GetById(userId);
-
             if (user == null)
             {
                 return new ActionResult<TeamsDTO>(NotFound($"User with id: {userId} not found"));
             }
 
-            
             var teamsWithUser = await _teamRepository.GetByUserId(userId);
-     
-            
             var teamsResponse = new TeamsDTO
             {
-                Items = teamsWithUser.Select(t =>
-                    CreateTeam(t)
-                )
+                Items = teamsWithUser.Select(t => CreateTeam(t))
             };
-
 
             return teamsResponse;
         }
