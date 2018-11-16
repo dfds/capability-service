@@ -5,6 +5,7 @@ info:
 basePath: /api
 tags: 
   - name: Users
+  - name: Services
 consumes: 
   - "application/json"
 produces:
@@ -29,7 +30,7 @@ paths:
           description: Not Found
   /users/{id}/services:
     get:
-      summary: Returns a list of services the user has access to
+      summary: Returns a list of services a user has access to
       tags:
       - Users
       parameters:
@@ -46,8 +47,23 @@ paths:
               items:
                 type: array
                 items:
+                  $ref: "#/definitions/user-service"
+  /services:
+    get:
+      summary: Returns a list of external services that users can gain access to
+      tags:
+      - Services
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
                   $ref: "#/definitions/service"
-
+                
 definitions:
   user:
     type: object
@@ -58,8 +74,29 @@ definitions:
         type: string
       email:
         type: string
-  service:
+      services:
+        type: array
+        items:
+          $ref: "#/definitions/user-service"
+  user-service:
     type: object
     properties:
       serviceId:
+        type: string
+      name:
+        type: string
+      logoUrl:
+        type: string
+      loginUrl:
+        type: string
+  service:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      mainUrl:
+        type: string
+      logoUrl:
         type: string
