@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using DFDS.TeamService.WebApi.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace DFDS.TeamService.WebApi.Models
