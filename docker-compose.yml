@@ -16,7 +16,7 @@ services:
     # volumes:
     # - ${PWD}/db/export:/tmp
     environment:
-    #- DEBUG=1                     # enable script debugging
+    # - DEBUG=1                     # enable script debugging
     - LOCAL_DEVELOPMENT=1         # will try to CREATE DATABASE ${PGDATABASE}
     - PGDATABASE=teamservice      # database name
     - PGHOST=database             # same as avove - docker-compose service name

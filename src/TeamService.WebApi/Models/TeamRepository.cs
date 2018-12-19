@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace DFDS.TeamService.WebApi.Models
 {
     public class TeamRepository : ITeamRepository
     {
-        public Task<IEnumerable<Team>> GetAll()
-        {
-            var teams = new[]
-            {
-                new Team(
-                    id: Guid.NewGuid(),
-                    name: "foo"
-                ),
-            };
+        private readonly TeamServiceDbContext _dbContext;
 
-            return Task.FromResult<IEnumerable<Team>>(teams);
+        public TeamRepository(TeamServiceDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        public async Task<IEnumerable<Team>> GetAll()
+        {
+            return await _dbContext.Teams.ToListAsync();
         }
     }
 }
