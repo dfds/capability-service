@@ -16,14 +16,39 @@ paths:
         200:
           description: OK
           schema:
+            $ref: '#/definitions/team-list'
+    post:
+      summary: Create a new team
+      parameters: 
+        - in: body
+          name: body
+          required: true
+          schema:
             type: object
             properties:
-              items:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                    name:
-                      type: string
+              name:
+                type: string
+      responses:
+        201:
+          description: Created
+          headers:
+            location:
+              type: string
+              description: URI where the team can be retrieved
+          schema:
+            $ref: '#/definitions/team'
+definitions:
+  team-list:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/team'
+  team:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
