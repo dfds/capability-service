@@ -1,0 +1,29 @@
+swagger: '2.0'
+info:
+  version: 0.0.1
+  title: Team Service
+  description: The authority of all things TEAM related!
+consumes:
+  - application/json
+produces:
+  - application/json
+basePath: /api
+paths:
+  /teams:
+    get:
+      summary: Returns a list of teams
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
