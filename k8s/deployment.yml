@@ -43,18 +43,6 @@ spec:
             memory: "128Mi"
             cpu: "200m"
         env:
-        - name:  AWS_COGNITO_ACCESS_KEY
-          value: $(AWS_COGNITO_ACCESS_KEY)
-        - name:  AWS_COGNITO_SECRET_ACCESS_KEY
-          value: $(AWS_COGNITO_SECRET_ACCESS_KEY)
-        - name:  AWS_COGNITO_USER_POOL_ID
-          value: $(AWS_COGNITO_USER_POOL_ID)
-        - name: AWS_COGNITO_LOGIN_PROVIDER_NAME
-          value: $(AWS_COGNITO_LOGIN_PROVIDER_NAME)
-        - name: AWS_COGNITO_IDENTITY_POOL_ID
-          value: $(AWS_COGNITO_IDENTITY_POOL_ID)
-        - name: AWS_ACCOUNT_ID
-          value: "$(AWS_ACCOUNT_ID)"
         - name: TEAM_DATABASE_CONNECTIONSTRING
           valueFrom:
             secretKeyRef:
