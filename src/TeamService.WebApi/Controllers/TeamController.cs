@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using DFDS.TeamService.WebApi.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.TeamService.WebApi.Controllers
@@ -7,29 +10,37 @@ namespace DFDS.TeamService.WebApi.Controllers
     [Route("api/teams")]
     public class TeamController  : ControllerBase
     {
-        [HttpGet("")]
-        public IActionResult GetAllTeams()
+        private readonly ITeamRepository _teamRepository;
+
+        public TeamController(ITeamRepository teamRepository)
         {
+            _teamRepository = teamRepository;
+        }
+
+        [HttpGet("")]
+        public async Task<IActionResult> GetAllTeams()
+        {
+            var teams = await _teamRepository.GetAll();
+
             return Ok(new TeamResponse
             {
-                Items = new []
-                {
-                    new Team
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "foo"
-                    }, 
-                }
+                Items = teams
+                        .Select(x => new TeamDto
+                        {
+                            Id = x.Id,
+                            Name = x.Name
+                        })
+                        .ToArray()
             });
         }
     }
 
     public class TeamResponse
     {
-        public Team[] Items { get; set; }
+        public TeamDto[] Items { get; set; }
     }
 
-    public class Team
+    public class TeamDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
