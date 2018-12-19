@@ -17,5 +17,13 @@ namespace DFDS.TeamService.WebApi.Models
 
         public Guid Id { get; private set; }
         public string Name { get; private set; }
+
+        public static Team Create(string name)
+        {
+            return new Team(
+                id: Guid.NewGuid(),
+                name: name
+            );
+        }
     }
 }

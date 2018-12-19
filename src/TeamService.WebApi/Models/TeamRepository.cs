@@ -18,5 +18,11 @@ namespace DFDS.TeamService.WebApi.Models
         {
             return await _dbContext.Teams.ToListAsync();
         }
+
+        public async Task Add(Team team)
+        {
+            await _dbContext.Teams.AddAsync(team);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

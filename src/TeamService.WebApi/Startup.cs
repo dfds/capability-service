@@ -28,6 +28,7 @@ namespace DFDS.TeamService.WebApi
                     options.UseNpgsql(connectionString);
                 });
 
+
             services
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

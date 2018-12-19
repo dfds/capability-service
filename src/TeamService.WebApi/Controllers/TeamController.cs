@@ -8,7 +8,7 @@ namespace DFDS.TeamService.WebApi.Controllers
 {
     [ApiController]
     [Route("api/teams")]
-    public class TeamController  : ControllerBase
+    public class TeamController : ControllerBase
     {
         private readonly ITeamRepository _teamRepository;
 
@@ -25,14 +25,39 @@ namespace DFDS.TeamService.WebApi.Controllers
             return Ok(new TeamResponse
             {
                 Items = teams
-                        .Select(x => new TeamDto
-                        {
-                            Id = x.Id,
-                            Name = x.Name
-                        })
+                        .Select(ConvertToDto)
                         .ToArray()
             });
         }
+
+        [HttpPost("")]
+        public async Task<IActionResult> CreateTeam(TeamInput input)
+        {
+            var team = Team.Create(input.Name);
+            await _teamRepository.Add(team);
+
+            var dto = ConvertToDto(team);
+
+            return CreatedAtAction(
+                actionName: nameof(GetAllTeams),
+                routeValues: new {id = team.Id},
+                value: dto
+            );
+        }
+
+        private TeamDto ConvertToDto(Team team)
+        {
+            return new TeamDto
+            {
+                Id = team.Id,
+                Name = team.Name
+            };
+        }
+    }
+
+    public class TeamInput
+    {
+        public string Name { get; set; }
     }
 
     public class TeamResponse
