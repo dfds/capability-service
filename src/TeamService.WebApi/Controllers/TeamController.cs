@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.TeamService.WebApi.Controllers
 {
@@ -9,7 +10,28 @@ namespace DFDS.TeamService.WebApi.Controllers
         [HttpGet("")]
         public IActionResult GetAllTeams()
         {
-            return Ok("hello world");
+            return Ok(new TeamResponse
+            {
+                Items = new []
+                {
+                    new Team
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = "foo"
+                    }, 
+                }
+            });
         }
+    }
+
+    public class TeamResponse
+    {
+        public Team[] Items { get; set; }
+    }
+
+    public class Team
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
     }
 }
