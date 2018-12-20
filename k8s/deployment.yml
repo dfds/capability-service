@@ -43,7 +43,7 @@ spec:
             memory: "128Mi"
             cpu: "200m"
         env:
-        - name: TEAM_DATABASE_CONNECTIONSTRING
+        - name: TEAMSERVICE_DATABASE_CONNECTIONSTRING
           valueFrom:
             secretKeyRef:
               name: team-service
