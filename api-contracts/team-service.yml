@@ -7,7 +7,7 @@ consumes:
   - application/json
 produces:
   - application/json
-basePath: /api
+basePath: /api/v1/
 paths:
   /teams:
     get:
@@ -37,6 +37,40 @@ paths:
               description: URI where the team can be retrieved
           schema:
             $ref: '#/definitions/team'
+  /teams/{teamId}/members:
+    post:
+      summary: Adds a person to a team 
+      parameters:
+        - in: path
+          name: teamId
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+      responses:
+        200:
+          description: Ok
+  /teams/{teamId}/members/{email}:
+    delete:
+      summary: Deletes a person from a team 
+      parameters:
+        - in: path
+          name: teamId
+          required: true
+          type: string
+        - in: path
+          name: email
+          type: string
+          required: true
+      responses:
+        200:
+          description: Ok            
 definitions:
   team-list:
     type: object
@@ -52,3 +86,13 @@ definitions:
         type: string
       name:
         type: string
+      members:
+        type: array
+        items:
+          $ref: '#/definitions/member'
+  member:
+    type: object
+    properties:
+      email:
+        type: string
+      
