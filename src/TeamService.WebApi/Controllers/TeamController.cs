@@ -1,8 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using DFDS.TeamService.WebApi.Models;
+using DFDS.TeamService.WebApi.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using static DFDS.TeamService.WebApi.Models.DTOs.DtoHelper;
 
 namespace DFDS.TeamService.WebApi.Controllers
 {
@@ -44,30 +45,5 @@ namespace DFDS.TeamService.WebApi.Controllers
                 value: dto
             );
         }
-
-        private TeamDto ConvertToDto(Team team)
-        {
-            return new TeamDto
-            {
-                Id = team.Id,
-                Name = team.Name
-            };
-        }
-    }
-
-    public class TeamInput
-    {
-        public string Name { get; set; }
-    }
-
-    public class TeamResponse
-    {
-        public TeamDto[] Items { get; set; }
-    }
-
-    public class TeamDto
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
     }
 }
