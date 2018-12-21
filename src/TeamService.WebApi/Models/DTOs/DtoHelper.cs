@@ -1,4 +1,6 @@
-﻿namespace DFDS.TeamService.WebApi.Models.DTOs
+﻿using System.Linq;
+
+namespace DFDS.TeamService.WebApi.Models.DTOs
 {
     public static class DtoHelper
     {
@@ -8,7 +10,10 @@
             {
                 Id = team.Id,
                 Name = team.Name,
-                Members = new Member[0]
+                Members = team
+                  .Members
+                  .Select(member => new Member {Email = member.Email})
+                  .ToArray()
             };
         }
     }

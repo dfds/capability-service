@@ -11,6 +11,6 @@ namespace DFDS.TeamService.WebApi.Models.DTOs
 
     public class Member
     {
-
+        public string Email { get; set; }
     }
 }

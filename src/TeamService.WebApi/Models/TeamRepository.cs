@@ -17,7 +17,10 @@ namespace DFDS.TeamService.WebApi.Models
 
         public async Task<IEnumerable<Team>> GetAll()
         {
-            return await _dbContext.Teams.ToListAsync();
+            return await _dbContext
+                         .Teams
+                         .Include(x => x.Members)
+                         .ToListAsync();
         }
 
         public async Task Add(Team team)
@@ -28,7 +31,10 @@ namespace DFDS.TeamService.WebApi.Models
 
         public async Task<Team> Get(Guid id)
         {
-            var team = await _dbContext.Teams.SingleOrDefaultAsync(x => x.Id == id);
+            var team = await _dbContext
+                             .Teams
+                             .Include(x => x.Members)
+                             .SingleOrDefaultAsync(x => x.Id == id);
             return team;
         }
     }

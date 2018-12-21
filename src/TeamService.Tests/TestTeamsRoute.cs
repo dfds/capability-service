@@ -63,6 +63,50 @@ namespace DFDS.TeamService.Tests
         }
 
         [Fact]
+        public async Task get_single_team_without_any_members_returns_expected_body()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var stubTeam = new TeamBuilder().Build();
+
+                var client = builder
+                    .WithService<ITeamRepository>(new StubTeamRepository(stubTeam))
+                    .Build();
+
+                var response = await client.GetAsync($"api/teams/{stubTeam.Id}");
+
+                Assert.Equal(
+                    expected: $"{{\"id\":\"{stubTeam.Id}\",\"name\":\"{stubTeam.Name}\",\"members\":[]}}",
+                    actual: await response.Content.ReadAsStringAsync()
+                );
+            }
+        }
+
+        [Fact]
+        public async Task get_single_team_with_a_single_member_returns_expected_body()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var memberEmail = "foo@bar.com";
+
+                var stubTeam = new TeamBuilder()
+                    .WithMembers(memberEmail)
+                    .Build();
+
+                var client = builder
+                    .WithService<ITeamRepository>(new StubTeamRepository(stubTeam))
+                    .Build();
+
+                var response = await client.GetAsync($"api/teams/{stubTeam.Id}");
+
+                Assert.Equal(
+                    expected: $"{{\"id\":\"{stubTeam.Id}\",\"name\":\"{stubTeam.Name}\",\"members\":[{{\"email\":\"{memberEmail}\"}}]}}",
+                    actual: await response.Content.ReadAsStringAsync()
+                );
+            }
+        }
+
+        [Fact]
         public async Task get_single_team_returns_expected_status_code_when_team_was_not_found()
         {
             using (var builder = new HttpClientBuilder())

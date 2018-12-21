@@ -11,7 +11,7 @@ namespace DFDS.TeamService.WebApi.Persistence
         }
 
         public DbSet<Team> Teams { get; set; }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -19,6 +19,12 @@ namespace DFDS.TeamService.WebApi.Persistence
             modelBuilder.Entity<Team>(cfg =>
             {
                 cfg.ToTable("Team");
+            });
+
+            modelBuilder.Entity<Member>(cfg =>
+            {
+                cfg.ToTable("Member");
+                cfg.HasKey(x => x.Email);
             });
         }
     }
