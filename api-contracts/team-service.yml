@@ -9,7 +9,7 @@ produces:
   - application/json
 basePath: /api/v1/
 paths:
-  /teams:
+  /teams: 
     get:
       summary: Returns a list of teams
       responses:
@@ -35,6 +35,18 @@ paths:
             location:
               type: string
               description: URI where the team can be retrieved
+          schema:
+            $ref: '#/definitions/team'
+  /teams/{teamId}:
+    get:
+      summary: Returns a single team
+      parameters:
+        - in: path
+          name: teamId
+          type: string
+      responses:
+        200:
+          description: OK
           schema:
             $ref: '#/definitions/team'
   /teams/{teamId}/members:
