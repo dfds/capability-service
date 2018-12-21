@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DFDS.TeamService.WebApi.Models;
 using DFDS.TeamService.WebApi.Models.DTOs;
@@ -11,17 +12,17 @@ namespace DFDS.TeamService.WebApi.Controllers
     [Route("api/teams")]
     public class TeamController : ControllerBase
     {
-        private readonly ITeamRepository _teamRepository;
+        private readonly ITeamApplicationService _teamApplicationService;
 
-        public TeamController(ITeamRepository teamRepository)
+        public TeamController(ITeamApplicationService teamApplicationService)
         {
-            _teamRepository = teamRepository;
+            _teamApplicationService = teamApplicationService;
         }
 
         [HttpGet("")]
         public async Task<IActionResult> GetAllTeams()
         {
-            var teams = await _teamRepository.GetAll();
+            var teams = await _teamApplicationService.GetAllTeams();
 
             return Ok(new TeamResponse
             {
@@ -31,16 +32,35 @@ namespace DFDS.TeamService.WebApi.Controllers
             });
         }
 
-        [HttpPost("")]
-        public async Task<IActionResult> CreateTeam(TeamInput input)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTeam(string id)
         {
-            var team = Team.Create(input.Name);
-            await _teamRepository.Add(team);
+            var teamId = Guid.Empty;
+            Guid.TryParse(id, out teamId);
+
+            var team = await _teamApplicationService.GetTeam(teamId);
+
+            if (team == null)
+            {
+                return NotFound(new
+                {
+                    Message = $"A team with id \"{id}\" could not be found."
+                });
+            }
 
             var dto = ConvertToDto(team);
 
+            return Ok(dto);
+        }
+
+        [HttpPost("")]
+        public async Task<IActionResult> CreateTeam(TeamInput input)
+        {
+            var team = await _teamApplicationService.CreateTeam(input.Name);
+            var dto = ConvertToDto(team);
+
             return CreatedAtAction(
-                actionName: nameof(GetAllTeams),
+                actionName: nameof(GetTeam),
                 routeValues: new {id = team.Id},
                 value: dto
             );

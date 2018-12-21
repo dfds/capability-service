@@ -1,4 +1,5 @@
-﻿using DFDS.TeamService.WebApi.Models;
+﻿using DFDS.TeamService.WebApi.Controllers;
+using DFDS.TeamService.WebApi.Models;
 using DFDS.TeamService.WebApi.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +35,7 @@ namespace DFDS.TeamService.WebApi
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddTransient<ITeamRepository, TeamRepository>();
+            services.AddTransient<ITeamApplicationService, TeamApplicationService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

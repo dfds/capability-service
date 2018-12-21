@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DFDS.TeamService.WebApi.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,12 @@ namespace DFDS.TeamService.WebApi.Models
         {
             await _dbContext.Teams.AddAsync(team);
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<Team> Get(Guid id)
+        {
+            var team = await _dbContext.Teams.SingleOrDefaultAsync(x => x.Id == id);
+            return team;
         }
     }
 }

@@ -2,12 +2,13 @@
 {
     public static class DtoHelper
     {
-        public static TeamDto ConvertToDto(Team team)
+        public static Team ConvertToDto(Models.Team team)
         {
-            return new TeamDto
+            return new Team
             {
                 Id = team.Id,
-                Name = team.Name
+                Name = team.Name,
+                Members = new Member[0]
             };
         }
     }

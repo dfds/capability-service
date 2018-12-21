@@ -2,6 +2,6 @@
 {
     public class TeamResponse
     {
-        public TeamDto[] Items { get; set; }
+        public Team[] Items { get; set; }
     }
 }
