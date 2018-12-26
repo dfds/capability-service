@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: team-service
+  namespace: $(kubernetes-namespace)
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.frontend.rule.type: PathPrefixStrip
+    traefik.ingress.kubernetes.io/auth-type: basic
+    traefik.ingress.kubernetes.io/auth-secret: teamservice-basic-authentication-credentials
+spec:
+  rules:
+  - host: api.dfds.cloud
+    http:
+      paths:
+      - path: /team-service
+        backend:
+          serviceName: team-service
+          servicePort: external
