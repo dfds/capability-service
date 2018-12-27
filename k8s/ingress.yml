@@ -8,7 +8,7 @@ metadata:
     traefik.frontend.rule.type: PathPrefixStrip
 spec:
   rules:
-    - host: turing-traefik-alb-1628308904.eu-west-1.elb.amazonaws.com
+    - host: lovelace-traefik-alb-1121252141.eu-west-1.elb.amazonaws.com
       http:
         paths:
           - path: /team-service
