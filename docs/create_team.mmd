@@ -1,0 +1,41 @@
+sequenceDiagram
+
+    User ->> +TeamController: [http post] /api/teams
+    Note over User, TeamController: body: {"name": "foo"}
+
+    TeamController ->> +TeamApplicationService: CreateTeam("foo")
+
+    activate TeamDBContext
+
+    TeamApplicationService ->> +Team: Create("foo")
+    Team -->> TeamApplicationService: team
+    TeamApplicationService ->> +TeamRepository: Add(team)
+    
+    TeamRepository ->> TeamDBContext: Add(team)
+    TeamDBContext -->> TeamRepository: 
+    TeamRepository ->> TeamDBContext: SaveChanges()
+    TeamDBContext -->> TeamRepository: 
+    TeamRepository -->> -TeamApplicationService: 
+
+    deactivate TeamDBContext
+
+    TeamApplicationService ->> +RoleHandler: CreateRoleFor(team)
+
+    RoleHandler ->> +IAMRoleService: [http post] /api/roles
+    Note over RoleHandler,IAMRoleService: body: {"name: "foo"}
+    IAMRoleService -->> -RoleHandler: 200 OK
+    Note over RoleHandler,IAMRoleService: body: {"roleArn": "[aws arn]"}
+
+    RoleHandler ->> +RoleMapperService: [http post] /api/roles
+    Note over RoleHandler,RoleMapperService: body: {"roleName": "foo", "roleArn": "[aws arn]"}
+    RoleMapperService -->> -RoleHandler: 200 OK
+
+    RoleHandler -->> -TeamApplicationService: 
+
+    TeamApplicationService -->> -TeamController: team
+
+    TeamController ->> TeamController: ConvertToDto(team)
+    deactivate Team
+
+    TeamController -->> -User: 201 Created
+    Note over TeamController,User: body: ...team content...
