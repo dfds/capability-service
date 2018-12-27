@@ -13,5 +13,5 @@ spec:
         paths:
           - path: /team-service
             backend:
-              serviceName: teamservice
+              serviceName: team-service
               servicePort: external
