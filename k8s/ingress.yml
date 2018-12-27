@@ -6,6 +6,8 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.frontend.rule.type: PathPrefixStrip
+    traefik.ingress.kubernetes.io/auth-type: basic
+    traefik.ingress.kubernetes.io/auth-secret: teamservice-basic-authentication-credentials
 spec:
   rules:
     - host: lovelace-traefik-alb-1121252141.eu-west-1.elb.amazonaws.com
