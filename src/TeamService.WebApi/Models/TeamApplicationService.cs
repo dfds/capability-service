@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace DFDS.TeamService.WebApi.Models
 {
@@ -65,10 +66,22 @@ namespace DFDS.TeamService.WebApi.Models
         
         public async Task<string> CreateRole(string teamName)
         {
-            var response = await _client.PostAsJsonAsync("/api/roles", new {Name = teamName});
+            var serializerSettings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+            
+            var requestPayload = new StringContent(
+                content: JsonConvert.SerializeObject(new {Name = teamName}, serializerSettings),
+                encoding: Encoding.UTF8,
+                mediaType: "application/json"
+            );
+            
+            var response = await _client.PostAsync("/api/roles", requestPayload);
             response.EnsureSuccessStatusCode();
 
-            var result = await response.Content.ReadAsAsync<RoleInformation>();
+            var responsePayload = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<RoleInformation>(responsePayload);
 
             return result.RoleArn;
         }
@@ -90,7 +103,18 @@ namespace DFDS.TeamService.WebApi.Models
 
         public async Task CreateRoleMapping(string teamName, string roleIdentifier)
         {
-            var response = await _client.PostAsJsonAsync("/api/roles", new {RoleName = teamName, RoleArn = roleIdentifier});
+            var serializerSettings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
+            var payload = new StringContent(
+                content: JsonConvert.SerializeObject(new {RoleName = teamName, RoleArn = roleIdentifier}, serializerSettings),
+                encoding: Encoding.UTF8,
+                mediaType: "application/json"
+            );
+            
+            var response = await _client.PostAsync("/api/roles", payload);
             response.EnsureSuccessStatusCode();
         }
     }
