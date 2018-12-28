@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DFDS.TeamService.Tests.Builders;
 using DFDS.TeamService.Tests.TestDoubles;
+using DFDS.TeamService.WebApi;
 using DFDS.TeamService.WebApi.Models;
 using Xunit;
 
@@ -19,6 +20,7 @@ namespace DFDS.TeamService.Tests
             {
                 var client = builder
                     .WithService<ITeamRepository>(new StubTeamRepository())
+                    .WithService<IRoleService>(Dummy.Of<IRoleService>())
                     .Build();
 
                 var response = await client.GetAsync("api/teams");
@@ -143,12 +145,14 @@ namespace DFDS.TeamService.Tests
         {
             using (var builder = new HttpClientBuilder())
             {
+                var dummyTeam = new TeamBuilder().Build();
+
                 var client = builder
-                    .WithService<ITeamRepository>(new StubTeamRepository())
+                    .WithService<ITeamApplicationService>(new StubTeamApplicationService(dummyTeam))
                     .Build();
 
                 var stubInput = "{\"name\":\"foo\"}";
-                var response = await client.PostAsync("api/teams", new StringContent(stubInput, Encoding.UTF8, "application/json"));
+                var response = await client.PostAsync("api/teams", new JsonContent(stubInput));
 
                 Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             }
@@ -159,15 +163,17 @@ namespace DFDS.TeamService.Tests
         {
             using (var builder = new HttpClientBuilder())
             {
+                var stubTeam = new TeamBuilder().Build();
+
                 var client = builder
-                    .WithService<ITeamRepository>(new StubTeamRepository())
+                    .WithService<ITeamApplicationService>(new StubTeamApplicationService(stubTeam))
                     .Build();
 
                 var stubInput = "{\"name\":\"foo\"}";
-                var response = await client.PostAsync("api/teams", new StringContent(stubInput, Encoding.UTF8, "application/json"));
+                var response = await client.PostAsync("api/teams", new JsonContent(stubInput));
 
-                Assert.Matches(
-                    expectedRegexPattern: @"^(https?://.+?)?/api/teams/.+$",
+                Assert.EndsWith(
+                    expectedEndString: $"/api/teams/{stubTeam.Id}",
                     actualString: response.Headers.Location.ToString()
                 );
             }
@@ -181,12 +187,11 @@ namespace DFDS.TeamService.Tests
                 var stubTeam = new TeamBuilder().Build();
 
                 var client = builder
-                     .WithService<ITeamRepository>(Dummy.Of<ITeamRepository>())
                      .WithService<ITeamApplicationService>(new StubTeamApplicationService(stubTeam))
                      .Build();
 
                 var stubInput = $"{{\"name\":\"{stubTeam.Name}\"}}";
-                var response = await client.PostAsync("api/teams", new StringContent(stubInput, Encoding.UTF8, "application/json"));
+                var response = await client.PostAsync("api/teams", new JsonContent(stubInput));
 
                 Assert.Equal(
                     expected: $"{{\"id\":\"{stubTeam.Id}\",\"name\":\"{stubTeam.Name}\",\"members\":[]}}",

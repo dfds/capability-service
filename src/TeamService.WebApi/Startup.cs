@@ -1,4 +1,4 @@
-﻿using DFDS.TeamService.WebApi.Controllers;
+﻿using System;
 using DFDS.TeamService.WebApi.Models;
 using DFDS.TeamService.WebApi.Persistence;
 using Microsoft.AspNetCore.Builder;
@@ -22,6 +22,10 @@ namespace DFDS.TeamService.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services
                 .AddEntityFrameworkNpgsql()
                 .AddDbContext<TeamServiceDbContext>((serviceProvider, options) =>
                 {
@@ -29,12 +33,26 @@ namespace DFDS.TeamService.WebApi
                     options.UseNpgsql(connectionString);
                 });
 
+            services.AddHttpClient<IAMRoleServiceFacade>(cfg =>
+            {
+                var baseUrl = Configuration["IAMROLESERVICE_URL"];
+                if (baseUrl != null)
+                {
+                    cfg.BaseAddress = new Uri(baseUrl);
+                }
+            });
 
-            services
-                .AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddHttpClient<RoleMapperServiceFacade>(cfg =>
+            {
+                var baseUrl = Configuration["ROLEMAPPERSERVICE_URL"];
+                if (baseUrl != null)
+                {
+                    cfg.BaseAddress = new Uri(baseUrl);
+                }
+            });
 
             services.AddTransient<ITeamRepository, TeamRepository>();
+            services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<ITeamApplicationService, TeamApplicationService>();
         }
 
