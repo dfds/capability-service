@@ -43,6 +43,10 @@ spec:
             memory: "128Mi"
             cpu: "200m"
         env:
+        - name: IAMROLESERVICE_URL
+          value: http://iamroleservice
+        - name: ROLEMAPPERSERVICE_URL
+          value: http://rolemapper-service
         - name: TEAMSERVICE_DATABASE_CONNECTIONSTRING
           valueFrom:
             secretKeyRef:
