@@ -19,8 +19,7 @@ namespace DFDS.TeamService.Tests
             using (var builder = new HttpClientBuilder())
             {
                 var client = builder
-                    .WithService<ITeamRepository>(new StubTeamRepository())
-                    .WithService<IRoleService>(Dummy.Of<IRoleService>())
+                    .WithService<ITeamApplicationService>(new StubTeamApplicationService())
                     .Build();
 
                 var response = await client.GetAsync("api/v1/teams");
@@ -35,7 +34,7 @@ namespace DFDS.TeamService.Tests
             using (var builder = new HttpClientBuilder())
             {
                 var client = builder
-                    .WithService<ITeamRepository>(new StubTeamRepository())
+                    .WithService<ITeamApplicationService>(new StubTeamApplicationService())
                     .Build();
 
                 var response = await client.GetAsync("api/v1/teams");
@@ -55,7 +54,7 @@ namespace DFDS.TeamService.Tests
                 var stubTeam = new TeamBuilder().Build();
 
                 var client = builder
-                    .WithService<ITeamRepository>(new StubTeamRepository(stubTeam))
+                    .WithService<ITeamApplicationService>(new StubTeamApplicationService(stubTeam))
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/teams/{stubTeam.Id}");
@@ -72,7 +71,7 @@ namespace DFDS.TeamService.Tests
                 var stubTeam = new TeamBuilder().Build();
 
                 var client = builder
-                    .WithService<ITeamRepository>(new StubTeamRepository(stubTeam))
+                    .WithService<ITeamApplicationService>(new StubTeamApplicationService(stubTeam))
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/teams/{stubTeam.Id}");
@@ -96,7 +95,7 @@ namespace DFDS.TeamService.Tests
                     .Build();
 
                 var client = builder
-                    .WithService<ITeamRepository>(new StubTeamRepository(stubTeam))
+                    .WithService<ITeamApplicationService>(new StubTeamApplicationService(stubTeam))
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/teams/{stubTeam.Id}");
@@ -114,7 +113,7 @@ namespace DFDS.TeamService.Tests
             using (var builder = new HttpClientBuilder())
             {
                 var client = builder
-                    .WithService<ITeamRepository>(new StubTeamRepository())
+                    .WithService<ITeamApplicationService>(new StubTeamApplicationService())
                     .Build();
 
                 var unknownTeamId = Guid.Empty;
@@ -130,7 +129,7 @@ namespace DFDS.TeamService.Tests
             using (var builder = new HttpClientBuilder())
             {
                 var client = builder
-                    .WithService<ITeamRepository>(new StubTeamRepository())
+                    .WithService<ITeamApplicationService>(new StubTeamApplicationService())
                     .Build();
 
                 var invalidTeamId = "im-not-a-valid-team-id";
