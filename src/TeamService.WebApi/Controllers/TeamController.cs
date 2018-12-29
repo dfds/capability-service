@@ -65,5 +65,21 @@ namespace DFDS.TeamService.WebApi.Controllers
                 value: dto
             );
         }
+
+        [HttpPost("{id}/members")]
+        public async Task<IActionResult> AddMemberToTeam(string id, [FromBody] MemberInput input)
+        {
+            var teamId = Guid.Empty;
+            Guid.TryParse(id, out teamId);
+
+            await _teamApplicationService.JoinTeam(teamId, input.Email);
+
+            return Ok();
+        }
+    }
+
+    public class MemberInput
+    {
+        public string Email { get; set; }
     }
 }

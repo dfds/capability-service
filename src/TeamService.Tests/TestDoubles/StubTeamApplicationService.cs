@@ -32,5 +32,10 @@ namespace DFDS.TeamService.Tests.TestDoubles
             var team = _stubTeams.FirstOrDefault();
             return Task.FromResult(team);
         }
+
+        public Task JoinTeam(Guid teamId, string memberEmail)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

@@ -32,6 +32,12 @@ namespace DFDS.TeamService.WebApi.Models
                 members: Enumerable.Empty<Member>()
             );
         }
+
+        public void AcceptNewMember(string memberEmail)
+        {
+            var member = new Member(memberEmail);
+            _members.Add(member);
+        }
     }
 
     public class Member

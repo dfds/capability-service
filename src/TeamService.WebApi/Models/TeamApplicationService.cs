@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using DFDS.TeamService.WebApi.Persistence;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -19,6 +20,9 @@ namespace DFDS.TeamService.WebApi.Models
             _roleService = roleService;
         }
 
+        public Task<Team> GetTeam(Guid id) => _teamRepository.Get(id);
+        public Task<IEnumerable<Team>> GetAllTeams() => _teamRepository.GetAll();
+
         public async Task<Team> CreateTeam(string name)
         {
             var team = Team.Create(name);
@@ -28,8 +32,50 @@ namespace DFDS.TeamService.WebApi.Models
             return team;
         }
 
-        public Task<Team> GetTeam(Guid id) => _teamRepository.Get(id);
-        public Task<IEnumerable<Team>> GetAllTeams() => _teamRepository.GetAll();
+        public async Task JoinTeam(Guid teamId, string memberEmail)
+        {
+            var team = await _teamRepository.Get(teamId);
+            team.AcceptNewMember(memberEmail);
+        }
+    }
+
+    public class TeamTransactionalDecorator : ITeamApplicationService
+    {
+        private readonly ITeamApplicationService _inner;
+        private readonly TeamServiceDbContext _dbContext;
+
+        public TeamTransactionalDecorator(ITeamApplicationService inner, TeamServiceDbContext dbContext)
+        {
+            _inner = inner;
+            _dbContext = dbContext;
+        }
+
+        public Task<IEnumerable<Team>> GetAllTeams() => _inner.GetAllTeams();
+        public Task<Team> GetTeam(Guid id) => _inner.GetTeam(id);
+
+        public async Task<Team> CreateTeam(string name)
+        {
+            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            {
+                var team = await _inner.CreateTeam(name);
+
+                await _dbContext.SaveChangesAsync();
+                transaction.Commit();
+
+                return team;
+            }
+        }
+
+        public async Task JoinTeam(Guid teamId, string memberEmail)
+        {
+            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            {
+                await _inner.JoinTeam(teamId, memberEmail);
+
+                await _dbContext.SaveChangesAsync();
+                transaction.Commit();
+            }
+        }
     }
 
     public interface IRoleService

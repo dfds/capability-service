@@ -199,5 +199,23 @@ namespace DFDS.TeamService.Tests
                 );
             }
         }
+
+        [Fact]
+        public async Task post_returns_expected_status_code_when_adding_a_member_to_an_existing_team()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var stubTeam = new TeamBuilder().Build();
+
+                var client = builder
+                    .WithService<ITeamApplicationService>(new StubTeamApplicationService(stubTeam))
+                    .Build();
+
+                var stubInput = "{\"email\":\"foo\"}";
+                var response = await client.PostAsync($"api/v1/teams/{stubTeam.Id}/members", new JsonContent(stubInput));
+
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            }     
+        }
     }
 }

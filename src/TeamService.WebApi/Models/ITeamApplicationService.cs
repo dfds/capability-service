@@ -9,5 +9,6 @@ namespace DFDS.TeamService.WebApi.Models
         Task<Team> CreateTeam(string name);
         Task<IEnumerable<Team>> GetAllTeams();
         Task<Team> GetTeam(Guid id);
+        Task JoinTeam(Guid teamId, string memberEmail);
     }
 }

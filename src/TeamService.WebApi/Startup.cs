@@ -53,7 +53,12 @@ namespace DFDS.TeamService.WebApi
 
             services.AddTransient<ITeamRepository, TeamRepository>();
             services.AddTransient<IRoleService, RoleService>();
-            services.AddTransient<ITeamApplicationService, TeamApplicationService>();
+
+            services.AddTransient<TeamApplicationService>();
+            services.AddTransient<ITeamApplicationService>(serviceProvider => new TeamTransactionalDecorator(
+                inner: serviceProvider.GetRequiredService<TeamApplicationService>(),
+                dbContext: serviceProvider.GetRequiredService<TeamServiceDbContext>()
+            ));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
