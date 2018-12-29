@@ -9,7 +9,7 @@ using static DFDS.TeamService.WebApi.Models.DTOs.DtoHelper;
 namespace DFDS.TeamService.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/teams")]
+    [Route("api/v1/teams")]
     public class TeamController : ControllerBase
     {
         private readonly ITeamApplicationService _teamApplicationService;

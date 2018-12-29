@@ -23,7 +23,7 @@ namespace DFDS.TeamService.Tests
                     .WithService<IRoleService>(Dummy.Of<IRoleService>())
                     .Build();
 
-                var response = await client.GetAsync("api/teams");
+                var response = await client.GetAsync("api/v1/teams");
 
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             }
@@ -38,7 +38,7 @@ namespace DFDS.TeamService.Tests
                     .WithService<ITeamRepository>(new StubTeamRepository())
                     .Build();
 
-                var response = await client.GetAsync("api/teams");
+                var response = await client.GetAsync("api/v1/teams");
 
                 Assert.Equal(
                     expected: "{\"items\":[]}",
@@ -58,7 +58,7 @@ namespace DFDS.TeamService.Tests
                     .WithService<ITeamRepository>(new StubTeamRepository(stubTeam))
                     .Build();
 
-                var response = await client.GetAsync($"api/teams/{stubTeam.Id}");
+                var response = await client.GetAsync($"api/v1/teams/{stubTeam.Id}");
 
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             }
@@ -75,7 +75,7 @@ namespace DFDS.TeamService.Tests
                     .WithService<ITeamRepository>(new StubTeamRepository(stubTeam))
                     .Build();
 
-                var response = await client.GetAsync($"api/teams/{stubTeam.Id}");
+                var response = await client.GetAsync($"api/v1/teams/{stubTeam.Id}");
 
                 Assert.Equal(
                     expected: $"{{\"id\":\"{stubTeam.Id}\",\"name\":\"{stubTeam.Name}\",\"members\":[]}}",
@@ -99,7 +99,7 @@ namespace DFDS.TeamService.Tests
                     .WithService<ITeamRepository>(new StubTeamRepository(stubTeam))
                     .Build();
 
-                var response = await client.GetAsync($"api/teams/{stubTeam.Id}");
+                var response = await client.GetAsync($"api/v1/teams/{stubTeam.Id}");
 
                 Assert.Equal(
                     expected: $"{{\"id\":\"{stubTeam.Id}\",\"name\":\"{stubTeam.Name}\",\"members\":[{{\"email\":\"{memberEmail}\"}}]}}",
@@ -118,7 +118,7 @@ namespace DFDS.TeamService.Tests
                     .Build();
 
                 var unknownTeamId = Guid.Empty;
-                var response = await client.GetAsync($"api/teams/{unknownTeamId}");
+                var response = await client.GetAsync($"api/v1/teams/{unknownTeamId}");
 
                 Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             }
@@ -134,7 +134,7 @@ namespace DFDS.TeamService.Tests
                     .Build();
 
                 var invalidTeamId = "im-not-a-valid-team-id";
-                var response = await client.GetAsync($"api/teams/{invalidTeamId}");
+                var response = await client.GetAsync($"api/v1/teams/{invalidTeamId}");
 
                 Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             }
@@ -152,7 +152,7 @@ namespace DFDS.TeamService.Tests
                     .Build();
 
                 var stubInput = "{\"name\":\"foo\"}";
-                var response = await client.PostAsync("api/teams", new JsonContent(stubInput));
+                var response = await client.PostAsync("api/v1/teams", new JsonContent(stubInput));
 
                 Assert.Equal(HttpStatusCode.Created, response.StatusCode);
             }
@@ -170,10 +170,10 @@ namespace DFDS.TeamService.Tests
                     .Build();
 
                 var stubInput = "{\"name\":\"foo\"}";
-                var response = await client.PostAsync("api/teams", new JsonContent(stubInput));
+                var response = await client.PostAsync("api/v1/teams", new JsonContent(stubInput));
 
                 Assert.EndsWith(
-                    expectedEndString: $"/api/teams/{stubTeam.Id}",
+                    expectedEndString: $"/api/v1/teams/{stubTeam.Id}",
                     actualString: response.Headers.Location.ToString()
                 );
             }
@@ -191,7 +191,7 @@ namespace DFDS.TeamService.Tests
                      .Build();
 
                 var stubInput = $"{{\"name\":\"{stubTeam.Name}\"}}";
-                var response = await client.PostAsync("api/teams", new JsonContent(stubInput));
+                var response = await client.PostAsync("api/v1/teams", new JsonContent(stubInput));
 
                 Assert.Equal(
                     expected: $"{{\"id\":\"{stubTeam.Id}\",\"name\":\"{stubTeam.Name}\",\"members\":[]}}",
