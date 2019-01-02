@@ -37,6 +37,12 @@ namespace DFDS.TeamService.WebApi.Models
             var team = await _teamRepository.Get(teamId);
             team.AcceptNewMember(memberEmail);
         }
+
+        public async Task LeaveTeam(Guid teamId, string memberEmail)
+        {
+            var team = await _teamRepository.Get(teamId);
+            team.StopMembershipFor(memberEmail);
+        }
     }
 
     public class TeamTransactionalDecorator : ITeamApplicationService
@@ -71,6 +77,17 @@ namespace DFDS.TeamService.WebApi.Models
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
                 await _inner.JoinTeam(teamId, memberEmail);
+
+                await _dbContext.SaveChangesAsync();
+                transaction.Commit();
+            }
+        }
+
+        public async Task LeaveTeam(Guid teamId, string memberEmail)
+        {
+            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            {
+                await _inner.LeaveTeam(teamId, memberEmail);
 
                 await _dbContext.SaveChangesAsync();
                 transaction.Commit();

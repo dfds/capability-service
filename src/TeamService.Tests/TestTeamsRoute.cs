@@ -216,5 +216,25 @@ namespace DFDS.TeamService.Tests
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             }     
         }
+
+        [Fact]
+        public async Task delete_returns_expected_status_code_when_deleting_an_existing_member_on_a_team()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var stubTeam = new TeamBuilder()
+                    .WithMembers("foo")
+                    .Build();
+
+                var client = builder
+                    .WithService<ITeamApplicationService>(new StubTeamApplicationService(stubTeam))
+                    .Build();
+
+                var response = await client.DeleteAsync($"api/v1/teams/{stubTeam.Id}/members/foo");
+
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            }
+        }
+
     }
 }

@@ -24,6 +24,56 @@ namespace DFDS.TeamService.Tests
             
             Assert.Equal(new[]{stubMemberEmail}, team.Members.Select(x => x.Email));
         }
+
+        [Fact]
+        public async Task adding_the_same_member_to_a_team_multiple_times_yields_single_membership()
+        {
+            var team = new TeamBuilder().Build();
+
+            var sut = new TeamApplicationServiceBuilder()
+                .WithTeamRepository(new StubTeamRepository(team))
+                .Build();
+
+            var stubMemberEmail = "foo@bar.com";
+            
+            await sut.JoinTeam(team.Id, stubMemberEmail);
+            await sut.JoinTeam(team.Id, stubMemberEmail);
+            
+            Assert.Equal(new[]{stubMemberEmail}, team.Members.Select(x => x.Email));
+        }
+
+        [Fact]
+        public async Task expected_member_is_removed_from_team()
+        {
+            var stubMemberEmail = "foo@bar.com";
+
+            var team = new TeamBuilder()
+                .WithMembers(stubMemberEmail)
+                .Build();
+
+            var sut = new TeamApplicationServiceBuilder()
+                .WithTeamRepository(new StubTeamRepository(team))
+                .Build();
+
+            await sut.LeaveTeam(team.Id, stubMemberEmail);
+
+            Assert.Empty(team.Members);
+        }
+
+        [Fact]
+        public async Task removing_non_existing_member_from_a_team_does_not_throw_exception()
+        {
+            var team = new TeamBuilder().Build();
+
+            var sut = new TeamApplicationServiceBuilder()
+                .WithTeamRepository(new StubTeamRepository(team))
+                .Build();
+
+            var nonExistingMemberEmail = "foo@bar.com";
+            var thrownException = await Record.ExceptionAsync(() => sut.LeaveTeam(team.Id, nonExistingMemberEmail));
+
+            Assert.Null(thrownException);
+        }
     }
 
     public class TeamApplicationServiceBuilder

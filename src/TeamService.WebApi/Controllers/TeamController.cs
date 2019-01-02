@@ -76,6 +76,17 @@ namespace DFDS.TeamService.WebApi.Controllers
 
             return Ok();
         }
+
+        [HttpDelete("{id}/members/{memberEmail}")]
+        public async Task<IActionResult> RemoveMemberFromTeam([FromRoute] string id, [FromRoute] string memberEmail)
+        {
+            var teamId = Guid.Empty;
+            Guid.TryParse(id, out teamId);
+
+            await _teamApplicationService.LeaveTeam(teamId, memberEmail);
+
+            return Ok();
+        }
     }
 
     public class MemberInput

@@ -10,5 +10,6 @@ namespace DFDS.TeamService.WebApi.Models
         Task<IEnumerable<Team>> GetAllTeams();
         Task<Team> GetTeam(Guid id);
         Task JoinTeam(Guid teamId, string memberEmail);
+        Task LeaveTeam(Guid teamId, string memberEmail);
     }
 }

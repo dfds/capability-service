@@ -24,6 +24,27 @@ namespace DFDS.TeamService.WebApi.Models
         public string Name { get; private set; }
         public IEnumerable<Member> Members => _members;
 
+        public void AcceptNewMember(string memberEmail)
+        {
+            if (_members.Any(x => x.Email.Equals(memberEmail, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                return;
+            }
+
+            var member = new Member(memberEmail);
+            _members.Add(member);
+        }
+
+        public void StopMembershipFor(string memberEmail)
+        {
+            var existingMember = _members.SingleOrDefault(x => x.Email.Equals(memberEmail, StringComparison.InvariantCultureIgnoreCase));
+
+            if (existingMember != null)
+            {
+                _members.Remove(existingMember);
+            }
+        }
+
         public static Team Create(string name)
         {
             return new Team(
@@ -31,12 +52,6 @@ namespace DFDS.TeamService.WebApi.Models
                 name: name,
                 members: Enumerable.Empty<Member>()
             );
-        }
-
-        public void AcceptNewMember(string memberEmail)
-        {
-            var member = new Member(memberEmail);
-            _members.Add(member);
         }
     }
 

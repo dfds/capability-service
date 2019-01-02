@@ -37,5 +37,10 @@ namespace DFDS.TeamService.Tests.TestDoubles
         {
             return Task.CompletedTask;
         }
+
+        public Task LeaveTeam(Guid teamId, string memberEmail)
+        {
+            return Task.CompletedTask;
+        }
     }
 }
