@@ -17,8 +17,14 @@ steps:
   inputs:
     testRunner: VSTest
     testResultsFiles: testresults.trx
-    searchFolder: '$(System.DefaultWorkingDirectory)/src'
+    searchFolder: '$(System.DefaultWorkingDirectory)/output'
   condition: succeededOrFailed()
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/output/coverage.cobertura.xml'
 
 - task: PublishBuildArtifacts@1
   displayName: "Publish Artifact: manifests"

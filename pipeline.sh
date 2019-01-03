@@ -22,14 +22,22 @@ restore_dependencies() {
 run_tests() {
     echo "Running tests..."
     dotnet build -c Release TeamService.sln
-    dotnet test --logger:"trx;LogFileName=testresults.trx" --results-directory "../" TeamService.Tests/TeamService.Tests.csproj
+
+    MSYS_NO_PATHCONV=1 dotnet test \
+        --logger:"trx;LogFileName=testresults.trx" \
+        --results-directory "${BUILD_SOURCES_DIRECTORY}/output" \
+        TeamService.Tests/TeamService.Tests.csproj \
+        /p:CollectCoverage=true \
+        /p:CoverletOutputFormat=cobertura \
+        '/p:Include="[TeamService.WebApi]*"'
+
+    mv ./TeamService.Tests/coverage.cobertura.xml "${BUILD_SOURCES_DIRECTORY}/output/"
 }
 
 publish_binaries() {
     echo "Publishing binaries..."
-    dotnet publish -c Release -o ${BUILD_SOURCES_DIRECTORY}/output TeamService.WebApi/TeamService.WebApi.csproj
+    dotnet publish -c Release -o ${BUILD_SOURCES_DIRECTORY}/output/app TeamService.WebApi/TeamService.WebApi.csproj
 }
-
 
 build_container_image() {
     echo "Building container images..."

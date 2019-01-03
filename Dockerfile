@@ -9,7 +9,7 @@ RUN curl -o /tmp/rds-combined-ca-bundle.pem https://s3.amazonaws.com/rds-downloa
     && update-ca-certificates
 
 WORKDIR /app
-COPY ./output ./
+COPY ./output/app ./
 
 ENV ASPNETCORE_URLS=http://+:80
 
