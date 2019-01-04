@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DFDS.TeamService.WebApi.Controllers;
 using DFDS.TeamService.WebApi.Models;
 
 namespace DFDS.TeamService.Tests.TestDoubles
@@ -43,4 +42,40 @@ namespace DFDS.TeamService.Tests.TestDoubles
             return Task.CompletedTask;
         }
     }
+
+    public class ErroneousTeamApplicationService : ITeamApplicationService
+    {
+        private readonly Exception _exceptionToThrow;
+
+        public ErroneousTeamApplicationService(Exception exceptionToThrow)
+        {
+            _exceptionToThrow = exceptionToThrow;
+        }
+
+        public Task<Team> CreateTeam(string name)
+        {
+            throw _exceptionToThrow;
+        }
+
+        public Task<IEnumerable<Team>> GetAllTeams()
+        {
+            throw _exceptionToThrow;
+        }
+
+        public Task<Team> GetTeam(Guid id)
+        {
+            throw _exceptionToThrow;
+        }
+
+        public Task JoinTeam(Guid teamId, string memberEmail)
+        {
+            throw _exceptionToThrow;
+        }
+
+        public Task LeaveTeam(Guid teamId, string memberEmail)
+        {
+            throw _exceptionToThrow;
+        }
+    }
+
 }

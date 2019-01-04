@@ -236,5 +236,40 @@ namespace DFDS.TeamService.Tests
             }
         }
 
+        [Fact]
+        public async Task delete_returns_expected_status_code_when_deleting_a_non_existing_member_on_a_team()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var client = builder
+                    .WithService<ITeamApplicationService>(new ErroneousTeamApplicationService(new NotMemberOfTeamException()))
+                    .Build();
+
+                var dummyTeamId = "foo";
+                var dummyMemberEmail = "bar";
+
+                var response = await client.DeleteAsync($@"api/v1/teams/{dummyTeamId}/members/{dummyMemberEmail}");
+
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
+        }
+
+        [Fact]
+        public async Task delete_returns_expected_status_code_when_deleting_a_member_on_a_non_existing_team()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var client = builder
+                    .WithService<ITeamApplicationService>(new ErroneousTeamApplicationService(new TeamDoesNotExistException()))
+                    .Build();
+
+                var dummyTeamId = "foo";
+                var dummyMemberEmail = "bar";
+
+                var response = await client.DeleteAsync($@"api/v1/teams/{dummyTeamId}/members/{dummyMemberEmail}");
+
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
+        }
     }
 }

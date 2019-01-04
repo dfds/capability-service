@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DFDS.TeamService.Tests.Builders;
@@ -61,7 +62,7 @@ namespace DFDS.TeamService.Tests
         }
 
         [Fact]
-        public async Task removing_non_existing_member_from_a_team_does_not_throw_exception()
+        public async Task removing_non_existing_member_from_a_team_throws_exception()
         {
             var team = new TeamBuilder().Build();
 
@@ -70,9 +71,21 @@ namespace DFDS.TeamService.Tests
                 .Build();
 
             var nonExistingMemberEmail = "foo@bar.com";
-            var thrownException = await Record.ExceptionAsync(() => sut.LeaveTeam(team.Id, nonExistingMemberEmail));
 
-            Assert.Null(thrownException);
+            await Assert.ThrowsAsync<NotMemberOfTeamException>(() => sut.LeaveTeam(team.Id, nonExistingMemberEmail));
+        }
+
+        [Fact]
+        public async Task removing_member_from_non_existing_team_throws_exception()
+        {
+            var sut = new TeamApplicationServiceBuilder()
+                .WithTeamRepository(new StubTeamRepository())
+                .Build();
+
+            var nonExistingTeamId = Guid.Empty;
+            var dummyMemberId = "foo@bar.com";
+
+            await Assert.ThrowsAsync<TeamDoesNotExistException>(() => sut.LeaveTeam(nonExistingTeamId, dummyMemberId));
         }
     }
 

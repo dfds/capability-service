@@ -83,7 +83,24 @@ namespace DFDS.TeamService.WebApi.Controllers
             var teamId = Guid.Empty;
             Guid.TryParse(id, out teamId);
 
-            await _teamApplicationService.LeaveTeam(teamId, memberEmail);
+            try
+            {
+                await _teamApplicationService.LeaveTeam(teamId, memberEmail);
+            }
+            catch (TeamDoesNotExistException)
+            {
+                return NotFound(new
+                {
+                    Message = $"Team with id {id} could not be found."
+                });
+            }
+            catch (NotMemberOfTeamException)
+            {
+                return NotFound(new
+                {
+                    Message = $"Team with id {id} does not have member \"{memberEmail}\"."
+                });
+            }
 
             return Ok();
         }

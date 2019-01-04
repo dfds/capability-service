@@ -83,7 +83,9 @@ paths:
           required: true
       responses:
         200:
-          description: Ok            
+          description: Ok
+        404:
+          description: Not Found
 definitions:
   team-list:
     type: object
@@ -108,4 +110,3 @@ definitions:
     properties:
       email:
         type: string
-      

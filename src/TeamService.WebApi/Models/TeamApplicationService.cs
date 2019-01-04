@@ -41,6 +41,12 @@ namespace DFDS.TeamService.WebApi.Models
         public async Task LeaveTeam(Guid teamId, string memberEmail)
         {
             var team = await _teamRepository.Get(teamId);
+
+            if (team == null)
+            {
+                throw new TeamDoesNotExistException();
+            }
+
             team.StopMembershipFor(memberEmail);
         }
     }
@@ -180,5 +186,15 @@ namespace DFDS.TeamService.WebApi.Models
             var response = await _client.PostAsync("/api/roles", payload);
             response.EnsureSuccessStatusCode();
         }
+    }
+
+    public class NotMemberOfTeamException : Exception
+    {
+        
+    }
+
+    public class TeamDoesNotExistException : Exception
+    {
+        
     }
 }

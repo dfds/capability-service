@@ -39,10 +39,12 @@ namespace DFDS.TeamService.WebApi.Models
         {
             var existingMember = _members.SingleOrDefault(x => x.Email.Equals(memberEmail, StringComparison.InvariantCultureIgnoreCase));
 
-            if (existingMember != null)
+            if (existingMember == null)
             {
-                _members.Remove(existingMember);
+                throw new NotMemberOfTeamException();
             }
+
+            _members.Remove(existingMember);
         }
 
         public static Team Create(string name)
