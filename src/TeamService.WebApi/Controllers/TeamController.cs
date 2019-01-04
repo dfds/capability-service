@@ -72,7 +72,17 @@ namespace DFDS.TeamService.WebApi.Controllers
             var teamId = Guid.Empty;
             Guid.TryParse(id, out teamId);
 
-            await _teamApplicationService.JoinTeam(teamId, input.Email);
+            try
+            {
+                await _teamApplicationService.JoinTeam(teamId, input.Email);
+            }
+            catch (TeamDoesNotExistException)
+            {
+                return NotFound(new
+                {
+                    Message = $"Team with id {id} could not be found."
+                });
+            }
 
             return Ok();
         }

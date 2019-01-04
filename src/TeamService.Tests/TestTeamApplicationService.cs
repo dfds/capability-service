@@ -27,6 +27,19 @@ namespace DFDS.TeamService.Tests
         }
 
         [Fact]
+        public async Task throws_exception_when_adding_member_to_a_non_existing_team()
+        {
+            var sut = new TeamApplicationServiceBuilder()
+                .WithTeamRepository(new StubTeamRepository())
+                .Build();
+
+            var nonExistingTeamId = Guid.Empty;
+            var dummyMemberEmail = "foo@bar.com";
+
+            await Assert.ThrowsAsync<TeamDoesNotExistException>(() => sut.JoinTeam(nonExistingTeamId, dummyMemberEmail));
+        }
+
+        [Fact]
         public async Task adding_the_same_member_to_a_team_multiple_times_yields_single_membership()
         {
             var team = new TeamBuilder().Build();

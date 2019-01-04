@@ -35,6 +35,12 @@ namespace DFDS.TeamService.WebApi.Models
         public async Task JoinTeam(Guid teamId, string memberEmail)
         {
             var team = await _teamRepository.Get(teamId);
+
+            if (team == null)
+            {
+                throw new TeamDoesNotExistException();
+            }
+
             team.AcceptNewMember(memberEmail);
         }
 

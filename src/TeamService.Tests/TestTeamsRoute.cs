@@ -271,5 +271,22 @@ namespace DFDS.TeamService.Tests
                 Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             }
         }
+
+        [Fact]
+        public async Task post_returns_expected_status_code_when_adding_a_member_to_a_non_existing_team()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var client = builder
+                             .WithService<ITeamApplicationService>(new ErroneousTeamApplicationService(new TeamDoesNotExistException()))
+                             .Build();
+
+                var nonExistingTeamId = "foo";
+                var dummyInput = "{}";
+                var response = await client.PostAsync($"api/v1/teams/{nonExistingTeamId}/members", new JsonContent(dummyInput));
+
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }     
+        }
     }
 }

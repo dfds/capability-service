@@ -69,6 +69,8 @@ paths:
       responses:
         200:
           description: Ok
+        404:
+          description: Not Found
   /teams/{teamId}/members/{email}:
     delete:
       summary: Deletes a person from a team 
