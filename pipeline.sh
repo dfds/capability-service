@@ -14,6 +14,11 @@ readonly DB_IMAGE_NAME="${IMAGE_NAME}/dbmigrations"
 readonly BUILD_NUMBER=${1:-"N/A"}
 readonly BUILD_SOURCES_DIRECTORY=${2:-${PWD}}
 
+clean_output_folder() {
+    rm -Rf output
+    mkdir output
+}
+
 restore_dependencies() {
     echo "Restoring dependencies"
     dotnet restore TeamService.sln
@@ -25,13 +30,13 @@ run_tests() {
 
     MSYS_NO_PATHCONV=1 dotnet test \
         --logger:"trx;LogFileName=testresults.trx" \
-        --results-directory "${BUILD_SOURCES_DIRECTORY}/output" \
         TeamService.Tests/TeamService.Tests.csproj \
         /p:CollectCoverage=true \
         /p:CoverletOutputFormat=cobertura \
         '/p:Include="[TeamService.WebApi]*"'
 
     mv ./TeamService.Tests/coverage.cobertura.xml "${BUILD_SOURCES_DIRECTORY}/output/"
+    mv ./TeamService.Tests/TestResults/testresults.trx "${BUILD_SOURCES_DIRECTORY}/output/"
 }
 
 publish_binaries() {
@@ -78,6 +83,8 @@ push_dbmigration_container_image() {
     echo "Pushing container image to ECR..."
     docker push ${image_name}
 }
+
+clean_output_folder
 
 cd ./src
 
