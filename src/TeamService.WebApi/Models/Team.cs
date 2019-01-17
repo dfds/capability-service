@@ -6,45 +6,52 @@ namespace DFDS.TeamService.WebApi.Models
 {
     public class Team
     {
-        private readonly List<Member> _members = new List<Member>();
+        private readonly List<Membership> _memberships = new List<Membership>();
 
         private Team()
         {
             
         }
 
-        public Team(Guid id, string name, IEnumerable<Member> members)
+        public Team(Guid id, string name, IEnumerable<Membership> memberships)
         {
             Id = id;
             Name = name;
-            _members.AddRange(members);
+            _memberships.AddRange(memberships);
         }
 
         public Guid Id { get; private set; }
         public string Name { get; private set; }
-        public IEnumerable<Member> Members => _members;
+        public IEnumerable<Member> Members => _memberships.Select(x => x.Member).Distinct(new MemberEqualityComparer());
+        public IEnumerable<Membership> Memberships => _memberships;
 
-        public void AcceptNewMember(string memberEmail)
+        private bool IsAlreadyMember(string memberEmail)
         {
-            if (_members.Any(x => x.Email.Equals(memberEmail, StringComparison.InvariantCultureIgnoreCase)))
+            return Members.Any(member => member.Email.Equals(memberEmail, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        public void StartMembershipFor(string memberEmail)
+        {
+            if (IsAlreadyMember(memberEmail))
             {
                 return;
             }
 
             var member = new Member(memberEmail);
-            _members.Add(member);
+            var membership = Membership.StartFor(member);
+            _memberships.Add(membership);
         }
 
         public void StopMembershipFor(string memberEmail)
         {
-            var existingMember = _members.SingleOrDefault(x => x.Email.Equals(memberEmail, StringComparison.InvariantCultureIgnoreCase));
+            var membership = _memberships.SingleOrDefault(x => x.Member.Email.Equals(memberEmail, StringComparison.InvariantCultureIgnoreCase));
 
-            if (existingMember == null)
+            if (membership == null)
             {
                 throw new NotMemberOfTeamException();
             }
 
-            _members.Remove(existingMember);
+            _memberships.Remove(membership);
         }
 
         public static Team Create(string name)
@@ -52,8 +59,46 @@ namespace DFDS.TeamService.WebApi.Models
             return new Team(
                 id: Guid.NewGuid(),
                 name: name,
-                members: Enumerable.Empty<Member>()
+                memberships: Enumerable.Empty<Membership>()
             );
+        }
+    }
+
+    public class Membership
+    {
+        private Membership()
+        {
+                
+        }
+
+        public Membership(Guid id, Member member)
+        {
+            Id = id;
+            Member = member;
+        }
+
+        public Guid Id { get; private set; }
+        public Member Member { get; private set; }
+
+        public static Membership StartFor(Member member)
+        {
+            return new Membership(
+                id: Guid.NewGuid(),
+                member: member
+            );
+        }
+    }
+
+    public class MemberEqualityComparer : IEqualityComparer<Member>
+    {
+        public bool Equals(Member x, Member y)
+        {
+            return x.Email.Equals(y.Email, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public int GetHashCode(Member obj)
+        {
+            return obj.Email.GetHashCode();
         }
     }
 

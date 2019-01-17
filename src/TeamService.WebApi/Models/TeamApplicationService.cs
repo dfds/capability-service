@@ -41,7 +41,7 @@ namespace DFDS.TeamService.WebApi.Models
                 throw new TeamDoesNotExistException();
             }
 
-            team.AcceptNewMember(memberEmail);
+            team.StartMembershipFor(memberEmail);
         }
 
         public async Task LeaveTeam(Guid teamId, string memberEmail)

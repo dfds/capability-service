@@ -19,7 +19,7 @@ namespace DFDS.TeamService.WebApi.Models
         {
             return await _dbContext
                          .Teams
-                         .Include(x => x.Members)
+                         .Include(x => x.Memberships)
                          .ToListAsync();
         }
 
@@ -33,7 +33,7 @@ namespace DFDS.TeamService.WebApi.Models
         {
             var team = await _dbContext
                              .Teams
-                             .Include(x => x.Members)
+                             .Include(x => x.Memberships)
                              .SingleOrDefaultAsync(x => x.Id == id);
             return team;
         }

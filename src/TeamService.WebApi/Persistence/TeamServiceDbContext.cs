@@ -21,10 +21,12 @@ namespace DFDS.TeamService.WebApi.Persistence
                 cfg.ToTable("Team");
             });
 
-            modelBuilder.Entity<Member>(cfg =>
+            modelBuilder.Entity<Membership>(cfg =>
             {
-                cfg.ToTable("Member");
-                cfg.HasKey(x => x.Email);
+                cfg.ToTable("Membership");
+                cfg.OwnsOne(x => x.Member)
+                   .Property(x => x.Email)
+                   .HasColumnName("MemberEmail");
             });
         }
     }
