@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DFDS.TeamService.WebApi.Persistence;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace DFDS.TeamService.WebApi.Models
 {
@@ -13,6 +14,7 @@ namespace DFDS.TeamService.WebApi.Models
     {
         private readonly ITeamRepository _teamRepository;
         private readonly IRoleService _roleService;
+        private readonly Regex _nameValidationRegex = new Regex("^[A-Z][a-zA-Z0-9_\\-]{2,30}$", RegexOptions.Compiled);
 
         public TeamApplicationService(ITeamRepository teamRepository, IRoleService roleService)
         {
@@ -25,6 +27,9 @@ namespace DFDS.TeamService.WebApi.Models
 
         public async Task<Team> CreateTeam(string name)
         {
+            if (!_nameValidationRegex.Match(name).Success) {
+                throw new TeamValidationException("Name must be a string of length 3 to 32. consisting of only alphanumeric ASCII characters, starting with a capital letter. Underscores and hyphens are allowed.");
+            }
             var team = Team.Create(name);
             await _teamRepository.Add(team);
             await _roleService.CreateRoleFor(team);

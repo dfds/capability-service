@@ -56,14 +56,18 @@ namespace DFDS.TeamService.WebApi.Controllers
         [HttpPost("")]
         public async Task<IActionResult> CreateTeam(TeamInput input)
         {
-            var team = await _teamApplicationService.CreateTeam(input.Name);
-            var dto = ConvertToDto(team);
+            try {
+                var team = await _teamApplicationService.CreateTeam(input.Name);
+                var dto = ConvertToDto(team);
 
-            return CreatedAtAction(
-                actionName: nameof(GetTeam),
-                routeValues: new {id = team.Id},
-                value: dto
-            );
+                return CreatedAtAction(
+                    actionName: nameof(GetTeam),
+                    routeValues: new {id = team.Id},
+                    value: dto
+                );
+            } catch (TeamValidationException tve) {
+                return BadRequest(tve.Message);
+            }
         }
 
         [HttpPost("{id}/members")]

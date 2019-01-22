@@ -200,6 +200,24 @@ namespace DFDS.TeamService.Tests
         }
 
         [Fact]
+        public async Task post_returns_badrequest_when_creating_a_new_team_with_invalid_name()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var stubTeam = new TeamBuilder().Build();
+
+                var client = builder
+                     .WithService<ITeamApplicationService>(new ErroneousTeamApplicationService(new TeamValidationException("message regarding bad name")))
+                     .Build();
+
+                var stubInput = $"{{\"name\":\"{stubTeam.Name}\"}}";
+                var response = await client.PostAsync("api/v1/teams", new JsonContent(stubInput));
+
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            }
+        }
+
+        [Fact]
         public async Task post_returns_expected_status_code_when_adding_a_member_to_an_existing_team()
         {
             using (var builder = new HttpClientBuilder())

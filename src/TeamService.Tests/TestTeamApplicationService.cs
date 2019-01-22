@@ -10,6 +10,31 @@ namespace DFDS.TeamService.Tests
 {
     public class TestTeamApplicationService
     {
+        [Theory]
+        [InlineData("an-otherwise-acceptable-name")]
+        [InlineData("AName!")]
+        [InlineData("Aa")]
+        [InlineData("A0123456789012345678901234567891")]
+        public async Task cannot_create_teams_with_invalid_names(string input) {
+            var sut = new TeamApplicationServiceBuilder()
+                .WithTeamRepository(new StubTeamRepository())
+                .Build();
+
+            await Assert.ThrowsAsync<TeamValidationException>(() => sut.CreateTeam(input));
+        }
+
+        [Theory]
+        [InlineData("AName")]
+        [InlineData("AZ0")]
+        [InlineData("A012345678901234567890123456789")]
+        public async Task can_create_team_with_an_acceptable_name(string input) {
+            var sut = new TeamApplicationServiceBuilder()
+                .WithTeamRepository(new StubTeamRepository())
+                .Build();
+
+            await sut.CreateTeam(input);
+        }
+
         [Fact]
         public async Task expected_member_is_added_to_team()
         {
