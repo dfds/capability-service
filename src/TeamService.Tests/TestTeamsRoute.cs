@@ -206,14 +206,20 @@ namespace DFDS.TeamService.Tests
             {
                 var stubTeam = new TeamBuilder().Build();
 
+                var errorText = "message regarding bad name";
                 var client = builder
-                     .WithService<ITeamApplicationService>(new ErroneousTeamApplicationService(new TeamValidationException("message regarding bad name")))
+                     .WithService<ITeamApplicationService>(new ErroneousTeamApplicationService(new TeamValidationException(errorText)))
                      .Build();
 
                 var stubInput = $"{{\"name\":\"{stubTeam.Name}\"}}";
                 var response = await client.PostAsync("api/v1/teams", new JsonContent(stubInput));
 
                 Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+                Assert.Equal(
+                    expected: errorText,
+                    actual: await response.Content.ReadAsStringAsync()
+                );
+
             }
         }
 
