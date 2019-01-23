@@ -37,6 +37,8 @@ paths:
               description: URI where the team can be retrieved
           schema:
             $ref: '#/definitions/team'
+        400:
+          description: BadRequest
   /teams/{teamId}:
     get:
       summary: Returns a single team
