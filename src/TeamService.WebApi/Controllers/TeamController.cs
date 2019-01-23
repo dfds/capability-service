@@ -66,7 +66,10 @@ namespace DFDS.TeamService.WebApi.Controllers
                     value: dto
                 );
             } catch (TeamValidationException tve) {
-                return BadRequest(tve.Message);
+                return BadRequest(new
+                {
+                    Message = tve.Message
+                });
             }
         }
 
