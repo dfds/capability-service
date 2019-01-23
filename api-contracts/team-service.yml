@@ -39,6 +39,8 @@ paths:
             $ref: '#/definitions/team'
         400:
           description: BadRequest
+          schema:
+            $ref: '#/definitions/errorObject'
   /teams/{teamId}:
     get:
       summary: Returns a single team
@@ -73,6 +75,8 @@ paths:
           description: Ok
         404:
           description: Not Found
+          schema:
+            $ref: '#/definitions/errorObject'
   /teams/{teamId}/members/{email}:
     delete:
       summary: Deletes a person from a team 
@@ -113,4 +117,9 @@ definitions:
     type: object
     properties:
       email:
+        type: string
+  errorObject:
+    type: object
+    properties:
+      message:
         type: string
