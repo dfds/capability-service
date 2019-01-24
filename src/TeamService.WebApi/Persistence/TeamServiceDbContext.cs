@@ -19,6 +19,11 @@ namespace DFDS.TeamService.WebApi.Persistence
             modelBuilder.Entity<Team>(cfg =>
             {
                 cfg.ToTable("Team");
+                cfg.Ignore(x => x.Members);
+
+                cfg.HasMany<Membership>(x => x.Memberships)
+                   .WithOne()
+                   .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Membership>(cfg =>
