@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DFDS.TeamService.WebApi.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ namespace DFDS.TeamService.WebApi.Models
         {
             return await _dbContext
                          .Teams
+                         .OrderBy(x => x.Name)
                          .Include(x => x.Memberships)
                          .ToListAsync();
         }
