@@ -10,7 +10,7 @@ metadata:
     traefik.ingress.kubernetes.io/auth-secret: teamservice-basic-authentication-credentials
 spec:
   rules:
-    - host: api.lovelace.oxygen.dfds.cloud
+    - host: api.turing.oxygen.dfds.cloud
       http:
         paths:
           - path: /team-service

@@ -2,8 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: team-service
+  namespace: $(kubernetes-namespace)
   annotations:
     prometheus.io/scrape: 'true'
+  labels:
+    app: team-service
+    project: selfservice
+    department: devex    
 spec:
   ports:
   - name: external

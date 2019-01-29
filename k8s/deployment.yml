@@ -2,6 +2,10 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: team-service
+  namespace: $(kubernetes-namespace)
+  labels:
+    project: selfservice
+    department: devex
 spec:
   replicas: 1
   selector:
@@ -11,6 +15,8 @@ spec:
     metadata:
       labels:
         app: team-service
+        project: selfservice
+        department: devex
     spec:
       initContainers:
       - name: dbmigrations
