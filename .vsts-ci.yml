@@ -33,8 +33,3 @@ steps:
     PathtoPublish: k8s
     ArtifactName: manifests
 
-- task: PublishBuildArtifacts@1
-  displayName: "Publish Artifact: terraform"
-  inputs:
-    PathtoPublish: terraform
-    ArtifactName: terraform
