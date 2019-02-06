@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: team-service
+  name: team-service-cap
   namespace: $(kubernetes-namespace)
   annotations:
     kubernetes.io/ingress.class: traefik
@@ -13,7 +13,7 @@ spec:
     - host: api.turing.oxygen.dfds.cloud
       http:
         paths:
-          - path: /team-service
+          - path: /capability
             backend:
-              serviceName: team-service
+              serviceName: team-service-cap
               servicePort: external
