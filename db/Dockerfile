@@ -11,10 +11,6 @@ ENV PGSSLROOTCERT /etc/ssl/certs/ca-certificates.crt
 ENV PGSSLMODE verify-full
 ENV PGPORT 5432
 
-# timezone
-ENV TZ=Europe/Copenhagen
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
 WORKDIR /db
 
 COPY . ./
