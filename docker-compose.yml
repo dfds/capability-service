@@ -18,7 +18,7 @@ services:
     environment:
       # - DEBUG=1                     # enable script debugging
       - LOCAL_DEVELOPMENT=1         # will try to CREATE DATABASE ${PGDATABASE}
-      - PGDATABASE=teamservice      # database name
+      - PGDATABASE=capabilitydb     # database name
       - PGHOST=database             # same as avove - docker-compose service name
       - PGPORT=5432                 # same as above
       - PGUSER=postgres             # same as above

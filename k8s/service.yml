@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: team-service-cap
+  name: capability-service
   namespace: $(kubernetes-namespace)
   annotations:
     prometheus.io/scrape: 'true'
   labels:
-    app: team-service
+    app: capability-service
     project: selfservice
     department: devex    
 spec:
@@ -15,5 +15,4 @@ spec:
     port: 80
     targetPort: web
   selector:
-    app: team-service
-    feature: capability
+    app: capability-service

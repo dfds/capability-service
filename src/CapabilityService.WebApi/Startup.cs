@@ -29,7 +29,7 @@ namespace DFDS.CapabilityService.WebApi
                 .AddEntityFrameworkNpgsql()
                 .AddDbContext<CapabilityServiceDbContext>((serviceProvider, options) =>
                 {
-                    var connectionString = Configuration["TEAMSERVICE_DATABASE_CONNECTIONSTRING"];
+                    var connectionString = Configuration["CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING"];
                     options.UseNpgsql(connectionString);
                 });
 

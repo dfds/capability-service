@@ -15,7 +15,7 @@
       "environmentVariables": {
         "IAMROLESERVICE_URL": "http://localhost:50800",
         "ROLEMAPPERSERVICE_URL": "http://localhost:50801",
-        "TEAMSERVICE_DATABASE_CONNECTIONSTRING": "User ID=postgres;Password=p;Host=localhost;Port=5432;Database=teamservice;",
+        "CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING": "User ID=postgres;Password=p;Host=localhost;Port=5432;Database=capabilitydb;",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
@@ -24,7 +24,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "TEAMSERVICE_DATABASE_CONNECTIONSTRING": "User ID=postgres;Password=p;Host=localhost;Port=5432;Database=teamservice;",
+        "CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING": "User ID=postgres;Password=p;Host=localhost;Port=5432;Database=capabilitydb;",
         "IAMROLESERVICE_URL": "http://localhost:50800",
         "ROLEMAPPERSERVICE_URL": "http://localhost:50801"
       },

@@ -8,8 +8,7 @@ set -eu -o pipefail
 
 # build parameters
 readonly REGION=${AWS_DEFAULT_REGION:-"eu-central-1"}
-readonly TEAM_NAME='ded'
-readonly IMAGE_NAME="${TEAM_NAME}/team-service"
+readonly IMAGE_NAME="ded/capability-service"
 readonly DB_IMAGE_NAME="${IMAGE_NAME}/dbmigrations"
 readonly BUILD_NUMBER=${1:-"N/A"}
 readonly BUILD_SOURCES_DIRECTORY=${2:-${PWD}}

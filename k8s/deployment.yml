@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: team-service-cap
+  name: capability-service
   namespace: $(kubernetes-namespace)
   labels:
     project: selfservice
@@ -10,19 +10,17 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: team-service
-      feature: capability
+      app: capability-service
   template:
     metadata:
       labels:
-        app: team-service
-        feature: capability
+        app: capability-service
         project: selfservice
         department: devex
     spec:
       initContainers:
       - name: dbmigrations
-        image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/team-service/dbmigrations:$(Build.BuildId)
+        image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/capability-service/dbmigrations:$(Build.BuildId)
         env:
         - name:  PGDATABASE
           value: ts
@@ -35,11 +33,11 @@ spec:
         - name: PGPASSWORD
           valueFrom:
             secretKeyRef:
-              name: team-service-db
+              name: capability-service-db
               key: password
       containers:
-      - name: team-service
-        image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/team-service:$(Build.BuildId)
+      - name: capability-service
+        image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/capability-service:$(Build.BuildId)
         ports:
         - containerPort: 80
           name: web
@@ -55,8 +53,8 @@ spec:
           value: http://iamroleservice
         - name: ROLEMAPPERSERVICE_URL
           value: http://rolemapper-service
-        - name: TEAMSERVICE_DATABASE_CONNECTIONSTRING
+        - name: CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING
           valueFrom:
             secretKeyRef:
-              name: team-service-db
+              name: capability-service-db
               key: connection-string
