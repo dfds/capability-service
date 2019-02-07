@@ -1,0 +1,35 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:50900",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "api/v1/capabilities",
+      "environmentVariables": {
+        "IAMROLESERVICE_URL": "http://localhost:50800",
+        "ROLEMAPPERSERVICE_URL": "http://localhost:50801",
+        "TEAMSERVICE_DATABASE_CONNECTIONSTRING": "User ID=postgres;Password=p;Host=localhost;Port=5432;Database=teamservice;",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "CapabilityService.WebApi": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "TEAMSERVICE_DATABASE_CONNECTIONSTRING": "User ID=postgres;Password=p;Host=localhost;Port=5432;Database=teamservice;",
+        "IAMROLESERVICE_URL": "http://localhost:50800",
+        "ROLEMAPPERSERVICE_URL": "http://localhost:50801"
+      },
+      "applicationUrl": "http://localhost:5000",
+      "launchUrl": "api/v1/capabilities"
+    }
+  }
+}
