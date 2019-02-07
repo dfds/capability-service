@@ -13,4 +13,4 @@ COPY ./output/app ./
 
 ENV ASPNETCORE_URLS=http://+:80
 
-ENTRYPOINT [ "dotnet", "TeamService.WebApi.dll" ]
+ENTRYPOINT [ "dotnet", "Capability.WebApi.dll" ]
