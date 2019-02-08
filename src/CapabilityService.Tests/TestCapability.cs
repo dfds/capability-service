@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using DFDS.CapabilityService.WebApi.DomainEvents;
-using DFDS.CapabilityService.WebApi.Models;
+using DFDS.CapabilityService.WebApi.Domain.Events;
+using DFDS.CapabilityService.WebApi.Domain.Models;
 using Xunit;
 
 namespace DFDS.CapabilityService.Tests

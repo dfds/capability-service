@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using DFDS.CapabilityService.WebApi.Models;
+using DFDS.CapabilityService.WebApi.Domain.Models;
 
 namespace DFDS.CapabilityService.Tests.Builders
 {

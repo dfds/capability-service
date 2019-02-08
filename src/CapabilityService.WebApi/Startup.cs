@@ -1,6 +1,8 @@
 ﻿using System;
-using DFDS.CapabilityService.WebApi.Models;
-using DFDS.CapabilityService.WebApi.Persistence;
+using DFDS.CapabilityService.WebApi.Application;
+using DFDS.CapabilityService.WebApi.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Infrastructure.Integrations;
+using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +35,7 @@ namespace DFDS.CapabilityService.WebApi
                     options.UseNpgsql(connectionString);
                 });
 
-            services.AddHttpClient<IAMRoleServiceFacade>(cfg =>
+            services.AddHttpClient<IAMRoleServiceClient>(cfg =>
             {
                 var baseUrl = Configuration["IAMROLESERVICE_URL"];
                 if (baseUrl != null)
@@ -42,7 +44,7 @@ namespace DFDS.CapabilityService.WebApi
                 }
             });
 
-            services.AddHttpClient<RoleMapperServiceFacade>(cfg =>
+            services.AddHttpClient<RoleMapperServiceClient>(cfg =>
             {
                 var baseUrl = Configuration["ROLEMAPPERSERVICE_URL"];
                 if (baseUrl != null)
