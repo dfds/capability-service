@@ -45,6 +45,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
                 await _dbContext.SaveChangesAsync();
                 transaction.Commit();
 
+                foreach (var aggregate in aggregates)
+                {
+                    aggregate.ClearDomainEvents();
+                }
+
                 return capability;
             }
         }
