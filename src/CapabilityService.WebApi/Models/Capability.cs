@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DFDS.CapabilityService.WebApi.DomainEvents;
 
 namespace DFDS.CapabilityService.WebApi.Models
 {
@@ -69,70 +68,5 @@ namespace DFDS.CapabilityService.WebApi.Models
 
             return capability;
         }
-    }
-
-    public class CapabilityCreated : DomainEvent
-    {
-        public CapabilityCreated(Guid capabilityId, string capabilityName)
-        {
-            CapabilityId = capabilityId;
-            CapabilityName = capabilityName;
-        }
-
-        public Guid CapabilityId { get; }
-        public string CapabilityName { get; }
-    }
-
-    public class Membership
-    {
-        private Membership()
-        {
-                
-        }
-
-        public Membership(Guid id, Member member)
-        {
-            Id = id;
-            Member = member;
-        }
-
-        public Guid Id { get; private set; }
-        public Member Member { get; private set; }
-
-        public static Membership StartFor(Member member)
-        {
-            return new Membership(
-                id: Guid.NewGuid(),
-                member: member
-            );
-        }
-    }
-
-    public class MemberEqualityComparer : IEqualityComparer<Member>
-    {
-        public bool Equals(Member x, Member y)
-        {
-            return x.Email.Equals(y.Email, StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        public int GetHashCode(Member obj)
-        {
-            return obj.Email.GetHashCode();
-        }
-    }
-
-    public class Member
-    {
-        private Member()
-        {
-            
-        }
-
-        public Member(string email)
-        {
-            Email = email;
-        }
-
-        public string Email { get; private set; }
     }
 }
