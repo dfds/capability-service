@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.DomainEvents;
 using DFDS.CapabilityService.WebApi.Models;
 using Xunit;
@@ -14,7 +13,7 @@ namespace DFDS.CapabilityService.Tests
     public class TestCapability
     {
         [Fact]
-        public async Task expected_domain_event_is_raised_when_creating_a_capability()
+        public void expected_domain_event_is_raised_when_creating_a_capability()
         {
             var capability = Capability.Create("foo");
 
