@@ -1,25 +1,25 @@
 sequenceDiagram
 
-    User ->> +TeamController: [http post] /api/teams
-    Note over User, TeamController: body: {"name": "foo"}
+    User ->> +CapabilityController: [http post] /api/capabilities
+    Note over User, CapabilityController: body: {"name": "foo"}
 
-    TeamController ->> +TeamApplicationService: CreateTeam("foo")
+    CapabilityController ->> +CapabilityApplicationService: CreateCapability("foo")
 
-    activate TeamDBContext
+    activate CapabilityDBContext
 
-    TeamApplicationService ->> +Team: Create("foo")
-    Team -->> TeamApplicationService: team
-    TeamApplicationService ->> +TeamRepository: Add(team)
+    CapabilityApplicationService ->> +Capability: Create("foo")
+    Capability -->> CapabilityApplicationService: capability
+    CapabilityApplicationService ->> +CapabilityRepository: Add(capability)
     
-    TeamRepository ->> TeamDBContext: Add(team)
-    TeamDBContext -->> TeamRepository: 
-    TeamRepository ->> TeamDBContext: SaveChanges()
-    TeamDBContext -->> TeamRepository: 
-    TeamRepository -->> -TeamApplicationService: 
+    CapabilityRepository ->> CapabilityDBContext: Add(capability)
+    CapabilityDBContext -->> CapabilityRepository: 
+    CapabilityRepository ->> CapabilityDBContext: SaveChanges()
+    CapabilityDBContext -->> CapabilityRepository: 
+    CapabilityRepository -->> -CapabilityApplicationService: 
 
-    deactivate TeamDBContext
+    deactivate CapabilityDBContext
 
-    TeamApplicationService ->> +RoleHandler: CreateRoleFor(team)
+    CapabilityApplicationService ->> +RoleHandler: CreateRoleFor(capability)
 
     RoleHandler ->> +IAMRoleService: [http post] /api/roles
     Note over RoleHandler,IAMRoleService: body: {"name: "foo"}
@@ -30,12 +30,12 @@ sequenceDiagram
     Note over RoleHandler,RoleMapperService: body: {"roleName": "foo", "roleArn": "[aws arn]"}
     RoleMapperService -->> -RoleHandler: 200 OK
 
-    RoleHandler -->> -TeamApplicationService: 
+    RoleHandler -->> -CapabilityApplicationService: 
 
-    TeamApplicationService -->> -TeamController: team
+    CapabilityApplicationService -->> -CapabilityController: capability
 
-    TeamController ->> TeamController: ConvertToDto(team)
-    deactivate Team
+    CapabilityController ->> CapabilityController: ConvertToDto(capability)
+    deactivate Capability
 
-    TeamController -->> -User: 201 Created
-    Note over TeamController,User: body: ...team content...
+    CapabilityController -->> -User: 201 Created
+    Note over CapabilityController,User: body: ...capability content...
