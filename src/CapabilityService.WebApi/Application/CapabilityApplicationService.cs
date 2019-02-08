@@ -26,9 +26,11 @@ namespace DFDS.CapabilityService.WebApi.Application
 
         public async Task<Capability> CreateCapability(string name)
         {
-            if (!_nameValidationRegex.Match(name).Success) {
+            if (!_nameValidationRegex.Match(name).Success)
+            {
                 throw new CapabilityValidationException("Name must be a string of length 3 to 32. consisting of only alphanumeric ASCII characters, starting with a capital letter. Underscores and hyphens are allowed.");
             }
+
             var capability = Capability.Create(name);
             await _capabilityRepository.Add(capability);
             await _roleService.CreateRoleFor(capability);
