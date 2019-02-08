@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DFDS.CapabilityService.WebApi.DomainEvents;
 
 namespace DFDS.CapabilityService.WebApi.Models
 {
-    public class Capability
+    public class Capability : AggregateRoot<Guid>
     {
         private readonly List<Membership> _memberships = new List<Membership>();
 
@@ -20,7 +21,6 @@ namespace DFDS.CapabilityService.WebApi.Models
             _memberships.AddRange(memberships);
         }
 
-        public Guid Id { get; private set; }
         public string Name { get; private set; }
         public IEnumerable<Member> Members => _memberships.Select(x => x.Member).Distinct(new MemberEqualityComparer());
         public IEnumerable<Membership> Memberships => _memberships;
@@ -56,12 +56,31 @@ namespace DFDS.CapabilityService.WebApi.Models
 
         public static Capability Create(string name)
         {
-            return new Capability(
+            var capability = new Capability(
                 id: Guid.NewGuid(),
                 name: name,
                 memberships: Enumerable.Empty<Membership>()
             );
+
+            capability.RaiseEvent(new CapabilityCreated(
+                capabilityId: capability.Id,
+                capabilityName: capability.Name
+            ));
+
+            return capability;
         }
+    }
+
+    public class CapabilityCreated : DomainEvent
+    {
+        public CapabilityCreated(Guid capabilityId, string capabilityName)
+        {
+            CapabilityId = capabilityId;
+            CapabilityName = capabilityName;
+        }
+
+        public Guid CapabilityId { get; }
+        public string CapabilityName { get; }
     }
 
     public class Membership
