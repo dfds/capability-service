@@ -20,6 +20,7 @@ namespace DFDS.CapabilityService.WebApi.Persistence
             {
                 cfg.ToTable("Capability");
                 cfg.Ignore(x => x.Members);
+                cfg.Ignore(x => x.DomainEvents);
 
                 cfg.HasMany<Membership>(x => x.Memberships)
                    .WithOne()
