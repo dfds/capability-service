@@ -56,10 +56,13 @@ namespace DFDS.CapabilityService.WebApi
             services.AddTransient<ICapabilityRepository, CapabilityRepository>();
             services.AddTransient<IRoleService, RoleService>();
 
+            services.AddTransient<Outbox>();
+
             services.AddTransient<CapabilityApplicationService>();
             services.AddTransient<ICapabilityApplicationService>(serviceProvider => new CapabilityTransactionalDecorator(
                 inner: serviceProvider.GetRequiredService<CapabilityApplicationService>(),
-                dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>()
+                dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>(),
+                outbox: serviceProvider.GetRequiredService<Outbox>()
             ));
         }
 

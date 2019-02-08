@@ -25,26 +25,26 @@ namespace DFDS.CapabilityService.Tests
         }
     }
 
-    public class DomainEventComparer : IEqualityComparer<DomainEvent>
+    public class DomainEventComparer : IEqualityComparer<IDomainEvent>
     {
-        public bool Equals(DomainEvent x, DomainEvent y)
+        public bool Equals(IDomainEvent x, IDomainEvent y)
         {
             if (x.GetType() != y.GetType())
             {
                 return false;
             }
 
-            var id = x.GetPropertyInfo(e => e.EventId);
+            //var id = x.GetPropertyInfo(e => e.EventId);
 
             var properties = x.GetType()
                               .GetProperties()
-                              .Where(p => p.Name != id.Name)
+                              //.Where(p => p.Name != id.Name)
                               .ToArray();
 
             return properties.All(p => Comparer.Default.Compare(p.GetValue(x), p.GetValue(y)) == 0);
         }
 
-        public int GetHashCode(DomainEvent obj)
+        public int GetHashCode(IDomainEvent obj)
         {
             return obj.GetHashCode();
         }

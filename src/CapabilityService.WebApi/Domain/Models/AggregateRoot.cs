@@ -5,7 +5,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 {
     public abstract class AggregateRoot<TId> : Entity<TId>, IAggregateDomainEvents
     {
-        private readonly List<DomainEvent> _domainEvents = new List<DomainEvent>();
+        private readonly List<IDomainEvent> _domainEvents = new List<IDomainEvent>();
 
         protected AggregateRoot()
         {
@@ -17,9 +17,9 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 
         }
 
-        public IEnumerable<DomainEvent> DomainEvents => _domainEvents;
+        public IEnumerable<IDomainEvent> DomainEvents => _domainEvents;
 
-        protected void RaiseEvent<TEvent>(TEvent domainEvent) where TEvent : DomainEvent
+        protected void RaiseEvent<TEvent>(TEvent domainEvent) where TEvent : IDomainEvent
         {
             _domainEvents.Add(domainEvent);
         }
@@ -27,6 +27,11 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
         public void ClearDomainEvents()
         {
             _domainEvents.Clear();
+        }
+
+        public string GetAggregateId()
+        {
+            return Id.ToString();
         }
     }
 }

@@ -5,7 +5,9 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 {
     public interface IAggregateDomainEvents
     {
-        IEnumerable<DomainEvent> DomainEvents { get; }
+        IEnumerable<IDomainEvent> DomainEvents { get; }
         void ClearDomainEvents();
+
+        string GetAggregateId();
     }
 }

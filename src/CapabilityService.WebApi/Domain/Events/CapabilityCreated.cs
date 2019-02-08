@@ -2,7 +2,7 @@
 
 namespace DFDS.CapabilityService.WebApi.Domain.Events
 {
-    public class CapabilityCreated : DomainEvent
+    public class CapabilityCreated : IDomainEvent
     {
         public CapabilityCreated(Guid capabilityId, string capabilityName)
         {
