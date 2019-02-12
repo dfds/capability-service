@@ -23,12 +23,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Integrations
             };
 
             var payload = new StringContent(
-                content: JsonConvert.SerializeObject(new {RoleName = capabilityName, RoleArn = roleIdentifier}, serializerSettings),
+                content: JsonConvert.SerializeObject(new {CapabilityName = capabilityName, RoleArn = roleIdentifier}, serializerSettings),
                 encoding: Encoding.UTF8,
                 mediaType: "application/json"
             );
             
-            var response = await _client.PostAsync("/api/roles", payload);
+            var response = await _client.PostAsync("/api/events", payload);
             response.EnsureSuccessStatusCode();
         }
     }
