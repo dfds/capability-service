@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Infrastructure.Integrations;
@@ -9,6 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Prometheus;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace DFDS.CapabilityService.WebApi
 {
@@ -64,6 +69,8 @@ namespace DFDS.CapabilityService.WebApi
                 dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>(),
                 outbox: serviceProvider.GetRequiredService<Outbox>()
             ));
+
+            services.AddHostedService<MetricHostedService>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -78,6 +85,33 @@ namespace DFDS.CapabilityService.WebApi
             }
 
             app.UseMvc();
+        }
+    }
+
+    public class MetricHostedService : IHostedService
+    {
+        private const string Host = "0.0.0.0";
+        private const int Port = 8080;
+
+        private IMetricServer _metricServer;
+
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            Console.WriteLine($"Staring metric server on {Host}:{Port}");
+
+            _metricServer = new KestrelMetricServer(Host, Port).Start();
+
+            return Task.CompletedTask;
+        }
+
+        public async Task StopAsync(CancellationToken cancellationToken)
+        {
+            using (_metricServer)
+            {
+                Console.WriteLine("Shutting down metric server");
+                await _metricServer.StopAsync();
+                Console.WriteLine("Done shutting down metric server");
+            }
         }
     }
 }
