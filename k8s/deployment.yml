@@ -58,3 +58,19 @@ spec:
             secretKeyRef:
               name: capability-service-db
               key: connection-string
+        - name: CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS
+          value: $(KAFKA_BOOTSTRAP_SERVERS)
+        - name: CAPABILITY_SERVICE_KAFKA_BROKER_VERSION_FALLBACK
+          value: "0.10.0.0"
+        - name: CAPABILITY_SERVICE_KAFKA_API_VERSION_FALLBACK_MS
+          value: "0"
+        # - name: CAPABILITY_SERVICE_KAFKA_SSL_CA_LOCATION
+        #   value: 
+        - name: CAPABILITY_SERVICE_KAFKA_SASL_USERNAME
+          value: $(KAFKA_SASL_USERNAME)
+        - name: CAPABILITY_SERVICE_KAFKA_SASL_PASSWORD
+          value: $(KAFKA_SASL_PASSWORD)
+        - name: CAPABILITY_SERVICE_KAFKA_SASL_MECHANISMS
+          value: "PLAIN"
+        - name: CAPABILITY_SERVICE_KAFKA_SECURITY_PROTOCOL
+          value: "SASL_SSL"

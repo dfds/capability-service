@@ -1,9 +1,11 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Application;
+using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Infrastructure.Integrations;
+using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -62,6 +64,7 @@ namespace DFDS.CapabilityService.WebApi
             services.AddTransient<IRoleService, RoleService>();
 
             services.AddTransient<Outbox>();
+            services.AddTransient<DomainEventEnvelopRepository>();
 
             services.AddTransient<CapabilityApplicationService>();
             services.AddTransient<ICapabilityApplicationService>(serviceProvider => new CapabilityTransactionalDecorator(
@@ -70,7 +73,19 @@ namespace DFDS.CapabilityService.WebApi
                 outbox: serviceProvider.GetRequiredService<Outbox>()
             ));
 
-            services.AddHostedService<MetricHostedService>();
+            ConfigureDomainEvents(services);
+			services.AddHostedService<MetricHostedService>();
+        }
+
+        private static void ConfigureDomainEvents(IServiceCollection services)
+        {
+            var eventRegistry = new DomainEventRegistry();
+            services.AddSingleton(eventRegistry);
+            services.AddTransient<KafkaPublisherFactory.KafkaConfiguration>();
+            services.AddTransient<KafkaPublisherFactory>();
+            services.AddHostedService<PublishingService>();
+
+            eventRegistry.Register<CapabilityCreated>("capabilitycreated", "build.capabilities");
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

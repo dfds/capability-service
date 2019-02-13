@@ -36,3 +36,13 @@ services:
       context: ./fake_dependencies/rolemapper_service
     ports:
       - "50801:50801"
+
+  messagebroker:
+    image: spotify/kafka
+    ports:
+      - "2181:2181"
+      - "9092:9092"
+    environment:
+      - "ADVERTISED_HOST=localhost"
+      - "ADVERTISED_PORT=9092"
+      - "AUTO_CREATE_TOPICS=true"
