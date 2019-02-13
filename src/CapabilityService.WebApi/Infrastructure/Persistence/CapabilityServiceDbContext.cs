@@ -11,7 +11,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
         }
 
         public DbSet<Capability> Capabilities { get; set; }
-        public DbSet<DomainEventEnvelop> DomainEvents { get; set; }
+        public DbSet<DomainEventEnvelope> DomainEvents { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,7 +36,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
                    .HasColumnName("MemberEmail");
             });
 
-            modelBuilder.Entity<DomainEventEnvelop>(cfg =>
+            modelBuilder.Entity<DomainEventEnvelope>(cfg =>
             {
                 cfg.HasKey(x => x.EventId);
                 cfg.ToTable("DomainEvent");

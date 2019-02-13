@@ -77,7 +77,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
         }
     }
 
-    public class DomainEventEnvelop
+    public class DomainEventEnvelope
     {
         public Guid EventId { get; set; }
         public string AggregateId { get; set; }
@@ -102,7 +102,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
         {
             var domainEvents = aggregate
                                .DomainEvents
-                               .Select(@event => new DomainEventEnvelop
+                               .Select(@event => new DomainEventEnvelope
                                {
                                    EventId = Guid.NewGuid(),
                                    AggregateId = aggregate.GetAggregateId(),
@@ -121,7 +121,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             return @event.GetType().Name.ToLower();
         }
 
-        public async Task QueueDomainEvents(IEnumerable<DomainEventEnvelop> domainEvents)
+        public async Task QueueDomainEvents(IEnumerable<DomainEventEnvelope> domainEvents)
         {
             await _dbContext.DomainEvents.AddRangeAsync(domainEvents);
         }
