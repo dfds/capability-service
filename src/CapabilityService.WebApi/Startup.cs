@@ -47,23 +47,28 @@ namespace DFDS.CapabilityService.WebApi
                     options.UseNpgsql(connectionString);
                 });
 
-            var iamRoleServiceUrl = Configuration["IAMROLESERVICE_URL"];
+            var health = services.AddHealthChecks()
+                .AddCheck("self", () => HealthCheckResult.Healthy())
+                .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
 
             services.AddHttpClient<IAMRoleServiceClient>(cfg =>
             {
-                if (iamRoleServiceUrl != null)
+                var url = Configuration["IAMROLESERVICE_URL"];
+                if (url != null)
                 {
-                    cfg.BaseAddress = new Uri(iamRoleServiceUrl);
+                    cfg.BaseAddress = new Uri(url);
+                    health.AddUrlGroup(new Uri(url), name: "iam_role_service", failureStatus: HealthStatus.Degraded, tags: new[] {"backing services", "role", "iam"});
+
                 }
             });
 
-            var roleMapperServiceUrl = Configuration["ROLEMAPPERSERVICE_URL"];
-            
             services.AddHttpClient<RoleMapperServiceClient>(cfg =>
             {
-                if (roleMapperServiceUrl != null)
+                var url = Configuration["ROLEMAPPERSERVICE_URL"];
+                if (url != null)
                 {
-                    cfg.BaseAddress = new Uri(roleMapperServiceUrl);
+                    cfg.BaseAddress = new Uri(url);
+                    health.AddUrlGroup(new Uri(url), name: "role_mapper_service", failureStatus: HealthStatus.Degraded, tags: new[] {"backing services", "role", "mapper"});
                 }
             });
 
@@ -82,13 +87,6 @@ namespace DFDS.CapabilityService.WebApi
 
             ConfigureDomainEvents(services);
 			services.AddHostedService<MetricHostedService>();
-
-            services.AddHealthChecks()
-                .AddCheck("self", () => HealthCheckResult.Healthy())
-                .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"})
-                .AddUrlGroup(new Uri(iamRoleServiceUrl), name: "iam_role_service", failureStatus: HealthStatus.Degraded, tags: new[] {"backing services", "role", "iam"})
-                .AddUrlGroup(new Uri(roleMapperServiceUrl), name: "role_mapper_service", failureStatus: HealthStatus.Degraded, tags: new[] {"backing services", "role", "mapper"})
-                ;
         }
 
         private static void ConfigureDomainEvents(IServiceCollection services)
