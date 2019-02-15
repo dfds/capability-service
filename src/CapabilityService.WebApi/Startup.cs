@@ -7,7 +7,6 @@ using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Infrastructure.Integrations;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
-using HealthChecks.Uris;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -47,17 +46,12 @@ namespace DFDS.CapabilityService.WebApi
                     options.UseNpgsql(connectionString);
                 });
 
-            var health = services.AddHealthChecks()
-                .AddCheck("self", () => HealthCheckResult.Healthy())
-                .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
-
             services.AddHttpClient<IAMRoleServiceClient>(cfg =>
             {
                 var url = Configuration["IAMROLESERVICE_URL"];
                 if (url != null)
                 {
                     cfg.BaseAddress = new Uri(url);
-                    health.AddUrlGroup(new Uri(url), name: "iam_role_service", failureStatus: HealthStatus.Degraded, tags: new[] {"backing services", "role", "iam"});
 
                 }
             });
@@ -68,7 +62,6 @@ namespace DFDS.CapabilityService.WebApi
                 if (url != null)
                 {
                     cfg.BaseAddress = new Uri(url);
-                    health.AddUrlGroup(new Uri(url), name: "role_mapper_service", failureStatus: HealthStatus.Degraded, tags: new[] {"backing services", "role", "mapper"});
                 }
             });
 
@@ -87,6 +80,27 @@ namespace DFDS.CapabilityService.WebApi
 
             ConfigureDomainEvents(services);
 			services.AddHostedService<MetricHostedService>();
+			
+			// health checks
+            var health = services
+                .AddHealthChecks()
+                .AddCheck("self", () => HealthCheckResult.Healthy())
+                .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
+
+            if (Configuration["IAMROLESERVICE_URL"] != null)
+            {
+                var builder = new UriBuilder(Configuration["IAMROLESERVICE_URL"]);
+                builder.Path = "healthz";
+                health.AddUrlGroup(builder.Uri, name: "iam_role_service", failureStatus: HealthStatus.Degraded, tags: new[] {"backing services", "role", "iam"});
+            }
+
+            if (Configuration["ROLEMAPPERSERVICE_URL"] != null)
+            {
+                var builder = new UriBuilder(Configuration["ROLEMAPPERSERVICE_URL"]);
+                builder.Path = "healthz";
+                health.AddUrlGroup(builder.Uri, name: "role_mapper_service", failureStatus: HealthStatus.Degraded, tags: new[] {"backing services", "role", "mapper"});
+            }
+
         }
 
         private static void ConfigureDomainEvents(IServiceCollection services)
