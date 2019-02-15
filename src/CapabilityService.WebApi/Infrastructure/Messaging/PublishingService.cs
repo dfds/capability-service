@@ -88,7 +88,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 
     public static class MessagingHelper
     {
-        public static string CreateMessageFrom(DomainEventEnvelop evt)
+        public static string CreateMessageFrom(DomainEventEnvelope evt)
         {
             var domainEvent = JsonConvert.DeserializeObject<ExpandoObject>(evt.Data);
             var message = new

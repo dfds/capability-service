@@ -24,7 +24,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
         {
             var domainEvents = aggregate
                                .DomainEvents
-                               .Select(@event => new DomainEventEnvelop
+                               .Select(@event => new DomainEventEnvelope
                                {
                                    EventId = Guid.NewGuid(),
                                    AggregateId = aggregate.GetAggregateId(),
@@ -38,7 +38,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
             return QueueDomainEvents(domainEvents);
         }
 
-        public async Task QueueDomainEvents(IEnumerable<DomainEventEnvelop> domainEvents)
+        public async Task QueueDomainEvents(IEnumerable<DomainEventEnvelope> domainEvents)
         {
             await _repository.Add(domainEvents);
         }
@@ -53,7 +53,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
             _dbContext = dbContext;
         }
 
-        public async Task Add(IEnumerable<DomainEventEnvelop> domainEvents)
+        public async Task Add(IEnumerable<DomainEventEnvelope> domainEvents)
         {
             await _dbContext.DomainEvents.AddRangeAsync(domainEvents);
         }

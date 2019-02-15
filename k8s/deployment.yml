@@ -64,8 +64,6 @@ spec:
           value: "0.10.0.0"
         - name: CAPABILITY_SERVICE_KAFKA_API_VERSION_FALLBACK_MS
           value: "0"
-        # - name: CAPABILITY_SERVICE_KAFKA_SSL_CA_LOCATION
-        #   value: 
         - name: CAPABILITY_SERVICE_KAFKA_SASL_USERNAME
           value: $(KAFKA_SASL_USERNAME)
         - name: CAPABILITY_SERVICE_KAFKA_SASL_PASSWORD

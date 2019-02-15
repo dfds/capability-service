@@ -2,7 +2,7 @@
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 {
-    public class DomainEventEnvelop
+    public class DomainEventEnvelope
     {
         public Guid EventId { get; set; }
         public string AggregateId { get; set; }

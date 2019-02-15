@@ -9,7 +9,7 @@ namespace DFDS.CapabilityService.Tests
         [Fact]
         public void returns_expected_message_format()
         {
-            var e = new DomainEventEnvelop
+            var e = new DomainEventEnvelope
             {
                 AggregateId = "A1",
                 EventId = Guid.Empty,
