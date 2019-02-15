@@ -41,6 +41,8 @@ spec:
         ports:
         - containerPort: 80
           name: web
+        - containerPort: 8080
+          name: metrics
         resources:
           requests:
             memory: "64Mi"
@@ -72,3 +74,18 @@ spec:
           value: "PLAIN"
         - name: CAPABILITY_SERVICE_KAFKA_SECURITY_PROTOCOL
           value: "SASL_SSL"
+        livenessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 5
+          httpGet:
+            port: web
+            path: /healthz
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 5
+          httpGet:
+            port: web
+            path: /healthz
+          
