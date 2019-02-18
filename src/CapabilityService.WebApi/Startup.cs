@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Events;
+using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Infrastructure.Integrations;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
@@ -72,11 +73,16 @@ namespace DFDS.CapabilityService.WebApi
             services.AddTransient<DomainEventEnvelopRepository>();
 
             services.AddTransient<CapabilityApplicationService>();
+            services.AddTransient<CapabilityOutboxEnabledDecorator>();
+
             services.AddTransient<ICapabilityApplicationService>(serviceProvider => new CapabilityTransactionalDecorator(
-                inner: serviceProvider.GetRequiredService<CapabilityApplicationService>(),
-                dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>(),
-                outbox: serviceProvider.GetRequiredService<Outbox>()
-            ));
+                    inner: new CapabilityOutboxEnabledDecorator(
+                        inner: serviceProvider.GetRequiredService<CapabilityApplicationService>(),
+                        dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>(),
+                        outbox: serviceProvider.GetRequiredService<Outbox>()
+                    ),
+                    dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>()
+                ));
 
             ConfigureDomainEvents(services);
 			services.AddHostedService<MetricHostedService>();
@@ -111,7 +117,9 @@ namespace DFDS.CapabilityService.WebApi
             services.AddTransient<KafkaPublisherFactory>();
             services.AddHostedService<PublishingService>();
 
-            eventRegistry.Register<CapabilityCreated>("capabilitycreated", "build.capabilities");
+            eventRegistry
+                .Register<CapabilityCreated>("capabilitycreated", "build.capabilities")
+                .Register<MemberJoinedCapability>("memberjoinedcapability", "build.capabilities");
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

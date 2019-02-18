@@ -74,10 +74,9 @@ After adding new migrations, run `docker-compose down` and re-run the above comm
 
 Events are published on the Kafka topic `build.capabilities`. Currently the following events are published:
 
-## On capability created
-**Occures**: when a new capability has been created
+**Type:** `capabilitycreated`
 
-**Type**: `capabilitycreated`
+**Occures:** when a new capability has been created
 
 **Example**:
 ```json
@@ -87,6 +86,22 @@ Events are published on the Kafka topic `build.capabilities`. Currently the foll
 	"data": {
 		"capabilityId": "2ca6bf98-d30d-4cf7-9adc-168a1e9c9849",
 		"capabilityName": "Misser"
+	}
+}
+```
+---
+**Type:** `memberjoinedcapability`
+
+**Occures:** when a member joins a capability
+
+**Example**:
+```json
+{
+	"messageId": "f791bc18-6eec-4e1c-ba48-c384b174f961",
+	"type": "memberjoinedcapability",
+	"data": {
+		"capabilityId": "0d03e3ad-2118-46b7-970e-0ca87b59a202",
+		"memberEmail": "johndoe@jdog.com"
 	}
 }
 ```

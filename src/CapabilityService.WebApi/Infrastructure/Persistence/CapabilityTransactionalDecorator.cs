@@ -8,13 +8,13 @@ using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
 {
-    public class CapabilityTransactionalDecorator : ICapabilityApplicationService
+    public class CapabilityOutboxEnabledDecorator : ICapabilityApplicationService
     {
         private readonly ICapabilityApplicationService _inner;
         private readonly CapabilityServiceDbContext _dbContext;
         private readonly Outbox _outbox;
 
-        public CapabilityTransactionalDecorator(ICapabilityApplicationService inner, CapabilityServiceDbContext dbContext, Outbox outbox)
+        public CapabilityOutboxEnabledDecorator(ICapabilityApplicationService inner, CapabilityServiceDbContext dbContext, Outbox outbox)
         {
             _inner = inner;
             _dbContext = dbContext;
@@ -26,28 +26,63 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
 
         public async Task<Capability> CreateCapability(string name)
         {
+            var capability = await _inner.CreateCapability(name);
+            await QueueDomainEvents();
+
+            return capability;
+        }
+
+        private async Task QueueDomainEvents()
+        {
+            var aggregates = _dbContext
+                             .ChangeTracker
+                             .Entries<IAggregateDomainEvents>()
+                             .Select(x => x.Entity)
+                             .ToArray();
+
+            foreach (var aggregate in aggregates)
+            {
+                await _outbox.QueueDomainEvents(aggregate);
+                aggregate.ClearDomainEvents();
+            }
+        }
+
+        public async Task JoinCapability(Guid capabilityId, string memberEmail)
+        {
+            await _inner.JoinCapability(capabilityId, memberEmail);
+            await QueueDomainEvents();
+        }
+
+        public async Task LeaveCapability(Guid capabilityId, string memberEmail)
+        {
+            await _inner.LeaveCapability(capabilityId, memberEmail);
+            await QueueDomainEvents();
+        }
+    }
+
+
+    public class CapabilityTransactionalDecorator : ICapabilityApplicationService
+    {
+        private readonly ICapabilityApplicationService _inner;
+        private readonly CapabilityServiceDbContext _dbContext;
+
+        public CapabilityTransactionalDecorator(ICapabilityApplicationService inner, CapabilityServiceDbContext dbContext)
+        {
+            _inner = inner;
+            _dbContext = dbContext;
+        }
+
+        public Task<IEnumerable<Capability>> GetAllCapabilities() => _inner.GetAllCapabilities();
+        public Task<Capability> GetCapability(Guid id) => _inner.GetCapability(id);
+
+        public async Task<Capability> CreateCapability(string name)
+        {
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
                 var capability = await _inner.CreateCapability(name);
 
-                var aggregates = _dbContext
-                                 .ChangeTracker
-                                 .Entries<IAggregateDomainEvents>()
-                                 .Select(x => x.Entity)
-                                 .ToArray();
-
-                foreach (var aggregate in aggregates)
-                {
-                    await _outbox.QueueDomainEvents(aggregate);
-                }
-
                 await _dbContext.SaveChangesAsync();
                 transaction.Commit();
-
-                foreach (var aggregate in aggregates)
-                {
-                    aggregate.ClearDomainEvents();
-                }
 
                 return capability;
             }

@@ -41,6 +41,8 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             var member = new Member(memberEmail);
             var membership = Membership.StartFor(member);
             _memberships.Add(membership);
+
+            RaiseEvent(new MemberJoinedCapability(Id, memberEmail));
         }
 
         public void StopMembershipFor(string memberEmail)
@@ -71,4 +73,17 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             return capability;
         }
     }
+
+    public class MemberJoinedCapability : IDomainEvent
+    {
+        public MemberJoinedCapability(Guid capabilityId, string memberEmail)
+        {
+            CapabilityId = capabilityId;
+            MemberEmail = memberEmail;
+        }
+
+        public Guid CapabilityId { get; private set; }
+        public string MemberEmail { get; private set; }
+    }
+
 }
