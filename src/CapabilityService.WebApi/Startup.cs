@@ -119,7 +119,8 @@ namespace DFDS.CapabilityService.WebApi
 
             eventRegistry
                 .Register<CapabilityCreated>("capabilitycreated", "build.capabilities")
-                .Register<MemberJoinedCapability>("memberjoinedcapability", "build.capabilities");
+                .Register<MemberJoinedCapability>("memberjoinedcapability", "build.capabilities")
+                .Register<MemberLeftCapability>("memberleftcapability", "build.capabilities");
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

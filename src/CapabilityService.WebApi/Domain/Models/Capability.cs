@@ -55,6 +55,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             }
 
             _memberships.Remove(membership);
+            RaiseEvent(new MemberLeftCapability(Id, memberEmail));
         }
 
         public static Capability Create(string name)
@@ -77,6 +78,18 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
     public class MemberJoinedCapability : IDomainEvent
     {
         public MemberJoinedCapability(Guid capabilityId, string memberEmail)
+        {
+            CapabilityId = capabilityId;
+            MemberEmail = memberEmail;
+        }
+
+        public Guid CapabilityId { get; private set; }
+        public string MemberEmail { get; private set; }
+    }
+
+    public class MemberLeftCapability : IDomainEvent
+    {
+        public MemberLeftCapability(Guid capabilityId, string memberEmail)
         {
             CapabilityId = capabilityId;
             MemberEmail = memberEmail;

@@ -105,6 +105,22 @@ Events are published on the Kafka topic `build.capabilities`. Currently the foll
 	}
 }
 ```
+---
+**Type:** `memberleftcapability`
+
+**Occures:** when a member has left a capability
+
+**Example**:
+```json
+{
+	"messageId": "2f9ec6dc-8800-4ac0-ae21-a8c862c2d22f",
+	"type": "memberleftcapability",
+	"data": {
+		"capabilityId": "0d03e3ad-2118-46b7-970e-0ca87b59a202",
+		"memberEmail": "johndoe@jdog.com"
+	}
+}
+```
 
 ### Migration in Kubernetes
 
