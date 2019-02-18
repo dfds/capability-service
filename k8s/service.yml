@@ -9,6 +9,7 @@ metadata:
     app: capability-service
     project: selfservice
     department: devex    
+    component: capability-service
 spec:
   ports:
   - name: external

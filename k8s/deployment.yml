@@ -6,6 +6,8 @@ metadata:
   labels:
     project: selfservice
     department: devex
+    app: capability-service
+    component: capability-service
 spec:
   replicas: 1
   selector:
