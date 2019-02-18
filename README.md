@@ -1,53 +1,67 @@
 [![Build Status](https://dfds.visualstudio.com/DevelopmentExcellence/_apis/build/status/capability-service-CI?branch=master)](https://dfds.visualstudio.com/DevelopmentExcellence/_build/latest?definitionId=901&branch=master)[![Release Status](https://dfds.vsrm.visualstudio.com/_apis/public/Release/badge/ace5e409-c242-4356-93f4-23c53a3dc87b/35/57)](https://dfds.visualstudio.com/DevelopmentExcellence/_release?definitionId=35&_a=releases)
-# DFDS devex "Capability Service"
+# Capability Service
 Owns mapping between users (members) to capabilities and to cloud resources. We call this the context.
 
-Offers some services for (/by extension of) managing the above responsibility, as well as some closely related workflow support services.
+## Getting started
 
-- Owns capability context
-- Creates AwsConsole urls to allow users to directly log into an AWS Console in a role that matches their permissions
-- Assigns roles to capabilities
+### Prerequisites:
+1. dotnet core 2.2 sdk
+1. docker
+1. docker-compose
+1. bash
 
-# Getting started
-Prerequisites:
+### Directory outline
+The most **significant** items found in the repository/directory root are:
+```text
+.
+├── Dockerfile
+├── README.md
+├── add-migration.sh
+├── api-contracts/
+├── db/
+├── docker-compose.yml
+├── docs/
+├── fake_dependencies/
+├── k8s/
+├── pipeline.sh
+└── src/
+```
+_Please note: you'd might also find other items in the repository/directory root._
 
-1. (For Windows) Admin account on the local machine
-2. Git >2.1
-3. dotnet core ~2.1
-4. NodeJS/npm ~6.4 or yarn ~1.12
-5. Docker ~2.0
-6. Docker-compose ~1.0
-7. aws-cli ~1.16
-8. Kubectl 1.12 (really it has to match both the cluster server version and our support. We've tested 1.12)
-9. (Non-software) Credentials and URLs, see the env vars section below
+Here is a small description for each of the items:
 
-Other versions may work but this setup is what we test on.
+| Item | Description |
+|------|-------------|
+| Dockerfile | Describes how the runtime environment for the actual application should look like. |
+| README.md | _This_ readme file |
+| add-migration.sh | Util for quickly generating a database migration script that follows default conventions. Run it like this: `./add-migration.sh "<small description of you change here>"`. |
+| api-contracts/ | Directory that contains the current OpenApi contract(s) exposed from the service. |
+| db/ | Directory that contains all things related to the database setup e.g. Dockerfile for init migration container, migration script etc. |
+| docker-compose.yml | Docker-compose file for bringing all external dependencies up (some in a 'faked-out' version). |
+| docs/ | Directory for any documents that take part in documenting the service e.g. domain events. |
+| fake_dependencies/ | Directory containing source code for 'faked-out' dependencies (often written in nodejs). |
+| k8s/ | Directory containing all Kubernetes manifests used to describe the desired runtime state for the service in Kubernetes. |
+| pipeline.sh | _The_ shell script used to implement the _continous integration_ pipeline. The script also generates a docker container image as a deployment artifact. |
+| src/ | The _main_ directory for all the source code for the service. |
 
-Commandline and environment examples below are based on a Bash shell but it should be directly translatable to other systems and shells.
+### Running the service
+First restore dependencies by runing the `./pipeline` script located in the repository root or by navigating to the `./src` folder and run `dotnet restore` like shown below:
 
-## Init
-Read pipeline.sh, and mostly ignore it. Once that's done, you need to set up the environment.
-
-There is a Docker and docker-compose file available which brings up just the development database. Run `docker-compose up` from the project root to get Postgres up. Once it runs, you can continue with the next section.
-
-## Running Capability Service
-First restore dependencies by runing the `./pipeline` script located in the repository root or by navigating 
-to the `./src` folder and run `dotnet restore` like shown below:
-
-### Pipeline script
+#### Pipeline script
 ```bash
 ./pipeline.sh
 ```
-### Manual restore
+#### Manual restore
 ```bash
 cd src
 dotnet restore
-````
+```
 
+#### Start the application
 Then the application can be executed by the following (navigate to the `./src` folder):
 ```bash
 dotnet run --project CapabilityService.WebApi/
-````
+```
 
 ## Database
 The database will initially start as empty. The image is constructed so that files can be added through the command below, and these will be run in date order (at least if you name the file right).
@@ -70,59 +84,5 @@ docker-compose up --build
 
 After adding new migrations, run `docker-compose down` and re-run the above command.
 
-# Domain Events
-
-Events are published on the Kafka topic `build.capabilities`. Currently the following events are published:
-
-**Type:** `capabilitycreated`
-
-**Occures:** when a new capability has been created
-
-**Example**:
-```json
-{
-	"messageId": "ab509002-b295-46c5-80c0-3f0178174927",
-	"type": "capabilitycreated",
-	"data": {
-		"capabilityId": "2ca6bf98-d30d-4cf7-9adc-168a1e9c9849",
-		"capabilityName": "Misser"
-	}
-}
-```
----
-**Type:** `memberjoinedcapability`
-
-**Occures:** when a member joins a capability
-
-**Example**:
-```json
-{
-	"messageId": "f791bc18-6eec-4e1c-ba48-c384b174f961",
-	"type": "memberjoinedcapability",
-	"data": {
-		"capabilityId": "0d03e3ad-2118-46b7-970e-0ca87b59a202",
-		"memberEmail": "johndoe@jdog.com"
-	}
-}
-```
----
-**Type:** `memberleftcapability`
-
-**Occures:** when a member has left a capability
-
-**Example**:
-```json
-{
-	"messageId": "2f9ec6dc-8800-4ac0-ae21-a8c862c2d22f",
-	"type": "memberleftcapability",
-	"data": {
-		"capabilityId": "0d03e3ad-2118-46b7-970e-0ca87b59a202",
-		"memberEmail": "johndoe@jdog.com"
-	}
-}
-```
-
-### Migration in Kubernetes
-
-**TODO**: here we should add the things we discussed at the white-board session on Wednesday the 17th of October.
-
+## Domain Events
+For information about which domain events are published refere to the [domain events document](docs/domain_events.md).
