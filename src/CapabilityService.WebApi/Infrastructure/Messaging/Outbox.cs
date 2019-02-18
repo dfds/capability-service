@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Models;
-using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 {
@@ -31,7 +30,10 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
                                    Created = DateTime.UtcNow,
                                    Type = _eventRegistry.GetTypeNameFor(@event),
                                    Format = "application/json",
-                                   Data = JsonConvert.SerializeObject(@event)
+                                   Data = JsonConvert.SerializeObject(@event, new JsonSerializerSettings
+                                   {
+                                       ContractResolver = new CamelCasePropertyNamesContractResolver()
+                                   })
                                })
                                .ToArray();
 
@@ -41,21 +43,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
         public async Task QueueDomainEvents(IEnumerable<DomainEventEnvelope> domainEvents)
         {
             await _repository.Add(domainEvents);
-        }
-    }
-
-    public class DomainEventEnvelopRepository
-    {
-        private readonly CapabilityServiceDbContext _dbContext;
-
-        public DomainEventEnvelopRepository(CapabilityServiceDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
-
-        public async Task Add(IEnumerable<DomainEventEnvelope> domainEvents)
-        {
-            await _dbContext.DomainEvents.AddRangeAsync(domainEvents);
         }
     }
 }
