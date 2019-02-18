@@ -24,7 +24,15 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await DoWork(stoppingToken);
+                try
+                {
+                    await DoWork(stoppingToken);
+                }
+                catch (Exception err)
+                {
+                    Log.Error(err, "Error processing and/or publishing domain events to message broker.");
+                }
+
                 await Task.Delay(TimeSpan.FromSeconds(20), stoppingToken);
             }
         }
