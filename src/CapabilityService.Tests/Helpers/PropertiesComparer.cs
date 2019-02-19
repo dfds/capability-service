@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace DFDS.CapabilityService.Tests.Helpers
@@ -16,8 +15,8 @@ namespace DFDS.CapabilityService.Tests.Helpers
             var properties = x.GetType()
                               .GetProperties()
                               .ToArray();
-
-            return properties.All(p => Comparer.Default.Compare(p.GetValue(x), p.GetValue(y)) == 0);
+            
+            return properties.All(p => object.Equals(p.GetValue(x), p.GetValue(y)));
         }
 
         public int GetHashCode(T obj)

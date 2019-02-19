@@ -9,14 +9,16 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
     {
         private readonly List<DomainEventRegistration> _registrations = new List<DomainEventRegistration>();
 
+        public IEnumerable<DomainEventRegistration> Registrations => _registrations;
+
         public DomainEventRegistry Register<TEvent>(string eventTypeName, string topicName) where TEvent : IDomainEvent
         {
             _registrations.Add(new DomainEventRegistration
-            {
-                EventType = eventTypeName,
-                EventInstanceType = typeof(TEvent),
-                Topic = topicName
-            });
+            (
+                eventType: eventTypeName,
+                eventInstanceType: typeof(TEvent),
+                topic: topicName
+            ));
 
             return this;
         }
@@ -25,12 +27,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
         {
             var registration = _registrations.SingleOrDefault(x => x.EventType == eventType);
 
-            if (registration != null)
+            if (registration == null)
             {
-                return registration.Topic;
+                throw new MessagingException($"Error! Could not determine \"topic name\" due to no registration was found for event type \"{eventType}\"!");
             }
 
-            return null;
+            return registration.Topic;
         }
 
         public string GetTypeNameFor(IDomainEvent domainEvent)
@@ -44,12 +46,19 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 
             return registration.EventType;
         }
+    }
 
-        public class DomainEventRegistration
+    public class DomainEventRegistration
+    {
+        public DomainEventRegistration(string eventType, Type eventInstanceType, string topic)
         {
-            public string EventType { get; set; }
-            public Type EventInstanceType { get; set; }
-            public string Topic { get; set; }
+            EventType = eventType;
+            EventInstanceType = eventInstanceType;
+            Topic = topic;
         }
+
+        public string EventType { get; }
+        public Type EventInstanceType { get; }
+        public string Topic { get; }
     }
 }
