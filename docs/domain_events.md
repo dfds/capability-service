@@ -8,10 +8,10 @@ The following is a list of domain events that are published from the **Capabilit
 ```json
 {
 	"messageId": "ab509002-b295-46c5-80c0-3f0178174927",
-	"type": "capabilitycreated",
+	"type": "capability_created",
 	"data": {
-		"capabilityId": "2ca6bf98-d30d-4cf7-9adc-168a1e9c9849",
-		"capabilityName": "Misser"
+		"capabilityId": "0d03e3ad-2118-46b7-970e-0ca87b59a202",
+		"capabilityName": "build.capabilities"
 	}
 }
 ```
@@ -23,7 +23,7 @@ The following is a list of domain events that are published from the **Capabilit
 ```json
 {
 	"messageId": "f791bc18-6eec-4e1c-ba48-c384b174f961",
-	"type": "memberjoinedcapability",
+	"type": "member_joined_capability",
 	"data": {
 		"capabilityId": "0d03e3ad-2118-46b7-970e-0ca87b59a202",
 		"memberEmail": "johndoe@jdog.com"
@@ -38,7 +38,7 @@ The following is a list of domain events that are published from the **Capabilit
 ```json
 {
 	"messageId": "2f9ec6dc-8800-4ac0-ae21-a8c862c2d22f",
-	"type": "memberleftcapability",
+	"type": "member_left_capability",
 	"data": {
 		"capabilityId": "0d03e3ad-2118-46b7-970e-0ca87b59a202",
 		"memberEmail": "johndoe@jdog.com"
