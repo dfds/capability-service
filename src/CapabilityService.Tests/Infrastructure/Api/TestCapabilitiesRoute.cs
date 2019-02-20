@@ -7,7 +7,7 @@ using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using Xunit;
 
-namespace DFDS.CapabilityService.Tests
+namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 {
     public class TestCapabilitiesRoute
     {

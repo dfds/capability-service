@@ -4,7 +4,7 @@ using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using Xunit;
 
-namespace DFDS.CapabilityService.Tests
+namespace DFDS.CapabilityService.Tests.Domain.Models
 {
     public class TestCapability
     {

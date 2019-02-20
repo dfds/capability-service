@@ -6,7 +6,7 @@ using DFDS.CapabilityService.Tests.TestDoubles;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using Xunit;
 
-namespace DFDS.CapabilityService.Tests
+namespace DFDS.CapabilityService.Tests.Application
 {
     public class TestCapabilityApplicationService
     {

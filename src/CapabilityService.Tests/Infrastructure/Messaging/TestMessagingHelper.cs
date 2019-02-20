@@ -2,7 +2,7 @@
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using Xunit;
 
-namespace DFDS.CapabilityService.Tests
+namespace DFDS.CapabilityService.Tests.Infrastructure.Messaging
 {
     public class TestMessagingHelper
     {

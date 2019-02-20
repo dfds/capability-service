@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Text;
 
-namespace DFDS.CapabilityService.Tests
+namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 {
     public class JsonContent : StringContent
     {
