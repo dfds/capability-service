@@ -112,7 +112,7 @@ namespace DFDS.CapabilityService.WebApi
         private static void ConfigureDomainEvents(IServiceCollection services)
         {
             var eventRegistry = new DomainEventRegistry();
-            services.AddSingleton(eventRegistry);
+            services.AddSingleton<IDomainEventRegistry>(eventRegistry);
             services.AddTransient<KafkaPublisherFactory.KafkaConfiguration>();
             services.AddTransient<KafkaPublisherFactory>();
             services.AddHostedService<PublishingService>();

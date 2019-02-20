@@ -50,7 +50,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
                 Log.Information($"Domain events to publish: {domainEvents.Count}");
 
                 var publisherFactory = scope.ServiceProvider.GetRequiredService<KafkaPublisherFactory>();
-                var eventRegistry = scope.ServiceProvider.GetRequiredService<DomainEventRegistry>();
+                var eventRegistry = scope.ServiceProvider.GetRequiredService<IDomainEventRegistry>();
 
                 Log.Information("Connecting to kafka...");
                 
