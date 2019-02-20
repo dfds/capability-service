@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Application;
@@ -106,7 +107,6 @@ namespace DFDS.CapabilityService.WebApi
                 builder.Path = "healthz";
                 health.AddUrlGroup(builder.Uri, name: "role_mapper_service", failureStatus: HealthStatus.Degraded, tags: new[] {"backing services", "role", "mapper"});
             }
-
         }
 
         private static void ConfigureDomainEvents(IServiceCollection services)
@@ -117,10 +117,15 @@ namespace DFDS.CapabilityService.WebApi
             services.AddTransient<KafkaPublisherFactory>();
             services.AddHostedService<PublishingService>();
 
+            var capabilitiesTopicName = "build.capabilities";
+
             eventRegistry
-                .Register<CapabilityCreated>("capability_created", "build.capabilities")
-                .Register<MemberJoinedCapability>("member_joined_capability", "build.capabilities")
-                .Register<MemberLeftCapability>("member_left_capability", "build.capabilities");
+                .Register<CapabilityCreated>("capability_created", capabilitiesTopicName)
+                .Register<MemberJoinedCapability>("member_joined_capability", capabilitiesTopicName)
+                .Register<MemberLeftCapability>("member_left_capability", capabilitiesTopicName);
+
+            var scanner = new DomainEventScanner(eventRegistry);
+            scanner.EnsureNoUnregisteredDomainEventsIn(Assembly.GetExecutingAssembly());
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

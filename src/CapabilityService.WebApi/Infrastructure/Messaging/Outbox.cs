@@ -11,9 +11,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
     public class Outbox
     {
         private readonly DomainEventEnvelopRepository _repository;
-        private readonly DomainEventRegistry _eventRegistry;
+        private readonly IDomainEventRegistry _eventRegistry;
 
-        public Outbox(DomainEventEnvelopRepository repository, DomainEventRegistry eventRegistry)
+        public Outbox(DomainEventEnvelopRepository repository, IDomainEventRegistry eventRegistry)
         {
             _repository = repository;
             _eventRegistry = eventRegistry;

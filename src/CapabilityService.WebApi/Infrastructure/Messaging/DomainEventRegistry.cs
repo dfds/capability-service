@@ -5,13 +5,13 @@ using DFDS.CapabilityService.WebApi.Domain.Events;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 {
-    public class DomainEventRegistry
+    public class DomainEventRegistry : IDomainEventRegistry
     {
         private readonly List<DomainEventRegistration> _registrations = new List<DomainEventRegistration>();
 
         public IEnumerable<DomainEventRegistration> Registrations => _registrations;
 
-        public DomainEventRegistry Register<TEvent>(string eventTypeName, string topicName) where TEvent : IDomainEvent
+        public IDomainEventRegistrationManager Register<TEvent>(string eventTypeName, string topicName) where TEvent : IDomainEvent
         {
             _registrations.Add(new DomainEventRegistration
             (
@@ -21,6 +21,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
             ));
 
             return this;
+        }
+
+        public bool IsRegistered(Type eventInstanceType)
+        {
+            return _registrations.Any(x => x.EventInstanceType == eventInstanceType);
         }
 
         public string GetTopicFor(string eventType)
@@ -46,19 +51,5 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 
             return registration.EventType;
         }
-    }
-
-    public class DomainEventRegistration
-    {
-        public DomainEventRegistration(string eventType, Type eventInstanceType, string topic)
-        {
-            EventType = eventType;
-            EventInstanceType = eventInstanceType;
-            Topic = topic;
-        }
-
-        public string EventType { get; }
-        public Type EventInstanceType { get; }
-        public string Topic { get; }
     }
 }
