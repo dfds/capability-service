@@ -19,6 +19,9 @@ spec:
         app: capability-service
         project: selfservice
         department: devex
+      annotations:
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
     spec:
       initContainers:
       - name: dbmigrations
