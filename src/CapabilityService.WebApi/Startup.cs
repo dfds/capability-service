@@ -93,20 +93,6 @@ namespace DFDS.CapabilityService.WebApi
                 .AddHealthChecks()
                 .AddCheck("self", () => HealthCheckResult.Healthy())
                 .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
-
-            if (Configuration["IAMROLESERVICE_URL"] != null)
-            {
-                var builder = new UriBuilder(Configuration["IAMROLESERVICE_URL"]);
-                builder.Path = "healthz";
-                health.AddUrlGroup(builder.Uri, name: "iam_role_service", failureStatus: HealthStatus.Degraded, tags: new[] {"backing services", "role", "iam"});
-            }
-
-            if (Configuration["ROLEMAPPERSERVICE_URL"] != null)
-            {
-                var builder = new UriBuilder(Configuration["ROLEMAPPERSERVICE_URL"]);
-                builder.Path = "healthz";
-                health.AddUrlGroup(builder.Uri, name: "role_mapper_service", failureStatus: HealthStatus.Degraded, tags: new[] {"backing services", "role", "mapper"});
-            }
         }
 
         private static void ConfigureDomainEvents(IServiceCollection services)
