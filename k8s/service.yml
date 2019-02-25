@@ -3,8 +3,6 @@ kind: Service
 metadata:
   name: capability-service
   namespace: $(kubernetes-namespace)
-  annotations:
-    prometheus.io/scrape: 'true'
   labels:
     app: capability-service
     project: selfservice
