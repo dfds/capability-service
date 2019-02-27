@@ -1,4 +1,4 @@
-[![Build Status](https://dfds.visualstudio.com/DevelopmentExcellence/_apis/build/status/capability-service-CI?branch=master)](https://dfds.visualstudio.com/DevelopmentExcellence/_build/latest?definitionId=901&branch=master)[![Release Status](https://dfds.vsrm.visualstudio.com/_apis/public/Release/badge/ace5e409-c242-4356-93f4-23c53a3dc87b/35/57)](https://dfds.visualstudio.com/DevelopmentExcellence/_release?definitionId=35&_a=releases)
+[![Build Status](https://dfds.visualstudio.com/DevelopmentExcellence/_apis/build/status/capability-service-CI?branch=master)](https://dfds.visualstudio.com/DevelopmentExcellence/_build/latest?definitionId=901&branch=master) [![Release Status](https://dfds.vsrm.visualstudio.com/_apis/public/Release/badge/ace5e409-c242-4356-93f4-23c53a3dc87b/35/64)](https://dfds.visualstudio.com/DevelopmentExcellence/_release?definitionId=35&_a=releases)
 # Capability Service
 Owns mapping between users (members) to capabilities and to cloud resources. We call this the context.
 
@@ -6,9 +6,9 @@ Owns mapping between users (members) to capabilities and to cloud resources. We 
 
 ### Prerequisites:
 1. dotnet core 2.2 sdk
-1. docker
-1. docker-compose
-1. bash
+2. docker
+3. docker-compose
+4. bash
 
 ### Directory outline
 The most **significant** items found in the repository/directory root are:
