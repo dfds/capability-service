@@ -10,7 +10,7 @@ metadata:
     traefik.ingress.kubernetes.io/auth-secret: capabilityservice-basic-authentication-credentials
 spec:
   rules:
-    - host: api.turing.oxygen.dfds.cloud
+    - host: api.hellman.oxygen.dfds.cloud
       http:
         paths:
           - path: /capability
