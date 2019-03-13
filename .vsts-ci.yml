@@ -7,6 +7,7 @@ trigger:
 steps:
 
 - bash: |
+   set -eu -o pipefail
    sudo pip install setuptools
    sudo pip install awscli
    export AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY)
