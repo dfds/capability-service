@@ -1,0 +1,33 @@
+sequenceDiagram
+    participant User
+    participant Vue
+    participant B/TeamApiController
+    participant TeamServiceClient
+    User ->> +Vue: [JS] Create Team Dialog
+    User ->> Vue: [JS] Create team '0break'
+    Vue ->> +B/TeamApiController:: [http post] /api/teams: '0break'
+    Note left of B/TeamApiController: Network
+    B/TeamApiController ->> +TeamServiceClient: CreateTeam
+    
+    TeamServiceClient ->> +TeamController: [http post] /api/teams
+    Note left of TeamController: Network
+
+    TeamController ->> +TeamApplicationService: CreateTeam("0break")
+
+    
+    TeamApplicationService ->> +TeamValidationEx: Raise
+    deactivate TeamApplicationService
+    TeamValidationEx -->> -TeamController: [Exception]
+    
+    TeamController ->> TeamController: ConvertToBadRequest(exception)
+
+    TeamController -->> TeamServiceClient: 400 BadRequest+Msg
+    note left of TeamServiceClient: Context loss
+    TeamServiceClient->>TeamServiceClient: Reconstruct TeamValidationEx
+    TeamServiceClient-->>-B/TeamApiController: [Exception]
+    B/TeamApiController->>B/TeamApiController: ConvertToBadRequest(msg)
+    B/TeamApiController -->> -Vue: 400 BadRequest+msg
+    note left of Vue: Context loss
+    Vue->>Vue: Reconstruct context
+    Vue ->> -User: [JS] Update dialog w/ error
+    note over User, TeamApplicationService: Special case handling of validation error. Note it repeats in tests.
