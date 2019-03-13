@@ -8,8 +8,7 @@ set -eu -o pipefail
 
 # build parameters
 readonly REGION=${AWS_DEFAULT_REGION:-"eu-central-1"}
-readonly TEAM_NAME='ded'
-readonly IMAGE_NAME="${TEAM_NAME}/team-service"
+readonly IMAGE_NAME="ded/capability-service"
 readonly DB_IMAGE_NAME="${IMAGE_NAME}/dbmigrations"
 readonly BUILD_NUMBER=${1:-"N/A"}
 readonly BUILD_SOURCES_DIRECTORY=${2:-${PWD}}
@@ -21,27 +20,27 @@ clean_output_folder() {
 
 restore_dependencies() {
     echo "Restoring dependencies"
-    dotnet restore TeamService.sln
+    dotnet restore CapabilityService.sln
 }
 
 run_tests() {
     echo "Running tests..."
-    dotnet build -c Release TeamService.sln
+    dotnet build -c Release CapabilityService.sln
 
     MSYS_NO_PATHCONV=1 dotnet test \
         --logger:"trx;LogFileName=testresults.trx" \
-        TeamService.Tests/TeamService.Tests.csproj \
+        CapabilityService.Tests/CapabilityService.Tests.csproj \
         /p:CollectCoverage=true \
         /p:CoverletOutputFormat=cobertura \
-        '/p:Include="[TeamService.WebApi]*"'
+        '/p:Include="[CapabilityService.WebApi]*"'
 
-    mv ./TeamService.Tests/coverage.cobertura.xml "${BUILD_SOURCES_DIRECTORY}/output/"
-    mv ./TeamService.Tests/TestResults/testresults.trx "${BUILD_SOURCES_DIRECTORY}/output/"
+    mv ./CapabilityService.Tests/coverage.cobertura.xml "${BUILD_SOURCES_DIRECTORY}/output/"
+    mv ./CapabilityService.Tests/TestResults/testresults.trx "${BUILD_SOURCES_DIRECTORY}/output/"
 }
 
 publish_binaries() {
     echo "Publishing binaries..."
-    dotnet publish -c Release -o ${BUILD_SOURCES_DIRECTORY}/output/app TeamService.WebApi/TeamService.WebApi.csproj
+    dotnet publish -c Release -o ${BUILD_SOURCES_DIRECTORY}/output/app CapabilityService.WebApi/CapabilityService.WebApi.csproj
 }
 
 build_container_image() {

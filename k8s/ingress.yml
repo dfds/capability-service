@@ -1,19 +1,19 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: team-service
+  name: capability-service
   namespace: $(kubernetes-namespace)
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.frontend.rule.type: PathPrefixStrip
     traefik.ingress.kubernetes.io/auth-type: basic
-    traefik.ingress.kubernetes.io/auth-secret: teamservice-basic-authentication-credentials
+    traefik.ingress.kubernetes.io/auth-secret: capabilityservice-basic-authentication-credentials
 spec:
   rules:
-    - host: api.turing.oxygen.dfds.cloud
+    - host: api.hellman.oxygen.dfds.cloud
       http:
         paths:
-          - path: /team-service
+          - path: /capability
             backend:
-              serviceName: team-service
+              serviceName: capability-service
               servicePort: external

@@ -1,26 +1,31 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: team-service
+  name: capability-service
   namespace: $(kubernetes-namespace)
   labels:
     project: selfservice
     department: devex
+    app: capability-service
+    component: capability-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: team-service
+      app: capability-service
   template:
     metadata:
       labels:
-        app: team-service
+        app: capability-service
         project: selfservice
         department: devex
+      annotations:
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
     spec:
       initContainers:
       - name: dbmigrations
-        image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/team-service/dbmigrations:$(Build.BuildId)
+        image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/capability-service/dbmigrations:$(Build.BuildId)
         env:
         - name:  PGDATABASE
           value: ts
@@ -33,14 +38,16 @@ spec:
         - name: PGPASSWORD
           valueFrom:
             secretKeyRef:
-              name: team-service
+              name: capability-service-db
               key: password
       containers:
-      - name: team-service
-        image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/team-service:$(Build.BuildId)
+      - name: capability-service
+        image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/capability-service:$(Build.BuildId)
         ports:
         - containerPort: 80
           name: web
+        - containerPort: 8080
+          name: metrics
         resources:
           requests:
             memory: "64Mi"
@@ -53,8 +60,37 @@ spec:
           value: http://iamroleservice
         - name: ROLEMAPPERSERVICE_URL
           value: http://rolemapper-service
-        - name: TEAMSERVICE_DATABASE_CONNECTIONSTRING
+        - name: CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING
           valueFrom:
             secretKeyRef:
-              name: team-service
+              name: capability-service-db
               key: connection-string
+        - name: CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS
+          value: $(KAFKA_BOOTSTRAP_SERVERS)
+        - name: CAPABILITY_SERVICE_KAFKA_BROKER_VERSION_FALLBACK
+          value: "0.10.0.0"
+        - name: CAPABILITY_SERVICE_KAFKA_API_VERSION_FALLBACK_MS
+          value: "0"
+        - name: CAPABILITY_SERVICE_KAFKA_SASL_USERNAME
+          value: $(KAFKA_SASL_USERNAME)
+        - name: CAPABILITY_SERVICE_KAFKA_SASL_PASSWORD
+          value: $(KAFKA_SASL_PASSWORD)
+        - name: CAPABILITY_SERVICE_KAFKA_SASL_MECHANISMS
+          value: "PLAIN"
+        - name: CAPABILITY_SERVICE_KAFKA_SECURITY_PROTOCOL
+          value: "SASL_SSL"
+        livenessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 5
+          httpGet:
+            port: web
+            path: /healthz
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 5
+          httpGet:
+            port: web
+            path: /healthz
+          

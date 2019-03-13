@@ -4,23 +4,45 @@ services:
   database:
     image: postgres:latest
     ports:
-    - 5432:5432
+      - 5432:5432
     environment:
-    - POSTGRES_USER=postgres
-    - POSTGRES_PASSWORD=p
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=p
 
   db-migration:
     build: ./db
     depends_on:
-    - database
+      - database
     # volumes:
-    # - ${PWD}/db/export:/tmp
+    #   - ${PWD}/db/export:/tmp
     environment:
-    # - DEBUG=1                     # enable script debugging
-    - LOCAL_DEVELOPMENT=1         # will try to CREATE DATABASE ${PGDATABASE}
-    - PGDATABASE=teamservice      # database name
-    - PGHOST=database             # same as avove - docker-compose service name
-    - PGPORT=5432                 # same as above
-    - PGUSER=postgres             # same as above
-    - PGPASSWORD=p                # same as above
-    - PGSSLMODE=disable           # ignore SSLMODE for local development (overwritten - see ./db/Dockerfile)
+      # - DEBUG=1                     # enable script debugging
+      - LOCAL_DEVELOPMENT=1         # will try to CREATE DATABASE ${PGDATABASE}
+      - PGDATABASE=capabilitydb     # database name
+      - PGHOST=database             # same as avove - docker-compose service name
+      - PGPORT=5432                 # same as above
+      - PGUSER=postgres             # same as above
+      - PGPASSWORD=p                # same as above
+      - PGSSLMODE=disable           # ignore SSLMODE for local development (overwritten - see ./db/Dockerfile)
+
+  iamrole_service:
+    build: 
+      context: ./fake_dependencies/iamrole_service
+    ports:
+      - "50800:50800"
+
+  rolemapper_service:
+    build: 
+      context: ./fake_dependencies/rolemapper_service
+    ports:
+      - "50801:50801"
+
+  messagebroker:
+    image: spotify/kafka
+    ports:
+      - "2181:2181"
+      - "9092:9092"
+    environment:
+      - "ADVERTISED_HOST=localhost"
+      - "ADVERTISED_PORT=9092"
+      - "AUTO_CREATE_TOPICS=true"

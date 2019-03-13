@@ -1,0 +1,37 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:50900",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      //"launchBrowser": true,
+      "launchUrl": "api/v1/capabilities",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING": "User ID=postgres;Password=p;Host=localhost;Port=5432;Database=capabilitydb;",
+        "IAMROLESERVICE_URL": "http://localhost:50800",
+        "ROLEMAPPERSERVICE_URL": "http://localhost:50801",
+        "CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS": "localhost:9092"
+      }
+    },
+    "CapabilityService.WebApi": {
+      "commandName": "Project",
+      //"launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING": "User ID=postgres;Password=p;Host=localhost;Port=5432;Database=capabilitydb;",
+        "IAMROLESERVICE_URL": "http://localhost:50800",
+        "ROLEMAPPERSERVICE_URL": "http://localhost:50801",
+        "CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS": "localhost:9092"
+      },
+      "applicationUrl": "http://localhost:5000",
+      "launchUrl": "api/v1/capabilities"
+    }
+  }
+}
