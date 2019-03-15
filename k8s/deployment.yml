@@ -59,7 +59,7 @@ spec:
         - name: IAMROLESERVICE_URL
           value: http://iamroleservice
         - name: ROLEMAPPERSERVICE_URL
-          value: http://rolemapper-service
+          value: http://k8s-janitor
         - name: CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING
           valueFrom:
             secretKeyRef:
