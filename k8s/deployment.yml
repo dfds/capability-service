@@ -57,7 +57,7 @@ spec:
             cpu: "200m"
         env:
         - name: IAMROLESERVICE_URL
-          value: http://iamroleservice
+          value: http://aws-janitor
         - name: ROLEMAPPERSERVICE_URL
           value: http://k8s-janitor
         - name: CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING
