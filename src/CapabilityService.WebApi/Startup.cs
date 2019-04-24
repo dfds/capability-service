@@ -108,7 +108,8 @@ namespace DFDS.CapabilityService.WebApi
             eventRegistry
                 .Register<CapabilityCreated>("capability_created", capabilitiesTopicName)
                 .Register<MemberJoinedCapability>("member_joined_capability", capabilitiesTopicName)
-                .Register<MemberLeftCapability>("member_left_capability", capabilitiesTopicName);
+                .Register<MemberLeftCapability>("member_left_capability", capabilitiesTopicName)
+                .Register<ContextAdded>("context_added_to_capability", capabilitiesTopicName);
 
             var scanner = new DomainEventScanner(eventRegistry);
             scanner.EnsureNoUnregisteredDomainEventsIn(Assembly.GetExecutingAssembly());
