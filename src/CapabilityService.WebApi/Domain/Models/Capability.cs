@@ -11,13 +11,14 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
     {
         private readonly List<Membership> _memberships = new List<Membership>();
         private readonly List<Context> _contexts = new List<Context>();
+  
+
+        public string Name { get; private set; }
+        public IEnumerable<Member> Members => _memberships.Select(x => x.Member).Distinct(new MemberEqualityComparer());
+        public IEnumerable<Membership> Memberships => _memberships;
+        public IEnumerable<Context> Contexts => _contexts;
         
-
-        private Capability()
-        {
-            
-        }
-
+        
         public Capability(Guid id, string name, IEnumerable<Membership> memberships, IEnumerable<Context> contexts)
         {
             Id = id;
@@ -26,11 +27,29 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             _contexts.AddRange(contexts);
         }
 
-        public string Name { get; private set; }
-        public IEnumerable<Member> Members => _memberships.Select(x => x.Member).Distinct(new MemberEqualityComparer());
-        public IEnumerable<Membership> Memberships => _memberships;
+        private Capability()
+        {
+            
+        }
 
-        public IEnumerable<Context> Contexts => _contexts;
+        
+        public static Capability Create(string name)
+        {
+            var capability = new Capability(
+                id: Guid.NewGuid(),
+                name: name,
+                memberships: Enumerable.Empty<Membership>(),
+                contexts:Enumerable.Empty<Context>()
+            );
+
+            capability.RaiseEvent(new CapabilityCreated(
+                capabilityId: capability.Id,
+                capabilityName: capability.Name
+            ));
+
+            return capability;
+        }
+        
         
         private bool IsAlreadyMember(string memberEmail)
         {
@@ -64,6 +83,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             RaiseEvent(new MemberLeftCapability(Id, memberEmail));
         }
 
+        
         private bool ContextExists(string contextName)
         {
             return Contexts.Any(c => c.Name.Equals(contextName, StringComparison.InvariantCultureIgnoreCase));
@@ -80,61 +100,9 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             
             _contexts.Add(context);
             
-            RaiseEvent(new ContextAdded(Id, context.Id,contextName));
+            RaiseEvent(new ContextAddedToCapability(Id, context.Id,contextName));
         }
         
-        public static Capability Create(string name)
-        {
-            var capability = new Capability(
-                id: Guid.NewGuid(),
-                name: name,
-                memberships: Enumerable.Empty<Membership>(),
-                contexts:Enumerable.Empty<Context>()
-            );
-
-            capability.RaiseEvent(new CapabilityCreated(
-                capabilityId: capability.Id,
-                capabilityName: capability.Name
-            ));
-
-            return capability;
-        }
-    }
-
-    public class MemberJoinedCapability : IDomainEvent
-    {
-        public MemberJoinedCapability(Guid capabilityId, string memberEmail)
-        {
-            CapabilityId = capabilityId;
-            MemberEmail = memberEmail;
-        }
-
-        public Guid CapabilityId { get; private set; }
-        public string MemberEmail { get; private set; }
-    }
-
-    public class MemberLeftCapability : IDomainEvent
-    {
-        public MemberLeftCapability(Guid capabilityId, string memberEmail)
-        {
-            CapabilityId = capabilityId;
-            MemberEmail = memberEmail;
-        }
-
-        public Guid CapabilityId { get; private set; }
-        public string MemberEmail { get; private set; }
-    }
-
-    public class ContextAdded : IDomainEvent
-    {
-        public ContextAdded(Guid capabilityId, Guid contextId, string contextName)
-        {
-            CapabilityId = capabilityId;
-            ContextId = contextId;
-            ContextName = contextName;
-        }
-        public Guid CapabilityId { get; }
-        public Guid ContextId { get; }
-        public string ContextName { get; }
+ 
     }
 }

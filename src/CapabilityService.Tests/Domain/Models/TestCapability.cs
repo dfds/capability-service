@@ -91,7 +91,7 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
             
             
             // Assert
-            var @event = sut.DomainEvents.Single() as ContextAdded;
+            var @event = sut.DomainEvents.Single() as ContextAddedToCapability;
             Assert.Equal(
                 sut.Id,
                 @event.CapabilityId
