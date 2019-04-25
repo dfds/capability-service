@@ -4,7 +4,8 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 {
     public class Context : Entity<Guid>
     {
-        public string Name { get; }
+        private Context (){}
+        public string Name { get; private set; }
         
         public Context(Guid id, string name)
         {

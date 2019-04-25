@@ -125,5 +125,19 @@ namespace DFDS.CapabilityService.Tests.Application
 
             await Assert.ThrowsAsync<CapabilityDoesNotExistException>(() => sut.LeaveCapability(nonExistingCapabilityId, dummyMemberId));
         }
+
+        [Fact]
+        public async Task adding_a_context_to_a_non_existing_capability_throws_exception()
+        {
+            var sut = new CapabilityApplicationServiceBuilder()
+                .WithCapabilityRepository(new StubCapabilityRepository())
+                .Build();
+
+            var nonExistingCapabilityId = Guid.Empty;
+            var dummyMemberId = "foo@bar.com";
+
+            await Assert.ThrowsAsync<CapabilityDoesNotExistException>(() => sut.AddContext(nonExistingCapabilityId, dummyMemberId));
+
+        }
     }
 }

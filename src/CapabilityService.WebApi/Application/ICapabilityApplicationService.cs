@@ -12,5 +12,6 @@ namespace DFDS.CapabilityService.WebApi.Application
         Task<Capability> GetCapability(Guid id);
         Task JoinCapability(Guid capabilityId, string memberEmail);
         Task LeaveCapability(Guid capabilityId, string memberEmail);
+        Task AddContext(Guid capabilityId, string contextName);
     }
 }

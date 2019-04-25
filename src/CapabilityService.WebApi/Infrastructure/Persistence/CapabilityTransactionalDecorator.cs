@@ -58,6 +58,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             await _inner.LeaveCapability(capabilityId, memberEmail);
             await QueueDomainEvents();
         }
+
+        public async Task AddContext(Guid capabilityId, string contextName)
+        {
+            await _inner.AddContext(capabilityId, contextName);
+            await QueueDomainEvents();
+        }
     }
 
 
@@ -104,6 +110,17 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
                 await _inner.LeaveCapability(capabilityId, memberEmail);
+
+                await _dbContext.SaveChangesAsync();
+                transaction.Commit();
+            }
+        }
+
+        public async Task AddContext(Guid capabilityId, string contextName)
+        {
+            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            {
+                await _inner.AddContext(capabilityId, contextName);
 
                 await _dbContext.SaveChangesAsync();
                 transaction.Commit();

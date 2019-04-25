@@ -27,7 +27,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
             return Ok(new CapabilityResponse
             {
                 Items = capabilities
-                        .Select(DtoHelper.ConvertToDto)
+                        .Select(Capability.Create)
                         .ToArray()
             });
         }
@@ -48,7 +48,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
                 });
             }
 
-            var dto = DtoHelper.ConvertToDto(capability);
+            var dto = Capability.Create(capability);
 
             return Ok(dto);
         }
@@ -58,7 +58,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
         {
             try {
                 var capability = await _capabilityApplicationService.CreateCapability(input.Name);
-                var dto = DtoHelper.ConvertToDto(capability);
+                var dto = Capability.Create(capability);
 
                 return CreatedAtAction(
                     actionName: nameof(GetCapability),
@@ -116,6 +116,27 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
                 return NotFound(new
                 {
                     Message = $"Capability with id {id} does not have member \"{memberEmail}\"."
+                });
+            }
+
+            return Ok();
+        }
+        
+        [HttpPost("{id}/contexts")]
+        public async Task<IActionResult> AddContextToCapability(string id, [FromBody] ContextInput input)
+        {
+            var capabilityId = Guid.Empty;
+            Guid.TryParse(id, out capabilityId);
+
+            try
+            {
+                await _capabilityApplicationService.AddContext(capabilityId, input.Name);
+            }
+            catch (CapabilityDoesNotExistException)
+            {
+                return NotFound(new
+                {
+                    Message = $"Capability with id {id} could not be found."
                 });
             }
 

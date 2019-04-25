@@ -23,12 +23,22 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
                 cfg.ToTable("Capability");
                 cfg.Ignore(x => x.Members);
                 cfg.Ignore(x => x.DomainEvents);
-
+                
                 cfg.HasMany<Membership>(x => x.Memberships)
                    .WithOne()
                    .OnDelete(DeleteBehavior.Cascade);
+                
+                cfg.HasMany<Context>(x => x.Contexts)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
+            modelBuilder.Entity<Context>(cfg =>
+            {
+                cfg.ToTable("Context");
+                cfg.Property(x => x.Name).HasColumnName("Name");
+            });
+            
             modelBuilder.Entity<Membership>(cfg =>
             {
                 cfg.ToTable("Membership");
@@ -36,7 +46,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
                    .Property(x => x.Email)
                    .HasColumnName("MemberEmail");
             });
-
+            
             modelBuilder.Entity<DomainEventEnvelope>(cfg =>
             {
                 cfg.HasKey(x => x.EventId);

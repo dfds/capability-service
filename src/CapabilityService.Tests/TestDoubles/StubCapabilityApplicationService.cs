@@ -42,6 +42,11 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
         {
             return Task.CompletedTask;
         }
+
+        public Task AddContext(Guid capabilityId, string contextName)
+        {
+            return Task.CompletedTask;
+        }
     }
 
     public class ErroneousCapabilityApplicationService : ICapabilityApplicationService
@@ -74,6 +79,11 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
         }
 
         public Task LeaveCapability(Guid capabilityId, string memberEmail)
+        {
+            throw _exceptionToThrow;
+        }
+
+        public Task AddContext(Guid capabilityId, string contextName)
         {
             throw _exceptionToThrow;
         }

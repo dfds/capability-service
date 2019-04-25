@@ -23,6 +23,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
                          .Capabilities
                          .OrderBy(x => x.Name)
                          .Include(x => x.Memberships)
+                         .Include(x => x.Contexts)
                          .ToListAsync();
         }
 
@@ -37,6 +38,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             var capability = await _dbContext
                 .Capabilities
                 .Include(x => x.Memberships)
+                .Include(x => x.Contexts)
                 .SingleOrDefaultAsync(x => x.Id == id);
             return capability;
         }

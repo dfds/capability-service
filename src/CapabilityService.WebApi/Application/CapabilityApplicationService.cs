@@ -61,5 +61,17 @@ namespace DFDS.CapabilityService.WebApi.Application
 
             capability.StopMembershipFor(memberEmail);
         }
+
+        public async Task AddContext(Guid capabilityId, string contextName)
+        {
+            var capability = await _capabilityRepository.Get(capabilityId);
+
+            if (capability == null)
+            {
+                throw new CapabilityDoesNotExistException();
+            }
+            
+            capability.AddContext(contextName);
+        }
     }
 }
