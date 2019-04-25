@@ -7,6 +7,9 @@ consumes:
   - application/json
 produces:
   - application/json
+schemes: 
+  - http
+host: localhost:5000
 basePath: /api/v1/
 paths:
   /capabilities: 
@@ -94,6 +97,29 @@ paths:
           description: Ok
         404:
           description: Not Found
+  /capabilities/{capabilityId}/contexts:
+    post:
+      summary: Adds a context to a capability 
+      parameters:
+        - in: path
+          name: capabilityId
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+      responses:
+        200:
+          description: Ok
+        404:
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errorObject'
 definitions:
   capability-list:
     type: object
@@ -113,10 +139,21 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/member'
+      contexts:
+        type: array
+        items:
+          $ref: '#/definitions/context'
   member:
     type: object
     properties:
       email:
+        type: string
+  context:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
         type: string
   errorObject:
     type: object
