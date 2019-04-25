@@ -5,6 +5,7 @@ using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.TestDoubles;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
+using DFDS.CapabilityService.WebApi.Domain.Models;
 using Xunit;
 
 namespace DFDS.CapabilityService.Tests.Infrastructure.Api
@@ -75,7 +76,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"members\":[]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"members\":[],\"contexts\":[]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
@@ -99,12 +100,37 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"members\":[{{\"email\":\"{memberEmail}\"}}]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"members\":[{{\"email\":\"{memberEmail}\"}}],\"contexts\":[]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
         }
 
+        [Fact]
+        public async Task get_single_capability_with_a_single_context_returns_expected_body()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var contextName = "foo@bar.com";
+                var contextGuid = Guid.NewGuid();
+                var context = new Context(contextGuid, contextName);
+                var stubCapability = new CapabilityBuilder()
+                    .WithContexts(context)
+                    .Build();
+
+                var client = builder
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
+                    .Build();
+
+                var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
+
+                Assert.Equal(
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"members\":[],\"contexts\":[{{\"id\":\"{contextGuid}\",\"name\":\"{contextName}\"}}]}}",
+                    actual: await response.Content.ReadAsStringAsync()
+                );
+            }
+        }
+        
         [Fact]
         public async Task get_single_capability_returns_expected_status_code_when_capability_was_not_found()
         {
@@ -191,7 +217,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.PostAsync("api/v1/capabilities", new JsonContent(stubInput));
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{subCapability.Id}\",\"name\":\"{subCapability.Name}\",\"members\":[]}}",
+                    expected: $"{{\"id\":\"{subCapability.Id}\",\"name\":\"{subCapability.Name}\",\"members\":[],\"contexts\":[]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
