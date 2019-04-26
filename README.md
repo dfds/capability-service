@@ -62,6 +62,7 @@ Then the application can be executed by the following (navigate to the `./src` f
 ```bash
 dotnet run --project CapabilityService.WebApi/
 ```
+The application can also be executed by running the bash script `watch-run.sh` in the folder `local-development` running the application this way is good for development on your own machine.
 
 ## Database
 The database will initially start as empty. The image is constructed so that files can be added through the command below, and these will be run in date order (at least if you name the file right).
