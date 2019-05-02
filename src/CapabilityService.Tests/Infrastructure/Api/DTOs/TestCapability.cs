@@ -13,11 +13,13 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
             // Arrange
             var capabilityId = Guid.NewGuid();
             var capabilityName = "foo";
+            var capabilityDescription = "bar";
             var domainMembership = new Membership(Guid.NewGuid(), new Member("fu@baa.com"));
             var domainContext = new Context(Guid.NewGuid(), "baa");
             var domainCapability = new Capability(
                 capabilityId,
                 capabilityName,
+                capabilityDescription,
                 new []{domainMembership},
                 new []{domainContext}
             );
@@ -29,6 +31,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
             // Assert
             Assert.Equal(capabilityId, capabilityDto.Id);
             Assert.Equal(capabilityName, capabilityDto.Name);
+            Assert.Equal(capabilityDescription, capabilityDto.Description);
 
             var membershipDto = capabilityDto.Members.Single();
             Assert.Equal(domainMembership.Member.Email, membershipDto.Email);

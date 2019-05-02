@@ -14,15 +14,17 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
   
 
         public string Name { get; private set; }
+        public string Description { get; private set; }
         public IEnumerable<Member> Members => _memberships.Select(x => x.Member).Distinct(new MemberEqualityComparer());
         public IEnumerable<Membership> Memberships => _memberships;
         public IEnumerable<Context> Contexts => _contexts;
         
         
-        public Capability(Guid id, string name, IEnumerable<Membership> memberships, IEnumerable<Context> contexts)
+        public Capability(Guid id, string name, string description, IEnumerable<Membership> memberships, IEnumerable<Context> contexts)
         {
             Id = id;
             Name = name;
+            Description = description;
             _memberships.AddRange(memberships);
             _contexts.AddRange(contexts);
         }
@@ -33,11 +35,12 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
         }
 
         
-        public static Capability Create(string name)
+        public static Capability Create(string name, string description)
         {
             var capability = new Capability(
                 id: Guid.NewGuid(),
                 name: name,
+                description: description,
                 memberships: Enumerable.Empty<Membership>(),
                 contexts:Enumerable.Empty<Context>()
             );

@@ -7,7 +7,7 @@ namespace DFDS.CapabilityService.WebApi.Application
 {
     public interface ICapabilityApplicationService
     {
-        Task<Capability> CreateCapability(string name);
+        Task<Capability> CreateCapability(string name, string description);
         Task<IEnumerable<Capability>> GetAllCapabilities();
         Task<Capability> GetCapability(Guid id);
         Task JoinCapability(Guid capabilityId, string memberEmail);

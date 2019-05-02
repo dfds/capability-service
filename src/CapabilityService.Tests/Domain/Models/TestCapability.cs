@@ -10,7 +10,7 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
         [Fact]
         public void expected_domain_event_is_raised_when_creating_a_capability()
         {
-            var capability = Capability.Create("foo");
+            var capability = Capability.Create("foo","bar");
 
             Assert.Equal(
                 expected: new[] {new CapabilityCreated(capability.Id, "foo")},

@@ -24,14 +24,14 @@ namespace DFDS.CapabilityService.WebApi.Application
         public Task<Capability> GetCapability(Guid id) => _capabilityRepository.Get(id);
         public Task<IEnumerable<Capability>> GetAllCapabilities() => _capabilityRepository.GetAll();
 
-        public async Task<Capability> CreateCapability(string name)
+        public async Task<Capability> CreateCapability(string name, string description)
         {
             if (!_nameValidationRegex.Match(name).Success)
             {
                 throw new CapabilityValidationException("Name must be a string of length 3 to 32. consisting of only alphanumeric ASCII characters, starting with a capital letter. Underscores and hyphens are allowed.");
             }
 
-            var capability = Capability.Create(name);
+            var capability = Capability.Create(name, description);
             await _capabilityRepository.Add(capability);
             await _roleService.CreateRoleFor(capability);
 

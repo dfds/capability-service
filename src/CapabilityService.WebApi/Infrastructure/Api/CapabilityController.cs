@@ -57,7 +57,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
         public async Task<IActionResult> CreateCapability(CapabilityInput input)
         {
             try {
-                var capability = await _capabilityApplicationService.CreateCapability(input.Name);
+                var capability = await _capabilityApplicationService.CreateCapability(input.Name, input.Description);
                 var dto = Capability.Create(capability);
 
                 return CreatedAtAction(

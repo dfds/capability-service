@@ -16,7 +16,7 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
             _stubCapabilities = stubCapabilities;
         }
 
-        public Task<Capability> CreateCapability(string name)
+        public Task<Capability> CreateCapability(string name, string description)
         {
             var capability = _stubCapabilities.FirstOrDefault();
             return Task.FromResult(capability);
@@ -58,7 +58,7 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
             _exceptionToThrow = exceptionToThrow;
         }
 
-        public Task<Capability> CreateCapability(string name)
+        public Task<Capability> CreateCapability(string name, string description)
         {
             throw _exceptionToThrow;
         }

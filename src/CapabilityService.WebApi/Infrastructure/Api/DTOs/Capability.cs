@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
 {
@@ -7,6 +8,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public Member[] Members { get; set; }
         
         public Context[] Contexts { get; set; }
@@ -17,6 +19,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
             {
                 Id = capability.Id,
                 Name = capability.Name,
+                Description = capability.Description,
                 Members = capability
                     .Members
                     .Select(member => new Member {Email = member.Email})

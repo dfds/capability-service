@@ -20,7 +20,7 @@ namespace DFDS.CapabilityService.Tests.Application
                 .WithCapabilityRepository(new StubCapabilityRepository())
                 .Build();
 
-            await Assert.ThrowsAsync<CapabilityValidationException>(() => sut.CreateCapability(input));
+            await Assert.ThrowsAsync<CapabilityValidationException>(() => sut.CreateCapability(input, string.Empty));
         }
 
         [Theory]
@@ -32,7 +32,19 @@ namespace DFDS.CapabilityService.Tests.Application
                 .WithCapabilityRepository(new StubCapabilityRepository())
                 .Build();
 
-            await sut.CreateCapability(input);
+            await sut.CreateCapability(input, string.Empty);
+        }    
+        
+        [Theory]
+        [InlineData("ADescription")]
+        [InlineData("")]
+        [InlineData(null)]
+        public async Task can_create_capability_with_an_acceptable_description(string input) {
+            var sut = new CapabilityApplicationServiceBuilder()
+                .WithCapabilityRepository(new StubCapabilityRepository())
+                .Build();
+
+            await sut.CreateCapability("AName",input);
         }
 
         [Fact]

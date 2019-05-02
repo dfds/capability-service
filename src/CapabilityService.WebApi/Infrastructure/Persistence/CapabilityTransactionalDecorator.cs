@@ -24,9 +24,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
         public Task<IEnumerable<Capability>> GetAllCapabilities() => _inner.GetAllCapabilities();
         public Task<Capability> GetCapability(Guid id) => _inner.GetCapability(id);
 
-        public async Task<Capability> CreateCapability(string name)
+        public async Task<Capability> CreateCapability(string name, string description)
         {
-            var capability = await _inner.CreateCapability(name);
+            var capability = await _inner.CreateCapability(name, description);
             await QueueDomainEvents();
 
             return capability;
@@ -81,11 +81,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
         public Task<IEnumerable<Capability>> GetAllCapabilities() => _inner.GetAllCapabilities();
         public Task<Capability> GetCapability(Guid id) => _inner.GetCapability(id);
 
-        public async Task<Capability> CreateCapability(string name)
+        public async Task<Capability> CreateCapability(string name, string description)
         {
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
-                var capability = await _inner.CreateCapability(name);
+                var capability = await _inner.CreateCapability(name, description);
 
                 await _dbContext.SaveChangesAsync();
                 transaction.Commit();
