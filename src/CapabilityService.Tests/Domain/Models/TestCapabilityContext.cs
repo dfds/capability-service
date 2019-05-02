@@ -60,6 +60,36 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
         }
         
         [Fact]
+        public void domain_event_is_not_raised_when_Context_with_same_name_is_added_multiple_times()
+        {
+            // Arrange
+            var contextName = "foo";
+            
+            var sut = new CapabilityBuilder().Build();
+            
+            
+            // Act
+            sut.AddContext(contextName);
+            sut.AddContext(contextName);
+            sut.AddContext(contextName);
+
+            
+            // Assert
+            var @event = sut.DomainEvents.Single() as ContextAddedToCapability;
+            Assert.Equal(
+                sut.Id,
+                @event.CapabilityId
+            );
+            
+            Assert.Equal(
+                contextName,
+                @event.ContextName
+            );
+            
+            Assert.NotNull(@event.ContextId);
+        }
+        
+        [Fact]
         public void expected_context_is_added_to_contexts()
         {
             // Arrange
