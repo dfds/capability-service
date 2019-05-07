@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
@@ -103,9 +102,12 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             
             _contexts.Add(context);
             
-            RaiseEvent(new ContextAddedToCapability(Id, context.Id,contextName));
+            RaiseEvent(new ContextAddedToCapability(
+                Id, 
+                Name,
+                context.Id,
+                contextName
+            ));
         }
-        
- 
     }
 }
