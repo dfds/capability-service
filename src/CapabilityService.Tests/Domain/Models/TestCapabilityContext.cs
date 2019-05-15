@@ -56,7 +56,6 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
                 @event.ContextName
             );
             
-            Assert.NotNull(@event.ContextId);
         }
         
         [Fact]
@@ -86,7 +85,6 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
                 @event.ContextName
             );
             
-            Assert.NotNull(@event.ContextId);
         }
         
         [Fact]
