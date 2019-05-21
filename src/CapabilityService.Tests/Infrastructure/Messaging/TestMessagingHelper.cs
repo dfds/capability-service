@@ -21,9 +21,11 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Messaging
 
             var expected = @"
 {
-    ""messageId"": ""00000000-0000-0000-0000-000000000000"",
-    ""type"": ""foo-type"",
-    ""data"": {""foo"":""bar""}
+    ""version"": ""1"",
+    ""eventName"": ""foo-type"",
+    ""x-correlationId"": ""00000000-0000-0000-0000-000000000000"",
+    ""x-sender"": """",
+    ""payload"": {""foo"":""bar""}
 }";
 
             Assert.Equal(
