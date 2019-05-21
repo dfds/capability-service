@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Dynamic;
+using System.Reflection;
 using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -15,7 +16,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
                 version: "1",
                 eventName: evt.Type,
                 xCorrelationId: Guid.Empty,
-                xSender: "",
+                xSender: Assembly.GetExecutingAssembly().FullName,
                 payload: domainEvent);
 
             return JsonConvert.SerializeObject(message, new JsonSerializerSettings

@@ -24,7 +24,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Messaging
     ""version"": ""1"",
     ""eventName"": ""foo-type"",
     ""x-correlationId"": ""00000000-0000-0000-0000-000000000000"",
-    ""x-sender"": """",
+    ""x-sender"": ""CapabilityService.WebApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"",
     ""payload"": {""foo"":""bar""}
 }";
 
