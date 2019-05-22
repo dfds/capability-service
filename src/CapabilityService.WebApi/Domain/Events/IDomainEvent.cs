@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DFDS.CapabilityService.WebApi.Domain.Events
+﻿namespace DFDS.CapabilityService.WebApi.Domain.Events
 {
     /// <summary>
     /// Marker interface for all domain events

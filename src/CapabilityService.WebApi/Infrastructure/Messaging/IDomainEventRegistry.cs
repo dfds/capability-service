@@ -1,4 +1,6 @@
-﻿using DFDS.CapabilityService.WebApi.Domain.Events;
+﻿using System;
+using System.Collections.Generic;
+using DFDS.CapabilityService.WebApi.Domain.Events;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 {
@@ -6,5 +8,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
     {
         string GetTopicFor(string eventType);
         string GetTypeNameFor(IDomainEvent domainEvent);
+        IEnumerable<string> GetAllTopics();
+        Type GetInstanceTypeFor(string eventName);
     }
 }

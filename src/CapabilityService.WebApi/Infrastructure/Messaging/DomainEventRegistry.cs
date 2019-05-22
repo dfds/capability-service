@@ -51,5 +51,24 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 
             return registration.EventType;
         }
+        
+        public IEnumerable<string> GetAllTopics()
+        {
+            var topics = _registrations.Select(x => x.Topic).Distinct();           
+
+            return topics;
+        }
+        
+        public Type GetInstanceTypeFor(string eventName)
+        {
+            var registration = _registrations.SingleOrDefault(x => x.EventType == eventName);
+
+            if (registration == null)
+            {
+                throw new MessagingException($"Error! Could not determine \"event instance type\" due to no registration was found for type {eventName}!");
+            }
+
+            return registration.EventInstanceType;
+        }
     }
 }
