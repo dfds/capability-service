@@ -33,8 +33,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
         {
             var eventType = _eventRegistry.GetInstanceTypeFor(generalDomainEvent.EventName);
             dynamic domainEvent = Activator.CreateInstance(eventType, generalDomainEvent);
-            dynamic handlersList = _eventHandlerFactory.GetEventHandlersFor(domainEvent, serviceScope);
             
+            dynamic handlersList = _eventHandlerFactory.GetEventHandlersFor(domainEvent, serviceScope);
+            // TODO Log if no handlers are present
             foreach (var handler in handlersList)
             {
                 await handler.HandleAsync(domainEvent);

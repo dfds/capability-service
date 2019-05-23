@@ -13,7 +13,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
         private readonly ILogger<ConsumerHostedService> _logger;
         private readonly KafkaConsumerFactory _consumerFactory;
         private readonly IServiceProvider _serviceProvider;
-        private readonly DomainEventRegistry _eventRegistry;
+        private readonly IDomainEventRegistry _eventRegistry;
 
         private Task _executingTask;
 
@@ -21,7 +21,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
             ILogger<ConsumerHostedService> logger,
             IServiceProvider serviceProvider,
             KafkaConsumerFactory kafkaConsumerFactory,
-            DomainEventRegistry domainEventRegistry)
+            IDomainEventRegistry domainEventRegistry)
         {
             Console.WriteLine($"Starting event consumer.");
 
@@ -44,7 +44,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
                         consumer.Subscribe(topics);
                         consumer.OnPartitionsRevoked += (sender, topicPartitions) => consumer.Unassign();
                         consumer.OnPartitionsAssigned += (sender, topicPartitions) => consumer.Assign(topicPartitions);
-
+                        
                         // consume loop
                         while (!_cancellationTokenSource.IsCancellationRequested)
                         {

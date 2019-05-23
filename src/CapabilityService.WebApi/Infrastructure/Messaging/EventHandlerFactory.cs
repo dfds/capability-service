@@ -16,12 +16,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
         public IEnumerable<IEventHandler<TEvent>> GetEventHandlersFor<TEvent>(TEvent domainEvent, IServiceScope serviceScope)
         {
             var eventHandlers = Create<TEvent>(serviceScope);
-
-            if (eventHandlers == null || eventHandlers.Count() == 0)
-            {
-                throw new MessagingException($"Error! Could not determine \"event handlers\" for type {domainEvent.GetType().FullName}!");
-            }
-
             return eventHandlers;
         }
     }

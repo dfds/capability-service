@@ -99,9 +99,12 @@ namespace DFDS.CapabilityService.WebApi
         {
             var eventRegistry = new DomainEventRegistry();
             services.AddSingleton<IDomainEventRegistry>(eventRegistry);
-            services.AddTransient<KafkaPublisherFactory.KafkaConfiguration>();
+            services.AddTransient<KafkaConfiguration>();
             services.AddTransient<KafkaPublisherFactory>();
+            services.AddTransient<KafkaConsumerFactory>();
             services.AddHostedService<PublishingService>();
+            services.AddHostedService<ConsumerHostedService>();
+            services.AddTransient<EventHandlerFactory>();            
 
             var capabilitiesTopicName = "build.capabilities";
 
