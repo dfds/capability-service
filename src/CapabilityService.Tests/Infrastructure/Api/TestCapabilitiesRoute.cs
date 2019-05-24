@@ -126,7 +126,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[{{\"id\":\"{contextGuid}\",\"name\":\"{contextName}\"}}]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[{{\"id\":\"{contextGuid}\",\"name\":\"{contextName}\",\"awsAccountId\":\"0123456789\",\"awsRoleArn\":\"someRoleArn\",\"awsRoleEmail\":\"someRoleEmail@dfds.com\"}}]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }

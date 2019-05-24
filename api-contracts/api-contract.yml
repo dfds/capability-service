@@ -157,6 +157,12 @@ definitions:
         type: string
       name:
         type: string
+      awsAccountId:
+        type: string
+      awsRoleArn:
+        type: string
+      awsRoleEmail:
+        type: string
   errorObject:
     type: object
     properties:
