@@ -11,7 +11,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 
         public IEnumerable<DomainEventRegistration> Registrations => _registrations;
 
-        public IDomainEventRegistrationManager Register<TEvent>(string eventTypeName, string topicName) where TEvent : IDomainEvent
+        public IDomainEventRegistrationManager Register<TEvent>(string eventTypeName, string topicName) where TEvent : IEvent
         {
             _registrations.Add(new DomainEventRegistration
             (

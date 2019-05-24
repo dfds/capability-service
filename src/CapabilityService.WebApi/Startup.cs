@@ -3,9 +3,11 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Application;
+using DFDS.CapabilityService.WebApi.Domain.EventHandlers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Infrastructure.Events;
 using DFDS.CapabilityService.WebApi.Infrastructure.Integrations;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
@@ -104,6 +106,9 @@ namespace DFDS.CapabilityService.WebApi
             services.AddTransient<KafkaConsumerFactory>();
             services.AddHostedService<PublishingService>();
             services.AddHostedService<ConsumerHostedService>();
+            
+            services.AddTransient<IEventHandler<AWSContextAccountCreatedIntegrationEvent>, AWSContextAccountCreatedEventHandler>();
+            
             services.AddTransient<EventHandlerFactory>();            
 
             var capabilitiesTopicName = "build.capabilities";
@@ -112,7 +117,9 @@ namespace DFDS.CapabilityService.WebApi
                 .Register<CapabilityCreated>("capability_created", capabilitiesTopicName)
                 .Register<MemberJoinedCapability>("member_joined_capability", capabilitiesTopicName)
                 .Register<MemberLeftCapability>("member_left_capability", capabilitiesTopicName)
-                .Register<ContextAddedToCapability>("context_added_to_capability", capabilitiesTopicName);
+                .Register<ContextAddedToCapability>("context_added_to_capability", capabilitiesTopicName)
+                .Register<AWSContextAccountCreatedIntegrationEvent>("aws_context_account_created",
+                    capabilitiesTopicName);
 
             var scanner = new DomainEventScanner(eventRegistry);
             scanner.EnsureNoUnregisteredDomainEventsIn(Assembly.GetExecutingAssembly());

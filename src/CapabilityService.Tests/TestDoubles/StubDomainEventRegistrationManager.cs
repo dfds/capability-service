@@ -33,7 +33,7 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
 
         public IEnumerable<DomainEventRegistration> Registrations { get; }
 
-        public IDomainEventRegistrationManager Register<TEvent>(string eventTypeName, string topicName) where TEvent : IDomainEvent
+        public IDomainEventRegistrationManager Register<TEvent>(string eventTypeName, string topicName) where TEvent : IEvent
         {
             return this;
         }

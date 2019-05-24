@@ -3,8 +3,8 @@
     /// <summary>
     /// Marker interface for all domain events
     /// </summary>
-    public interface IDomainEvent
+    public interface IDomainEvent : IEvent
     {
-        
+
     }
 }
