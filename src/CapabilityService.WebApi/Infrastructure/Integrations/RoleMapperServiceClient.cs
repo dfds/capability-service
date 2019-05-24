@@ -21,9 +21,17 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Integrations
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
-
+            var data = new
+            {
+                Type = "capability_registered",
+                Data = new
+                {
+                    CapabilityName = capabilityName,
+                    RoleArn = roleIdentifier
+                }
+            };
             var payload = new StringContent(
-                content: JsonConvert.SerializeObject(new {CapabilityName = capabilityName, RoleArn = roleIdentifier}, serializerSettings),
+                content: JsonConvert.SerializeObject(data, serializerSettings),
                 encoding: Encoding.UTF8,
                 mediaType: "application/json"
             );
