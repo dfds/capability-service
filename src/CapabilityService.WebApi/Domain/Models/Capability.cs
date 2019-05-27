@@ -109,5 +109,16 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
                 contextName
             ));
         }
+
+        public void UpdateContext(Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
+        {
+            var context = Contexts.FirstOrDefault(c => c.Id == contextId);
+            if(context == null)
+                throw new ContextDoesNotExistException();
+            
+            context.UpdateContext(awsAccountId, awsRoleArn, awsRoleEmail);
+            RaiseEvent(new ContextUpdated(Id, contextId, awsAccountId, awsRoleArn, awsRoleEmail ));
+
+        }
     }
 }

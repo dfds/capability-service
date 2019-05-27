@@ -32,9 +32,9 @@ namespace DFDS.CapabilityService.Tests.Builders
         public CapabilityBuilder WithContexts(params Context[] contexts)
         {
             _contexts = contexts;
-
             return this;
         }
+        
         
         public Capability Build()
         {

@@ -64,6 +64,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             await _inner.AddContext(capabilityId, contextName);
             await QueueDomainEvents();
         }
+
+        public async Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
+        {
+            await _inner.UpdateContext(capabilityId, contextId, awsAccountId, awsRoleArn, awsRoleEmail);
+            await QueueDomainEvents();
+        }
     }
 
 
@@ -121,6 +127,17 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
                 await _inner.AddContext(capabilityId, contextName);
+
+                await _dbContext.SaveChangesAsync();
+                transaction.Commit();
+            }
+        }
+
+        public async Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
+        {
+            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            {
+                await _inner.UpdateContext(capabilityId, contextId, awsAccountId, awsRoleArn, awsRoleEmail);
 
                 await _dbContext.SaveChangesAsync();
                 transaction.Commit();

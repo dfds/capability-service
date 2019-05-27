@@ -47,6 +47,11 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
         {
             return Task.CompletedTask;
         }
+
+        public Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
+        {
+            return Task.CompletedTask;
+        }
     }
 
     public class ErroneousCapabilityApplicationService : ICapabilityApplicationService
@@ -84,6 +89,11 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
         }
 
         public Task AddContext(Guid capabilityId, string contextName)
+        {
+            throw _exceptionToThrow;
+        }
+
+        public Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
         {
             throw _exceptionToThrow;
         }

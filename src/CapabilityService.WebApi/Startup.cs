@@ -118,6 +118,7 @@ namespace DFDS.CapabilityService.WebApi
                 .Register<MemberJoinedCapability>("member_joined_capability", capabilitiesTopicName)
                 .Register<MemberLeftCapability>("member_left_capability", capabilitiesTopicName)
                 .Register<ContextAddedToCapability>("context_added_to_capability", capabilitiesTopicName)
+                .Register<ContextUpdated>("context_updated", capabilitiesTopicName)
                 .Register<AWSContextAccountCreatedIntegrationEvent>("aws_context_account_created",
                     capabilitiesTopicName);
 

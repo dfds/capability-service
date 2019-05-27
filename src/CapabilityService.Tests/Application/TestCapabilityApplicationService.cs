@@ -1,9 +1,12 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.TestDoubles;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
+using DFDS.CapabilityService.WebApi.Domain.Models;
 using Xunit;
 
 namespace DFDS.CapabilityService.Tests.Application
@@ -150,6 +153,49 @@ namespace DFDS.CapabilityService.Tests.Application
 
             await Assert.ThrowsAsync<CapabilityDoesNotExistException>(() => sut.AddContext(nonExistingCapabilityId, dummyMemberId));
 
+        }
+        
+        [Fact]
+        public async Task updating_a_non_existing_context_on_an_existing_capability_throws_exception()
+        {
+            var capability = new CapabilityBuilder()
+                .Build();
+            var sut = new CapabilityApplicationServiceBuilder()
+                .WithCapabilityRepository(new StubCapabilityRepository(capability))
+                .Build();
+
+            var nonExistingContextId = Guid.Empty;
+            var dummyAccountId = "111111111111";
+            var dummyEmail = "dummy@mail.com";
+            var dummyArn = "mynameisarne";
+            
+
+            await Assert.ThrowsAsync<ContextDoesNotExistException>(() => 
+                sut.UpdateContext(capability.Id, nonExistingContextId, dummyAccountId, dummyArn,dummyEmail));
+        }
+        
+        [Fact]
+        public async Task updating_a_existing_context_on_an_existing_capability()
+        {
+            var context = new Context(Guid.NewGuid(), "default");
+            var capability = new CapabilityBuilder()
+                .WithContexts(context)
+                .Build();
+            
+            var sut = new CapabilityApplicationServiceBuilder()
+                .WithCapabilityRepository(new StubCapabilityRepository(capability))
+                .Build();
+
+            var newAccountId = "111111111111";
+            var newEmail = "dummy@mail.com";
+            var newRoleArn = "mynameisarne";
+
+            await sut.UpdateContext(capability.Id, context.Id, newAccountId, newRoleArn, newEmail);
+
+            var contextFromCapability = capability.Contexts.Single();
+            Assert.Equal(contextFromCapability.AWSAccountId, newAccountId);
+            Assert.Equal(contextFromCapability.AWSRoleArn, newRoleArn);
+            Assert.Equal(contextFromCapability.AWSRoleEmail, newEmail);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
@@ -72,6 +73,22 @@ namespace DFDS.CapabilityService.WebApi.Application
             }
             
             capability.AddContext(contextName);
+        }
+
+        public async Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
+        {
+            var capability = await _capabilityRepository.Get(capabilityId);
+            if (capability == null)
+            {
+                throw new CapabilityDoesNotExistException();
+            }
+
+            var context = capability.Contexts.FirstOrDefault(c => c.Id == contextId);
+            if (context == null)
+            {
+                throw new ContextDoesNotExistException();
+            }
+            capability.UpdateContext(context.Id, awsAccountId, awsRoleArn, awsRoleEmail);
         }
     }
 }
