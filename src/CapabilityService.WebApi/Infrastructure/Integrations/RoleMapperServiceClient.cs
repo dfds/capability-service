@@ -23,8 +23,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Integrations
             };
             var data = new
             {
-                Type = "capability_registered",
-                Data = new
+                EventName = "capability_registered",
+                Version = "1",
+                Payload = new
                 {
                     CapabilityName = capabilityName,
                     RoleArn = roleIdentifier
