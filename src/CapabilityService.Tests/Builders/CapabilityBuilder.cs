@@ -8,6 +8,7 @@ namespace DFDS.CapabilityService.Tests.Builders
     {
         private Guid _id;
         private string _name;
+        private string _rootId;
         private string _description;
         private Membership[] _memberships;
         private Context[] _contexts;
@@ -15,6 +16,7 @@ namespace DFDS.CapabilityService.Tests.Builders
         {
             _id = new Guid("11111111-1111-1111-1111-111111111111");
             _name = "foo";
+            _rootId = "foo-582a4";
             _description = "bar";
             _memberships = new Membership[0];
             _contexts = new Context[0];
@@ -38,7 +40,7 @@ namespace DFDS.CapabilityService.Tests.Builders
         
         public Capability Build()
         {
-            return new Capability(_id, _name, _description, _memberships, _contexts);
+            return new Capability(_id, _name, _rootId,_description, _memberships, _contexts);
         }
 
     }

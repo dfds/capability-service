@@ -14,15 +14,17 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 
         public string Name { get; private set; }
         public string Description { get; private set; }
+        public string RootId { get; private set; }
         public IEnumerable<Member> Members => _memberships.Select(x => x.Member).Distinct(new MemberEqualityComparer());
         public IEnumerable<Membership> Memberships => _memberships;
         public IEnumerable<Context> Contexts => _contexts;
         
         
-        public Capability(Guid id, string name, string description, IEnumerable<Membership> memberships, IEnumerable<Context> contexts)
+        public Capability(Guid id, string name, string rootId, string description, IEnumerable<Membership> memberships, IEnumerable<Context> contexts)
         {
             Id = id;
             Name = name;
+            RootId = rootId;
             Description = description;
             _memberships.AddRange(memberships);
             _contexts.AddRange(contexts);
@@ -39,6 +41,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             var capability = new Capability(
                 id: Guid.NewGuid(),
                 name: name,
+                rootId: GenerateRootId(name),
                 description: description,
                 memberships: Enumerable.Empty<Membership>(),
                 contexts:Enumerable.Empty<Context>()
@@ -51,7 +54,18 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 
             return capability;
         }
-        
+
+        private static string GenerateRootId(string name)
+        {
+            if (name.Length < 2)
+                throw new ArgumentException("Value is too short", nameof(name));
+            
+            var guidBase = Guid.NewGuid().ToString().Substring(0, 7);
+            var rootId = (name.Length > 20)
+                ? $"{name.Substring(0, 20)}-{guidBase}"
+                : $"{name}-{guidBase}";
+            return rootId.ToLowerInvariant();
+        }
         
         private bool IsAlreadyMember(string memberEmail)
         {
@@ -105,6 +119,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             RaiseEvent(new ContextAddedToCapability(
                 Id, 
                 Name,
+                RootId,
                 context.Id,
                 contextName
             ));

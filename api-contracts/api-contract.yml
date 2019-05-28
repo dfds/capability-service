@@ -137,6 +137,8 @@ definitions:
         type: string
       description:
         type: string
+      rootId:
+        type: string
       members:
         type: array
         items:

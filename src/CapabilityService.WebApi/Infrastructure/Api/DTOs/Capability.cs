@@ -8,9 +8,10 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string RootId { get; set; }
+
         public string Description { get; set; }
         public Member[] Members { get; set; }
-        
         public Context[] Contexts { get; set; }
         
         public static Capability Create(Domain.Models.Capability capability)
@@ -19,6 +20,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
             {
                 Id = capability.Id,
                 Name = capability.Name,
+                RootId = capability.RootId,
                 Description = capability.Description,
                 Members = capability
                     .Members
