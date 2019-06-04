@@ -38,10 +38,11 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
         
         public static Capability Create(string name, string description)
         {
+            var id = Guid.NewGuid();
             var capability = new Capability(
-                id: Guid.NewGuid(),
+                id: id,
                 name: name,
-                rootId: GenerateRootId(name),
+                rootId: GenerateRootId(name, id),
                 description: description,
                 memberships: Enumerable.Empty<Membership>(),
                 contexts:Enumerable.Empty<Context>()
@@ -55,12 +56,12 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             return capability;
         }
 
-        private static string GenerateRootId(string name)
+        private static string GenerateRootId(string name, Guid id)
         {
             if (name.Length < 2)
                 throw new ArgumentException("Value is too short", nameof(name));
             
-            var guidBase = Guid.NewGuid().ToString().Substring(0, 7);
+            var guidBase = id.ToString().Substring(0,8);
             var rootId = (name.Length > 20)
                 ? $"{name.Substring(0, 20)}-{guidBase}"
                 : $"{name}-{guidBase}";
