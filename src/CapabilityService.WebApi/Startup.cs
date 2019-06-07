@@ -107,9 +107,13 @@ namespace DFDS.CapabilityService.WebApi
             services.AddHostedService<PublishingService>();
             services.AddHostedService<ConsumerHostedService>();
             
-            services.AddTransient<IEventHandler<AWSContextAccountCreatedIntegrationEvent>, AWSContextAccountCreatedEventHandler>();
             
-            services.AddTransient<EventHandlerFactory>();            
+            services.AddSingleton(eventRegistry);
+            services.AddTransient<EventHandlerFactory>();      
+            services.AddTransient<IEventHandler<AWSContextAccountCreatedIntegrationEvent>, AWSContextAccountCreatedEventHandler>();
+            services.AddTransient<IEventDispatcher, EventDispatcher>();
+            
+            
 
             var capabilitiesTopicName = "build.capabilities";
 
