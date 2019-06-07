@@ -55,6 +55,11 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "200m"
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 3000
+          readOnlyRootFilesystem: true  
+          runAsNonRoot: true
         env:
         - name: IAMROLESERVICE_URL
           value: http://aws-janitor
