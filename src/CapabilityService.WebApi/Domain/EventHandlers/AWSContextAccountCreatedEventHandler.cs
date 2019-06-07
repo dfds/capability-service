@@ -17,12 +17,10 @@ namespace DFDS.CapabilityService.WebApi.Domain.EventHandlers
             _logger = logger;
         }
 
-        public Task HandleAsync(AWSContextAccountCreatedIntegrationEvent domainEvent)
+        public async Task HandleAsync(AWSContextAccountCreatedIntegrationEvent domainEvent)
         {
-            _logger.LogInformation($"Received AWSContextAccountCreatedIntegrationEvent");
-            _capabilityApplicationService.UpdateContext(domainEvent.Payload.CapabilityId, domainEvent.Payload.ContextId,
+            await _capabilityApplicationService.UpdateContext(domainEvent.Payload.CapabilityId, domainEvent.Payload.ContextId,
                 domainEvent.Payload.AccountId, domainEvent.Payload.RoleArn, domainEvent.Payload.RoleEmail);
-            return Task.CompletedTask;
         }
     }
 }
