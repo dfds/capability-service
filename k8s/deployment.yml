@@ -79,6 +79,10 @@ spec:
           value: "PLAIN"
         - name: CAPABILITY_SERVICE_KAFKA_SECURITY_PROTOCOL
           value: "SASL_SSL"
+        - name: CAPABILITY_SERVICE_KAFKA_GROUP_ID
+          value: "capability-service-consumer"
+        - name: CAPABILITY_SERVICE_KAFKA_ENABLE_AUTO_COMMIT
+          value: "false"
         livenessProbe:
           initialDelaySeconds: 5
           periodSeconds: 5
