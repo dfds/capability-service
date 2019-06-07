@@ -83,6 +83,8 @@ spec:
           value: "capability-service-consumer"
         - name: CAPABILITY_SERVICE_KAFKA_ENABLE_AUTO_COMMIT
           value: "false"
+        - name: DOTNET_USE_POLLING_FILE_WATCHER
+          value: "true"
         livenessProbe:
           initialDelaySeconds: 5
           periodSeconds: 5

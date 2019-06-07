@@ -38,7 +38,7 @@ namespace DFDS.CapabilityService.WebApi
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
-            Console.WriteLine($"prcess id: {Process.GetCurrentProcess().Id}");
+            Console.WriteLine($"process id: {Process.GetCurrentProcess().Id}");
             return WebHost.CreateDefaultBuilder(args)
                 .UseSerilog()
                 .UseStartup<Startup>();
