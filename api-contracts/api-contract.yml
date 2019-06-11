@@ -120,6 +120,73 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/errorObject'
+  /topics: 
+      post:
+        summary: Create a new topic
+        parameters: 
+          - in: body
+            name: body
+            required: true
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                visibility:
+                  type: string
+        responses:
+          201:
+            description: Created
+            headers:
+              location:
+                type: string
+                description: URI where the topic can be retrieved
+            schema:
+              $ref: '#/definitions/topic'
+          400:
+            description: BadRequest
+            schema:
+              $ref: '#/definitions/errorObject'
+  /topics/{topicName}:
+    get:
+      summary: Returns a single topic
+      parameters:
+        - in: path
+          name: topicName
+          type: string
+          required: true
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/topic'
+  /topics/{topicName}/messageExamples:
+    post:
+      summary: Adds a message example to a topic 
+      parameters:
+        - in: path
+          name: topicName
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              messageType:
+                type: string
+              text:
+                type: string
+    responses:
+      200:
+        description: Ok
+      404:
+        description: Not Found
+        schema:
+          $ref: '#/definitions/errorObject'
 definitions:
   capability-list:
     type: object
@@ -170,3 +237,25 @@ definitions:
     properties:
       message:
         type: string
+  topic:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      visibility:
+        type: string
+      messageExamples:
+        type: array
+        items:
+          $ref: '#/definitions/messageExample'
+  messageExample:
+    type: object
+    properties:
+      id:
+        type: string
+      messageType:
+        type: string
+      text:
+        type: string        
