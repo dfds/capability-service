@@ -1,0 +1,15 @@
+###
+
+# List all capabilities
+
+GET http://localhost:50900/api/v1/capabilities
+
+###
+
+# Add Context to capability
+POST http://localhost:50900/api/v1/capabilities/{insert-capabilit-id}/contexts HTTP/1.1
+content-type: application/json
+
+{
+    "Name": "Default"
+}
