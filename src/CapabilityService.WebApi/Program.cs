@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
@@ -39,7 +40,23 @@ namespace DFDS.CapabilityService.WebApi
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             Console.WriteLine($"process id: {Process.GetCurrentProcess().Id}");
-            return WebHost.CreateDefaultBuilder(args)
+
+            return WebHost
+                .CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((builderContext, config) =>
+                {
+                    config
+                        .AddJsonFile(
+                            path: "appsettings.json",
+                            optional: true,
+                            reloadOnChange: false
+                        )
+                        .AddJsonFile(
+                            path: "appsettings." + builderContext.HostingEnvironment.EnvironmentName + ".json",
+                            optional: true,
+                            reloadOnChange: false
+                        );
+                })
                 .UseSerilog()
                 .UseStartup<Startup>();
         }
