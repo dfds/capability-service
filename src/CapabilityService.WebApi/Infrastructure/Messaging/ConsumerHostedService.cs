@@ -23,7 +23,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
             KafkaConsumerFactory kafkaConsumerFactory,
             IDomainEventRegistry domainEventRegistry)
         {
-            Console.WriteLine($"Starting event consumer.");
 
             _logger = logger;
             _consumerFactory = kafkaConsumerFactory;
@@ -33,6 +32,8 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            Console.WriteLine("Starting event consumer.");
+
             _executingTask = Task.Factory.StartNew(async () =>
                 {
                     using (var consumer = _consumerFactory.Create())

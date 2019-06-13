@@ -22,6 +22,8 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            Console.WriteLine("Starting event publisher.");
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
@@ -42,12 +44,17 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
             using (var scope = _serviceProvider.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<CapabilityServiceDbContext>();
-                var domainEvents = await dbContext
+                var domainEventsToPublish = await dbContext
                     .DomainEvents
                     .Where(x => x.Sent == null)
                     .ToListAsync(stoppingToken);
                 
-                Log.Information($"Domain events to publish: {domainEvents.Count}");
+                if (domainEventsToPublish.Any() == false)
+                {
+                    return;
+                }
+                
+                Log.Information($"Domain events to publish: {domainEventsToPublish.Count}");
 
                 var publisherFactory = scope.ServiceProvider.GetRequiredService<KafkaPublisherFactory>();
                 var eventRegistry = scope.ServiceProvider.GetRequiredService<IDomainEventRegistry>();
@@ -58,7 +65,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
                 {
                     Log.Information("Connected!");
                     
-                    foreach (var evt in domainEvents)
+                    foreach (var evt in domainEventsToPublish)
                     {
                         var topicName = eventRegistry.GetTopicFor(evt.Type);
                         var message = MessagingHelper.CreateMessageFrom(evt);
