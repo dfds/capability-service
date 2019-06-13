@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
@@ -45,6 +47,15 @@ namespace DFDS.CapabilityService.WebApi
                 .CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((builderContext, config) =>
                 {
+                    var sourcesToRemove = config.Sources
+                        .Where(s => s.GetType() == typeof(JsonConfigurationSource))
+                        .ToArray();
+                    
+                    foreach (var source in sourcesToRemove)
+                    {
+                        config.Sources.Remove(source);
+                    }
+                    
                     config
                         .AddJsonFile(
                             path: "appsettings.json",
