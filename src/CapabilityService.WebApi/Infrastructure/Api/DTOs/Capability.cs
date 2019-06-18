@@ -30,7 +30,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
                     .Contexts
                     .Select(context => new Context
                     {
-                        Id = context.Id, Name = context.Name, AWSRoleArn = "someRoleArn",AWSAccountId = "0123456789", AWSRoleEmail = "someRoleEmail@dfds.com"
+                        Id = context.Id, Name = context.Name, AWSRoleArn = context.AWSRoleArn, AWSAccountId = context.AWSAccountId, AWSRoleEmail = context.AWSRoleEmail
                     })
                     .ToArray()
             };
