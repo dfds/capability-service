@@ -14,14 +14,17 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
         
         public static CapabilityADSync Create(Domain.Models.Capability capability)
         {
+            var isV1 = string.IsNullOrEmpty(capability.RootId);
             return new CapabilityADSync
             {
-                Identifier = capability.Name, // TODO Should vary based on conditions yet to determine
+                Identifier = isV1 ? capability.Name : capability.RootId,
+                IsV1 =  isV1,
+                AWSAccountId = isV1 ? null : capability.Contexts?.FirstOrDefault()?.AWSAccountId,
+                AWSRoleArn = isV1 ? null : capability.Contexts?.FirstOrDefault()?.AWSRoleArn,
                 Members = capability
                     .Members
                     .Select(member => new Member {Email = member.Email})
-                    .ToArray(),
-                IsV1 = true
+                    .ToArray()
             };
         }
     }

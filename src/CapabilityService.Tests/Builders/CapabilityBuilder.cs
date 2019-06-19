@@ -36,6 +36,12 @@ namespace DFDS.CapabilityService.Tests.Builders
             _contexts = contexts;
             return this;
         }
+
+        public CapabilityBuilder WithRootId(string rootId)
+        {
+            _rootId = rootId;
+            return this;
+        }
         
         
         public Capability Build()

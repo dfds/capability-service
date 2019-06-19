@@ -1,0 +1,3 @@
+Id,Name,CapabilityId,AWSAccountId,AWSRoleArn,AWSRoleEmail
+4f86d947-97e9-453d-b7a2-dd9a9ccc2f8c,default,629c8960-e7c0-4fd5-b08b-9ad1907e0c86,,,
+0cdd816e-7075-441b-94d6-5a8a09727cd2,default,58B5A0D7-C441-4D44-A042-6DC7ECEFE88C,223344556677,arn:aws:iam::528563840976:role/aws-elasticbeanstalk-ec2-role,somerole@dfds.com
