@@ -114,7 +114,10 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var contextName = "foo@bar.com";
                 var contextDescription = "wowsuchdescription";
                 var contextGuid = Guid.NewGuid();
-                var context = new Context(contextGuid, contextName);
+                var awsAccountId = "222222222222";
+                var awsRoleArn = "arne:oharne:dugaariskolepaadenjyskehaandvaerkerskole:Role/ADFS-Developer";
+                var awsRoleEmail = "aws-222222222222@dfds.com";
+                var context = new Context(contextGuid, contextName, awsAccountId, awsRoleArn, awsRoleEmail);
                 var stubCapability = new CapabilityBuilder()
                     .WithContexts(context)
                     .Build();
@@ -126,7 +129,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"foo-582a4\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[{{\"id\":\"{contextGuid}\",\"name\":\"{contextName}\",\"awsAccountId\":\"0123456789\",\"awsRoleArn\":\"someRoleArn\",\"awsRoleEmail\":\"someRoleEmail@dfds.com\"}}]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"foo-582a4\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[{{\"id\":\"{contextGuid}\",\"name\":\"{contextName}\",\"awsAccountId\":\"{awsAccountId}\",\"awsRoleArn\":\"{awsRoleArn}\",\"awsRoleEmail\":\"{awsRoleEmail}\"}}]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
