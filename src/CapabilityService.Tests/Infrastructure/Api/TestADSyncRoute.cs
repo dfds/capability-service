@@ -12,7 +12,6 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 {
     public class TestADSyncRoute
     {
-        [Fact(Skip = "Suspect concurrency issues")]
         public async Task get_all_capabilities_returns_expected_status_code()
         {
             using (var builder = new HttpClientBuilder())
@@ -27,7 +26,6 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
             }
         }
 
-        [Fact(Skip="Suspect concurrency issues")]
         public async Task get_all_capabilities_returns_expected_body_when_no_capabilities_available()
         {
             using (var builder = new HttpClientBuilder())
@@ -46,7 +44,6 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
         }
 
         
-        [Fact(Skip="Suspect concurrency issues in HttpClientBuilder")]
         public async Task get_all_capabilities_returns_expected_list_with_a_mix_of_v1_and_v2()
         {
             using (var builder = new HttpClientBuilder())
