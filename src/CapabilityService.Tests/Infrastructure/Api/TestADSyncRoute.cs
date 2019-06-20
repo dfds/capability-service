@@ -88,25 +88,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                     actual: content);
             }
         }
-
-        [Fact]
-        public async Task get_all_capabilities_return_expected_list_empty()
-        {
-            using (var builder = new HttpClientBuilder())
-            {
-                var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService())
-                    .Build();
-
-                var response = await client.GetAsync("api/v1/adsync");
-                var content = await response.Content.ReadAsStringAsync();
-                
-                Assert.Equal(
-                    expected: $"{{\"items\":[]}}",
-                    actual: content);
-            }
-        }
-
+        
         [Fact]
         public async Task get_all_capabilities_returns_expected_list_with_a_mix_of_v1_and_v2()
         {
