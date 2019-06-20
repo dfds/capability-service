@@ -12,6 +12,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 {
     public class TestADSyncRoute
     {
+        [Fact]
         public async Task get_all_capabilities_returns_expected_status_code()
         {
             using (var builder = new HttpClientBuilder())
@@ -25,7 +26,8 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             }
         }
-
+        
+        [Fact]
         public async Task get_all_capabilities_returns_expected_body_when_no_capabilities_available()
         {
             using (var builder = new HttpClientBuilder())
@@ -43,7 +45,69 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
             }
         }
 
-        
+        [Fact]
+        public async Task get_all_capabilities_returns_expected_list_with_only_v1()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var capOld = new CapabilityBuilder().WithRootId(null).Build();
+
+                var client = builder
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(capOld))
+                    .Build();
+
+                var response = await client.GetAsync("api/v1/adsync");
+                var content = await response.Content.ReadAsStringAsync();
+                
+                Assert.Equal(
+                    expected: $"{{\"items\":[{{\"identifier\":\"foo\",\"members\":[],\"isV1\":true,\"awsAccountId\":null,\"awsRoleArn\":null}}]}}",
+                    actual: content);
+            }
+        }
+
+        [Fact]
+        public async Task get_all_capabilities_return_expected_list_with_only_v2()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var capNewWithoutContext = new CapabilityBuilder().Build();
+                var ctx = new ContextBuilder().WithAccountId(null).WithRoleArn(null).WithRoleEmail(null).Build();
+                var capNewWithContext = new CapabilityBuilder().WithContexts(ctx).Build();
+                var populatedContext = new ContextBuilder().Build();
+                var capNewWithPopulatedContext = new CapabilityBuilder().WithContexts(populatedContext).Build();
+
+                var client = builder
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(capNewWithContext, capNewWithoutContext, capNewWithPopulatedContext))
+                    .Build();
+
+                var response = await client.GetAsync("api/v1/adsync");
+                var content = await response.Content.ReadAsStringAsync();
+                
+                Assert.Equal(
+                    expected: $"{{\"items\":[{{\"identifier\":\"foo-582a4\",\"members\":[],\"isV1\":false,\"awsAccountId\":\"222222222222\",\"awsRoleArn\":\"arn:aws:iam::528563840976:role/aws-elasticbeanstalk-ec2-role\"}}]}}",
+                    actual: content);
+            }
+        }
+
+        [Fact]
+        public async Task get_all_capabilities_return_expected_list_empty()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var client = builder
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService())
+                    .Build();
+
+                var response = await client.GetAsync("api/v1/adsync");
+                var content = await response.Content.ReadAsStringAsync();
+                
+                Assert.Equal(
+                    expected: $"{{\"items\":[]}}",
+                    actual: content);
+            }
+        }
+
+        [Fact]
         public async Task get_all_capabilities_returns_expected_list_with_a_mix_of_v1_and_v2()
         {
             using (var builder = new HttpClientBuilder())
