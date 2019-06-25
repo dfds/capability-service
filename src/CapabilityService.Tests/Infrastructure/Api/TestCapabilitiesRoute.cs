@@ -210,17 +210,17 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
         {
             using (var builder = new HttpClientBuilder())
             {
-                var subCapability = new CapabilityBuilder().Build();
+                var stubCapability = new CapabilityBuilder().Build();
 
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(subCapability))
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
                     .Build();
 
-                var stubInput = $"{{\"name\":\"{subCapability.Name}\"}}";
+                var stubInput = $"{{\"name\":\"{stubCapability.Name}\", \"description\":\"{stubCapability.Description}\"}}";
                 var response = await client.PostAsync("api/v1/capabilities", new JsonContent(stubInput));
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{subCapability.Id}\",\"name\":\"{subCapability.Name}\",\"rootId\":\"{subCapability.RootId}\",\"description\":\"{subCapability.Description}\",\"members\":[],\"contexts\":[]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
@@ -340,5 +340,94 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             }
         }
+        
+        #region update capability
+       [Fact]
+        public async Task put_returns_expected_status_code_when_updating_existing_capability()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var dummyCapability = new CapabilityBuilder().Build();
+
+                var client = builder
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(dummyCapability))
+                    .Build();
+
+                var dummyCapabilityId = "foo";
+                var stubInput = "{\"name\":\"foo\"}";
+                var response = await client.PutAsync($"api/v1/capabilities/{dummyCapabilityId}", new JsonContent(stubInput));
+
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            }
+        }
+
+        [Fact]
+        public async Task put_returns_expected_status_code_when_updating_non_existing_capability()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var client = builder
+                    .WithService<ICapabilityApplicationService>(
+                        new ErroneousCapabilityApplicationService(new CapabilityDoesNotExistException()))
+                    .Build();
+
+                var nonExistingCapabilityId = "foo";
+                var dummyInput = "{}";
+                var response = await client.PutAsync($"api/v1/capabilities/{nonExistingCapabilityId}", new JsonContent(dummyInput));
+
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            }
+        }
+
+        [Fact]
+        public async Task put_returns_expected_body_when_updating_capability()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var stubCapability = new CapabilityBuilder().Build();
+
+                var client = builder
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
+                    .Build();
+
+                var dummyCapabilityId = "foo";
+                var stubInput = $"{{\"name\":\"{stubCapability.Name}\", \"description\":\"{stubCapability.Description}\"}}";
+
+                var response = await client.PutAsync($"api/v1/capabilities/{dummyCapabilityId}", new JsonContent(stubInput));
+
+                Assert.Equal(
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[]}}",
+                    actual: await response.Content.ReadAsStringAsync()
+                );
+            }
+        }
+
+        [Fact]
+        public async Task put_returns_badrequest_when_updating_capability_with_invalid_name()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var stubCapability = new CapabilityBuilder().Build();
+
+                var errorBody = "message regarding bad name";
+                var client = builder
+                    .WithService<ICapabilityApplicationService>(new ErroneousCapabilityApplicationService(new CapabilityValidationException(errorBody)))
+                    .Build();
+
+                var dummyCapabilityId = "foo";
+                var stubInput = $"{{\"name\":\"{stubCapability.Name}\", \"description\":\"{stubCapability.Description}\"}}";
+
+                var response = await client.PutAsync($"api/v1/capabilities/{dummyCapabilityId}", new JsonContent(stubInput));
+
+                var erroredMessageJSON = $"{{\"message\":\"{errorBody}\"}}";
+
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+                Assert.Equal(
+                    expected: erroredMessageJSON,
+                    actual: await response.Content.ReadAsStringAsync()
+                );
+            }
+        }        
+        #endregion
     }
 }

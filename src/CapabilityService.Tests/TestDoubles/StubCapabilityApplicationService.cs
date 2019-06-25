@@ -22,6 +22,12 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
             return Task.FromResult(capability);
         }
 
+        public Task<Capability> UpdateCapability(Guid id, string newName, string newDescription)
+        {
+            var capability = _stubCapabilities.FirstOrDefault();
+            return Task.FromResult(capability);
+        }
+
         public Task<IEnumerable<Capability>> GetAllCapabilities()
         {
             return Task.FromResult(_stubCapabilities.AsEnumerable());
@@ -64,6 +70,11 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
         }
 
         public Task<Capability> CreateCapability(string name, string description)
+        {
+            throw _exceptionToThrow;
+        }
+
+        public Task<Capability> UpdateCapability(Guid id, string newName, string newDescription)
         {
             throw _exceptionToThrow;
         }

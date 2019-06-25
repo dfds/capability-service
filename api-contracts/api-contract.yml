@@ -31,6 +31,8 @@ paths:
             properties:
               name:
                 type: string
+              description:
+                type: string
       responses:
         201:
           description: Created
@@ -57,6 +59,34 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/capability'
+    put:
+      summary: Update the info fields on a single capability
+      parameters:
+        - in: path
+          name: capabilityId
+          type: string
+          required: true
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/capability'
+        400:
+          description: BadRequest
+          schema:
+            $ref: '#/definitions/errorObject'
+        404:
+          description: Not found
   /capabilities/{capabilityId}/members:
     post:
       summary: Adds a person to a capability 

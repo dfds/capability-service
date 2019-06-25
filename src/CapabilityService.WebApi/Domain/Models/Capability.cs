@@ -32,8 +32,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
         }
 
         private Capability()
-        {
-            
+        {           
         }
 
         
@@ -55,6 +54,18 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             ));
 
             return capability;
+        }
+
+        public void UpdateInfoFields(string newName, string newDescription)
+        {
+            Name = newName;
+            Description = newDescription;
+            
+            RaiseEvent(new CapabilityUpdated(
+                capabilityId: Id,
+                capabilityName: Name,
+                capabilityDescription: Description
+            ));
         }
 
         private static string GenerateRootId(string name, Guid id)
