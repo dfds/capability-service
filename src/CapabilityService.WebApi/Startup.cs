@@ -8,7 +8,6 @@ using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Infrastructure.Events;
-using DFDS.CapabilityService.WebApi.Infrastructure.Integrations;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
@@ -50,27 +49,7 @@ namespace DFDS.CapabilityService.WebApi
                     options.UseNpgsql(connectionString);
                 });
 
-            services.AddHttpClient<IAMRoleServiceClient>(cfg =>
-            {
-                var url = Configuration["IAMROLESERVICE_URL"];
-                if (url != null)
-                {
-                    cfg.BaseAddress = new Uri(url);
-
-                }
-            });
-
-            services.AddHttpClient<RoleMapperServiceClient>(cfg =>
-            {
-                var url = Configuration["ROLEMAPPERSERVICE_URL"];
-                if (url != null)
-                {
-                    cfg.BaseAddress = new Uri(url);
-                }
-            });
-
             services.AddTransient<ICapabilityRepository, CapabilityRepository>();
-            services.AddTransient<IRoleService, RoleService>();
 
             services.AddTransient<Outbox>();
             services.AddTransient<DomainEventEnvelopRepository>();

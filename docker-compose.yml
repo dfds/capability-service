@@ -25,18 +25,6 @@ services:
       - PGPASSWORD=p                # same as above
       - PGSSLMODE=disable           # ignore SSLMODE for local development (overwritten - see ./db/Dockerfile)
 
-  iamrole_service:
-    build: 
-      context: ./fake_dependencies/iamrole_service
-    ports:
-      - "50800:50800"
-
-  rolemapper_service:
-    build: 
-      context: ./fake_dependencies/rolemapper_service
-    ports:
-      - "50801:50801"
-
   messagebroker:
     image: spotify/kafka
     ports:

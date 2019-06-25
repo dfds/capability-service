@@ -6,20 +6,17 @@ using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
-using DFDS.CapabilityService.WebApi.Infrastructure.Integrations;
 
 namespace DFDS.CapabilityService.WebApi.Application
 {
     public class CapabilityApplicationService : ICapabilityApplicationService
     {
         private readonly ICapabilityRepository _capabilityRepository;
-        private readonly IRoleService _roleService;
         private readonly Regex _nameValidationRegex = new Regex("^[A-Z][a-zA-Z0-9_\\-]{2,30}$", RegexOptions.Compiled);
 
-        public CapabilityApplicationService(ICapabilityRepository capabilityRepository, IRoleService roleService)
+        public CapabilityApplicationService(ICapabilityRepository capabilityRepository)
         {
             _capabilityRepository = capabilityRepository;
-            _roleService = roleService;
         }
 
         public Task<Capability> GetCapability(Guid id) => _capabilityRepository.Get(id);
@@ -34,7 +31,6 @@ namespace DFDS.CapabilityService.WebApi.Application
 
             var capability = Capability.Create(name, description);
             await _capabilityRepository.Add(capability);
-            await _roleService.CreateRoleFor(capability);
 
             return capability;
         }
