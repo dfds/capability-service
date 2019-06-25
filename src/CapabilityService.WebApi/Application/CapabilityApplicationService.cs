@@ -20,6 +20,20 @@ namespace DFDS.CapabilityService.WebApi.Application
         }
 
         public Task<Capability> GetCapability(Guid id) => _capabilityRepository.Get(id);
+        public async Task<Capability> UpdateCapability(Guid id, string newName, string newDescription)
+        {
+            if (!_nameValidationRegex.Match(newName).Success)
+            {
+                throw new CapabilityValidationException("Name must be a string of length 3 to 32. consisting of only alphanumeric ASCII characters, starting with a capital letter. Underscores and hyphens are allowed.");
+            }
+
+
+            var capability = await _capabilityRepository.Get(id);
+            capability.UpdateInfoFields(newName, newDescription);
+
+            return capability;            
+        }
+
         public Task<IEnumerable<Capability>> GetAllCapabilities() => _capabilityRepository.GetAll();
 
         public async Task<Capability> CreateCapability(string name, string description)

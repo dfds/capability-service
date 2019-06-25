@@ -98,6 +98,7 @@ namespace DFDS.CapabilityService.WebApi
 
             eventRegistry
                 .Register<CapabilityCreated>("capability_created", capabilitiesTopicName)
+                .Register<CapabilityUpdated>("capability_updated", capabilitiesTopicName)
                 .Register<MemberJoinedCapability>("member_joined_capability", capabilitiesTopicName)
                 .Register<MemberLeftCapability>("member_left_capability", capabilitiesTopicName)
                 .Register<ContextAddedToCapability>("context_added_to_capability", capabilitiesTopicName)

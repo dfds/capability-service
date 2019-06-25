@@ -73,6 +73,33 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
             }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCapability(string id, [FromBody] CapabilityInput input)
+        {
+            var capabilityId = Guid.Empty;
+            Guid.TryParse(id, out capabilityId);
+
+            try
+            {
+                var capability = await _capabilityApplicationService.UpdateCapability(capabilityId, input.Name, input.Description);
+                var dto = Capability.Create(capability);
+
+                return Ok(
+                    value: dto
+                );
+            } catch (CapabilityDoesNotExistException) {
+                return NotFound(new
+                {
+                    Message = $"Capability with id {id} could not be found."
+                });                
+            } catch (CapabilityValidationException tve) {
+                return BadRequest(new
+                {
+                    Message = tve.Message
+                });
+            }
+        }
+        
         [HttpPost("{id}/members")]
         public async Task<IActionResult> AddMemberToCapability(string id, [FromBody] MemberInput input)
         {
