@@ -36,7 +36,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
             
             // Assert
             Assert.Equal(capabilityName, capabilityDto.Identifier);
-            Assert.Equal(true, capabilityDto.IsV1);
+            Assert.True(capabilityDto.IsV1);
             Assert.Null(capabilityDto.AWSRoleArn);
             Assert.Null(capabilityDto.AWSAccountId);
 
@@ -72,7 +72,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
             
             // Assert
             Assert.Equal(capabilityRootId, capabilityDto.Identifier);
-            Assert.Equal(false, capabilityDto.IsV1);
+            Assert.False(capabilityDto.IsV1);
             
             var membershipDto = capabilityDto.Members.Single();
             Assert.Equal(domainMembership.Member.Email, membershipDto.Email);

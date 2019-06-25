@@ -112,7 +112,6 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
             using (var builder = new HttpClientBuilder())
             {
                 var contextName = "foo@bar.com";
-                var contextDescription = "wowsuchdescription";
                 var contextGuid = Guid.NewGuid();
                 var awsAccountId = "222222222222";
                 var awsRoleArn = "arne:oharne:dugaariskolepaadenjyskehaandvaerkerskole:Role/ADFS-Developer";
