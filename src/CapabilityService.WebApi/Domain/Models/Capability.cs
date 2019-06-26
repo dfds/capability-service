@@ -59,7 +59,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 
         private static string GenerateRootId(string name, Guid id)
         {
-            const int maxPreservedNameLength = 23;
+            const int maxPreservedNameLength = 22;
             
             if (name.Length < 2)
                 throw new ArgumentException("Value is too short", nameof(name));

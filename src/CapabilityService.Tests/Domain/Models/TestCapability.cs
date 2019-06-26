@@ -45,10 +45,11 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
         [Fact]
         public void rootid_full_string_is_formatted_correctly()
         {
-            var name = "foo";
+            var name = "A23456789012345678901234";
             var capability = Capability.Create(name,"bar");
 
-            Assert.Matches("^[a-z0-9_\\-]{2,20}-[a-z]{5}$", capability.RootId);
+            Assert.Matches("^[a-z0-9_\\-]{2,22}-[a-z]{5}$", capability.RootId);
+            Assert.Equal(28, capability.RootId.Length);
         }
 
         [Fact]
