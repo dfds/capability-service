@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 using DFDS.CapabilityService.Tests.Helpers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Models;
@@ -39,19 +41,26 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
 
            Assert.NotEqual(capabilityOne.RootId, capabilityTwo.RootId);
         }
-        
+               
         [Fact]
-        public void rootid_is_generated_from_id()
+        public void rootid_full_string_is_formatted_correctly()
         {
             var name = "foo";
             var capability = Capability.Create(name,"bar");
 
-            var idPartFromRootId = capability.RootId.Split('-').Last();
-            
-            Assert.StartsWith(idPartFromRootId, capability.Id.ToString());
+            Assert.Matches("^[a-z0-9_\\-]{2,20}-[a-z]{5}$", capability.RootId);
         }
 
-       
+        [Fact]
+        public void rootid_preserves_prefix_of_name()
+        {
+            var name = "A23456789012345678901234";
+            var capability = Capability.Create(name,"bar");
+
+            var namePrefix = capability.RootId.Split('-').First();
+            
+            Assert.StartsWith(namePrefix, name, StringComparison.OrdinalIgnoreCase);
+        }       
 
 
     }
