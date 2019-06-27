@@ -8,6 +8,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 {
     public class Capability : AggregateRoot<Guid>
     {
+        private static readonly string ROOTID_SALT = "fvvjaaqpagbb";
         private readonly List<Membership> _memberships = new List<Membership>();
         private readonly List<Context> _contexts = new List<Context>();
   
@@ -58,13 +59,16 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 
         private static string GenerateRootId(string name, Guid id)
         {
+            const int maxPreservedNameLength = 22;
+            
             if (name.Length < 2)
                 throw new ArgumentException("Value is too short", nameof(name));
+
+            var microHash = new HashidsNet.Hashids(ROOTID_SALT, 5, "abcdefghijklmnopqrstuvwxyz").EncodeHex(id.ToString("N")).Substring(0,5);
             
-            var guidBase = id.ToString().Substring(0,8);
-            var rootId = (name.Length > 20)
-                ? $"{name.Substring(0, 20)}-{guidBase}"
-                : $"{name}-{guidBase}";
+            var rootId = (name.Length > maxPreservedNameLength)
+                ? $"{name.Substring(0, maxPreservedNameLength)}-{microHash}"
+                : $"{name}-{microHash}";
             return rootId.ToLowerInvariant();
         }
         
