@@ -3,10 +3,13 @@ kind: Service
 metadata:
   name: capability-service
   namespace: $(kubernetes-namespace)
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
   labels:
     app: capability-service
     project: selfservice
-    department: devex    
+    department: devex
     component: capability-service
 spec:
   ports:
