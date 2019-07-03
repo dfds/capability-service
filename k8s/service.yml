@@ -6,7 +6,6 @@ metadata:
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "8080"
-    scrape-service-metrics: "true"
   labels:
     app: capability-service
     project: selfservice
