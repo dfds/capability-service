@@ -11,10 +11,14 @@ metadata:
     project: selfservice
     department: devex
     component: capability-service
+    scrape-service-metrics: "true"
 spec:
   ports:
   - name: external
     port: 80
     targetPort: web
+  - name: metrics
+    port: 8080
+    targetPort: 8080
   selector:
     app: capability-service

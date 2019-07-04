@@ -41,7 +41,7 @@ namespace DFDS.CapabilityService.WebApi
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             var connectionString = Configuration["CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING"];
-            
+
             services
                 .AddEntityFrameworkNpgsql()
                 .AddDbContext<CapabilityServiceDbContext>((serviceProvider, options) =>
@@ -68,7 +68,7 @@ namespace DFDS.CapabilityService.WebApi
 
             ConfigureDomainEvents(services);
 			services.AddHostedService<MetricHostedService>();
-			
+
 			// health checks
             var health = services
                 .AddHealthChecks()
@@ -85,14 +85,14 @@ namespace DFDS.CapabilityService.WebApi
             services.AddTransient<KafkaConsumerFactory>();
             services.AddHostedService<PublishingService>();
             services.AddHostedService<ConsumerHostedService>();
-            
-            
+
+
             services.AddSingleton(eventRegistry);
-            services.AddTransient<EventHandlerFactory>();      
+            services.AddTransient<EventHandlerFactory>();
             services.AddTransient<IEventHandler<AWSContextAccountCreatedIntegrationEvent>, AWSContextAccountCreatedEventHandler>();
             services.AddTransient<IEventDispatcher, EventDispatcher>();
-            
-            
+
+
 
             var capabilitiesTopicName = "build.capabilities";
 
@@ -121,8 +121,10 @@ namespace DFDS.CapabilityService.WebApi
                 app.UseHsts();
             }
 
+            app.UseHttpMetrics();
+
             app.UseMvc();
-            
+
             app.UseHealthChecks("/healthz", new HealthCheckOptions
             {
                 ResponseWriter = MyPrometheusStuff.WriteResponseAsync
@@ -156,7 +158,7 @@ namespace DFDS.CapabilityService.WebApi
             }
         }
     }
-    
+
     public static class MyPrometheusStuff
     {
         private const string HealthCheckLabelServiceName = "service";
