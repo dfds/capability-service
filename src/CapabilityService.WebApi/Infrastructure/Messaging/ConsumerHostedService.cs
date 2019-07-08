@@ -57,15 +57,28 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 
                                     try
                                     {
-                                        var eventDispatcher = scope.ServiceProvider.GetRequiredService<IEventDispatcher>();
+                                        var eventDispatcher =
+                                            scope.ServiceProvider.GetRequiredService<IEventDispatcher>();
                                         await eventDispatcher.Send(msg.Value, scope);
-
-                                        await consumer.CommitAsync(msg);
                                     }
                                     catch (Exception ex)
                                     {
-                                        _logger.LogError($"Error consuming event. Exception message: {ex.Message}", ex);
+                                        _logger.LogWarning($"Error consuming event. Exception message: {ex.Message}",
+                                            ex);
                                     }
+                                    finally
+                                    {
+                                        try
+                                        {
+                                            await consumer.CommitAsync(msg);
+                                        }
+                                        catch (Exception exFinally)
+                                        {
+                                            _logger.LogError($"Error committing message {msg} due to {exFinally}",
+                                                exFinally);
+                                        }
+                                    }
+                                        
                                 }
                             }
                         }
