@@ -2,14 +2,6 @@ using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using DFDS.CapabilityService.WebApi.Application;
-using DFDS.CapabilityService.WebApi.Domain.EventHandlers;
-using DFDS.CapabilityService.WebApi.Domain.Events;
-using DFDS.CapabilityService.WebApi.Domain.Models;
-using DFDS.CapabilityService.WebApi.Domain.Repositories;
-using DFDS.CapabilityService.WebApi.Infrastructure.Events;
-using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
-using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -21,7 +13,20 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Prometheus;
+using CorrelationId;
+using System.Net.Http;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+using DFDS.CapabilityService.WebApi.Application;
+using DFDS.CapabilityService.WebApi.Domain.EventHandlers;
+using DFDS.CapabilityService.WebApi.Domain.Events;
+using DFDS.CapabilityService.WebApi.Domain.Models;
+using DFDS.CapabilityService.WebApi.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Infrastructure.Events;
+using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
+using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Serilog;
+
 
 namespace DFDS.CapabilityService.WebApi
 {
@@ -36,12 +41,28 @@ namespace DFDS.CapabilityService.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
+            services.AddHttpContextAccessor();
+            services.AddCorrelationId();
+            services.AddTransient<CorrelationIdRequestAppendHandler>();
+            services.AddTransient<IRequestCorrelation, RequestCorrelation>();
+
 
             var connectionString = Configuration["CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING"];
 
+            ConfigureApplicationServices(services, connectionString);
+            ConfigureDomainEvents(services);
+			services.AddHostedService<MetricHostedService>();
+
+			// health checks
+            var health = services
+                .AddHealthChecks()
+                .AddCheck("self", () => HealthCheckResult.Healthy())
+                .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
+        }
+
+        private void ConfigureApplicationServices(IServiceCollection services, string connectionString)
+        {
             services
                 .AddEntityFrameworkNpgsql()
                 .AddDbContext<CapabilityServiceDbContext>((serviceProvider, options) =>
@@ -52,28 +73,22 @@ namespace DFDS.CapabilityService.WebApi
             services.AddTransient<ICapabilityRepository, CapabilityRepository>();
 
             services.AddTransient<Outbox>();
-            services.AddTransient<DomainEventEnvelopRepository>();
+            services.AddTransient<DomainEventEnvelopeRepository>();
 
             services.AddTransient<CapabilityApplicationService>();
             services.AddTransient<CapabilityOutboxEnabledDecorator>();
 
+            services.AddTransient<IRepository<DomainEventEnvelope>,DomainEventEnvelopeRepository>();
+
             services.AddTransient<ICapabilityApplicationService>(serviceProvider => new CapabilityTransactionalDecorator(
-                    inner: new CapabilityOutboxEnabledDecorator(
-                        inner: serviceProvider.GetRequiredService<CapabilityApplicationService>(),
-                        dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>(),
-                        outbox: serviceProvider.GetRequiredService<Outbox>()
-                    ),
-                    dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>()
-                ));
-
-            ConfigureDomainEvents(services);
-			services.AddHostedService<MetricHostedService>();
-
-			// health checks
-            var health = services
-                .AddHealthChecks()
-                .AddCheck("self", () => HealthCheckResult.Healthy())
-                .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
+                inner: new CapabilityOutboxEnabledDecorator(
+                    inner: serviceProvider.GetRequiredService<CapabilityApplicationService>(),
+                    dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>(),
+                    outbox: serviceProvider.GetRequiredService<Outbox>()
+                ),
+                dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>()
+            ));
+ 
         }
 
         private void ConfigureDomainEvents(IServiceCollection services)
@@ -110,6 +125,14 @@ namespace DFDS.CapabilityService.WebApi
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseCorrelationId(new CorrelationIdOptions
+            {
+                Header = "x-correlation-id",
+                UpdateTraceIdentifier = true,
+                IncludeInResponse = true,
+                UseGuidForCorrelationId = true
+            });     
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -122,11 +145,35 @@ namespace DFDS.CapabilityService.WebApi
             app.UseHttpMetrics();
 
             app.UseMvc();
+            
 
             app.UseHealthChecks("/healthz", new HealthCheckOptions
             {
                 ResponseWriter = MyPrometheusStuff.WriteResponseAsync
             });
+        }
+    }
+    
+    public class CorrelationIdRequestAppendHandler : DelegatingHandler
+    {
+        private readonly ICorrelationContextAccessor _correlationContextAccessor;
+
+        public CorrelationIdRequestAppendHandler(ICorrelationContextAccessor correlationContextAccessor)
+        {
+            _correlationContextAccessor = correlationContextAccessor;
+        }
+
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            var headerName = _correlationContextAccessor.CorrelationContext.Header;
+            var correlationId = _correlationContextAccessor.CorrelationContext.CorrelationId;
+
+            if (!request.Headers.Contains(headerName))
+            {
+                request.Headers.Add(headerName, correlationId);
+            }
+
+            return base.SendAsync(request, cancellationToken);
         }
     }
 
@@ -139,7 +186,7 @@ namespace DFDS.CapabilityService.WebApi
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            Console.WriteLine($"Staring metric server on {Host}:{Port}");
+            Console.WriteLine($"Starting metric server on {Host}:{Port}");
 
             _metricServer = new KestrelMetricServer(Host, Port).Start();
 

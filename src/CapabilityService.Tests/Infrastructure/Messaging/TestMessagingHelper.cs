@@ -13,6 +13,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Messaging
             {
                 AggregateId = "A1",
                 EventId = Guid.Empty,
+                CorrelationId = "987F693E-EF45-4518-8AFB-105B209887B1",
                 Type = "foo-type",
                 Data = "{\"Foo\":\"bar\"}"
             };
@@ -23,7 +24,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Messaging
 {
     ""version"": ""1"",
     ""eventName"": ""foo-type"",
-    ""x-correlationId"": ""00000000-0000-0000-0000-000000000000"",
+    ""x-correlationId"": ""987F693E-EF45-4518-8AFB-105B209887B1"",
     ""x-sender"": ""CapabilityService.WebApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"",
     ""payload"": {""foo"":""bar""}
 }";

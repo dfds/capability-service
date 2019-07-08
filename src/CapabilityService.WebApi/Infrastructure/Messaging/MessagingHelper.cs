@@ -15,7 +15,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
             var message = new Message(
                 version: "1",
                 eventName: evt.Type,
-                xCorrelationId: Guid.Empty,
+                xCorrelationId: evt.CorrelationId,
                 xSender: Assembly.GetExecutingAssembly().FullName,
                 payload: domainEvent);
 
@@ -31,12 +31,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
         public string Version { get; private set; }
         public string EventName { get; private set; }
         [JsonProperty(PropertyName = "x-correlationId")]
-        public Guid XCorrelationId { get; private set; }
+        public string XCorrelationId { get; private set; }
         [JsonProperty(PropertyName = "x-sender")]
         public string XSender { get; private set; }
         public object Payload { get;  private set; }
 
-        public Message(string version, string eventName, Guid xCorrelationId, string xSender, object payload)
+        public Message(string version, string eventName, string xCorrelationId, string xSender, object payload)
         {
             Version = version;
             EventName = eventName;

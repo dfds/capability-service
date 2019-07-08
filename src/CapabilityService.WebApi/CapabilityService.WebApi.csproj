@@ -17,6 +17,7 @@
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="2.2.0" />
     <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="2.2.2" />
     <PackageReference Include="Confluent.Kafka" Version="0.11.6" />
+    <PackageReference Include="CorrelationId" Version="2.1.0" />
     <PackageReference Include="Hashids.net" Version="1.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />

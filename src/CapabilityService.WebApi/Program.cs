@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration.Json;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
+using Serilog.Sinks.SystemConsole.Themes;
 
 namespace DFDS.CapabilityService.WebApi
 {
@@ -15,12 +16,25 @@ namespace DFDS.CapabilityService.WebApi
     {
         public static int Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
+            bool.TryParse(Environment.GetEnvironmentVariable("CAPABILITY_SERVICE_HUMAN_LOG"), out var humanLog);
+
+            var logcfg = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-                .Enrich.FromLogContext()
-                .WriteTo.Console(new CompactJsonFormatter())
-                .CreateLogger();
+                .MinimumLevel.Override(source: "Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker", LogEventLevel.Information)
+                .MinimumLevel.Override(source: "Microsoft.AspNetCore.Hosting.Internal.WebHost", LogEventLevel.Information)
+                .Enrich.FromLogContext();
+            
+            if (humanLog)
+            {
+                logcfg.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3} {SourceContext}] {Message:lj}{NewLine}{Exception}", theme: AnsiConsoleTheme.Code);
+            }
+            else
+            {
+                logcfg.WriteTo.Console(new CompactJsonFormatter());
+            }
+            
+            Log.Logger = logcfg.CreateLogger();
 
             try
             {

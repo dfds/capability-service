@@ -2,21 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CorrelationId;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Serilog;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 {
     public class Outbox
     {
-        private readonly DomainEventEnvelopRepository _repository;
+        private readonly IRepository<DomainEventEnvelope> _repository;
         private readonly IDomainEventRegistry _eventRegistry;
+        private readonly IRequestCorrelation _requestCorrelation;
 
-        public Outbox(DomainEventEnvelopRepository repository, IDomainEventRegistry eventRegistry)
+        public Outbox(IRepository<DomainEventEnvelope> repository, IDomainEventRegistry eventRegistry,
+            IRequestCorrelation requestCorrelation)
         {
             _repository = repository;
             _eventRegistry = eventRegistry;
+            _requestCorrelation = requestCorrelation;
         }
 
         public Task QueueDomainEvents(IAggregateDomainEvents aggregate)
@@ -27,6 +32,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
                                {
                                    EventId = Guid.NewGuid(),
                                    AggregateId = aggregate.GetAggregateId(),
+                                   CorrelationId = _requestCorrelation.RequestCorrelationId,
                                    Created = DateTime.UtcNow,
                                    Type = _eventRegistry.GetTypeNameFor(@event),
                                    Format = "application/json",
@@ -40,7 +46,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
             return QueueDomainEvents(domainEvents);
         }
 
-        public async Task QueueDomainEvents(IEnumerable<DomainEventEnvelope> domainEvents)
+        private async Task QueueDomainEvents(IEnumerable<DomainEventEnvelope> domainEvents)
         {
             await _repository.Add(domainEvents);
         }
