@@ -76,7 +76,7 @@ namespace DFDS.CapabilityService.WebApi
                 .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
         }
 
-        private static void ConfigureDomainEvents(IServiceCollection services)
+        private void ConfigureDomainEvents(IServiceCollection services)
         {
             var eventRegistry = new DomainEventRegistry();
             services.AddSingleton<IDomainEventRegistry>(eventRegistry);
@@ -92,9 +92,7 @@ namespace DFDS.CapabilityService.WebApi
             services.AddTransient<IEventHandler<AWSContextAccountCreatedIntegrationEvent>, AWSContextAccountCreatedEventHandler>();
             services.AddTransient<IEventDispatcher, EventDispatcher>();
 
-
-
-            var capabilitiesTopicName = "build.capabilities";
+            var capabilitiesTopicName = Configuration["CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY"];
 
             eventRegistry
                 .Register<CapabilityCreated>("capability_created", capabilitiesTopicName)

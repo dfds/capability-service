@@ -79,6 +79,8 @@ spec:
           value: "capability-service-consumer"
         - name: CAPABILITY_SERVICE_KAFKA_ENABLE_AUTO_COMMIT
           value: "false"
+        - name: CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY
+          value: "build.capabilities"
         - name: DOTNET_USE_POLLING_FILE_WATCHER
           value: "true"
         livenessProbe:
