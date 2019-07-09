@@ -21,8 +21,8 @@ namespace DFDS.CapabilityService.WebApi
             var logcfg = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-                .MinimumLevel.Override(source: "Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker", LogEventLevel.Information)
-                .MinimumLevel.Override(source: "Microsoft.AspNetCore.Hosting.Internal.WebHost", LogEventLevel.Information)
+                .MinimumLevel.Override("Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker", LogEventLevel.Information)
+                .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Internal.WebHost", LogEventLevel.Information)
                 .Enrich.FromLogContext();
             
             if (humanLog)
