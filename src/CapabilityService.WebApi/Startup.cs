@@ -41,7 +41,7 @@ namespace DFDS.CapabilityService.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddHttpContextAccessor();
             services.AddCorrelationId();
             services.AddTransient<CorrelationIdRequestAppendHandler>();
