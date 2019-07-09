@@ -3,7 +3,6 @@
 CREATE TABLE public."DomainEvent" (
     "EventId" uuid NOT NULL,
     "AggregateId" varchar(255) NOT NULL,
-    "CorrelationId" varchar(255) NULL,
     "Type" varchar(255) NOT NULL,
     "Format" varchar(255) NOT NULL,
     "Data" text NOT NULL,
