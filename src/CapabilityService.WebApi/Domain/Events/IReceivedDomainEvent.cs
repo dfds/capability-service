@@ -6,7 +6,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Events
     {
         string Version { get; }
         string EventName { get; }
-        Guid XCorrelationId { get; }
+        string XCorrelationId { get; }
         string XSender { get; }
         T Payload { get; }
     }

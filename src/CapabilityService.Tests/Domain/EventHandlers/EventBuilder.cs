@@ -21,7 +21,7 @@ namespace DFDS.CapabilityService.Tests.Domain.EventHandlers
             payload.RoleEmail = "Capability-default@dfds.com";
             
             var @event = new AWSContextAccountCreatedIntegrationEvent(new GeneralDomainEvent(
-                "1","aws_context_account_created", Guid.NewGuid(),"", payload));
+                "1","aws_context_account_created", Guid.NewGuid().ToString(),"", payload));
             return @event;
         }
         

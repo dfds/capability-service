@@ -17,7 +17,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Events
 
         public string Version { get; }
         public string EventName { get; }
-        public Guid XCorrelationId { get; }
+        public string XCorrelationId { get; }
         public string XSender { get; }
         public AWSContextAccountCreatedData Payload { get; }
     }
