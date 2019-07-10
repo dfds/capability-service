@@ -12,7 +12,7 @@ namespace DFDS.CapabilityService.WebApi.Application
     public class CapabilityApplicationService : ICapabilityApplicationService
     {
         private readonly ICapabilityRepository _capabilityRepository;
-        private readonly Regex _nameValidationRegex = new Regex("^[A-Z][a-zA-Z0-9_\\-]{2,20}$", RegexOptions.Compiled);
+        private readonly Regex _nameValidationRegex = new Regex("^[A-Z][a-zA-Z0-9\\-]{2,20}$", RegexOptions.Compiled);
 
         public CapabilityApplicationService(ICapabilityRepository capabilityRepository)
         {
@@ -24,7 +24,7 @@ namespace DFDS.CapabilityService.WebApi.Application
         {
             if (!_nameValidationRegex.Match(newName).Success)
             {
-                throw new CapabilityValidationException("Name must be a string of length 3 to 32. consisting of only alphanumeric ASCII characters, starting with a capital letter. Underscores and hyphens are allowed.");
+                throw new CapabilityValidationException("Name must be a string of length 3 to 21. consisting of only alphanumeric ASCII characters, starting with a capital letter. Hyphens is allowed.");
             }
 
 
@@ -40,7 +40,7 @@ namespace DFDS.CapabilityService.WebApi.Application
         {
             if (!_nameValidationRegex.Match(name).Success)
             {
-                throw new CapabilityValidationException("Name must be a string of length 3 to 21. consisting of only alphanumeric ASCII characters, starting with a capital letter. Underscores and hyphens are allowed.");
+                throw new CapabilityValidationException("Name must be a string of length 3 to 21. consisting of only alphanumeric ASCII characters, starting with a capital letter. Hyphens is allowed.");
             }
 
             var capability = Capability.Create(name, description);
