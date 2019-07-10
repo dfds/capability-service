@@ -30,7 +30,6 @@ namespace DFDS.CapabilityService.Tests.Application
         [Theory]
         [InlineData("AName")]
         [InlineData("A-Name")]
-        [InlineData("A_Name")]
         [InlineData("AZ0")]
         // FIXME Temporary disabled because we need to restrict to 21 chars until downstream harald is fixed: [InlineData("A012345678901234567890123456789")]
         [InlineData("A23456789012345678901")]
@@ -68,6 +67,18 @@ namespace DFDS.CapabilityService.Tests.Application
             await sut.JoinCapability(capability.Id, stubMemberEmail);
             
             Assert.Equal(new[]{stubMemberEmail}, capability.Members.Select(x => x.Email));
+        }
+
+        [Fact]
+        public async Task throws_exception_with_underscore_in_name()
+        {
+            var sut = new CapabilityApplicationServiceBuilder()
+                .WithCapabilityRepository(new StubCapabilityRepository())
+                .Build();
+
+            var dummyName = "A_Name";
+
+            await Assert.ThrowsAsync<CapabilityValidationException>(() => sut.CreateCapability(dummyName, string.Empty));
         }
 
         [Fact]
