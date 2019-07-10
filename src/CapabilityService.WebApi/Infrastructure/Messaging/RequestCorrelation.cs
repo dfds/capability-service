@@ -10,6 +10,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 
         public RequestCorrelation(ICorrelationContextAccessor correlationContextAccessor) => _correlationContextAccessor = correlationContextAccessor;
 
-        public string RequestCorrelationId => _correlationContextAccessor.CorrelationContext.CorrelationId;
+        public string RequestCorrelationId => _correlationContextAccessor.CorrelationContext?.CorrelationId;
     }
 }
