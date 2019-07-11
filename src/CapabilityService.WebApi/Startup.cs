@@ -45,7 +45,7 @@ namespace DFDS.CapabilityService.WebApi
             services.AddHttpContextAccessor();
             services.AddCorrelationId();
             services.AddTransient<CorrelationIdRequestAppendHandler>();
-            services.AddTransient<IRequestCorrelation, RequestCorrelation>();
+            services.AddScoped<IRequestCorrelation, RequestCorrelation>();
 
 
             var connectionString = Configuration["CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING"];
