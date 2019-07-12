@@ -36,5 +36,9 @@ namespace DFDS.CapabilityService.Tests.Builders
     public class RequestCorrelationStub : IRequestCorrelation
     {
         public string RequestCorrelationId => "CORRELATION_STUB";
+        public void OverrideCorrelationId(string _)
+        {
+            
+        }
     }
 }

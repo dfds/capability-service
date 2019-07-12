@@ -19,7 +19,7 @@ namespace DFDS.CapabilityService.WebApi
             bool.TryParse(Environment.GetEnvironmentVariable("CAPABILITY_SERVICE_HUMAN_LOG"), out var humanLog);
 
             var logcfg = new LoggerConfiguration()
-                .MinimumLevel.Information()
+                .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker", LogEventLevel.Information)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Internal.WebHost", LogEventLevel.Information)
@@ -27,7 +27,7 @@ namespace DFDS.CapabilityService.WebApi
             
             if (humanLog)
             {
-                logcfg.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3} {SourceContext}] {Message:lj}{NewLine}{Exception}", theme: AnsiConsoleTheme.Code);
+                logcfg.WriteTo.Console(theme: AnsiConsoleTheme.Code);
             }
             else
             {

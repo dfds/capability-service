@@ -4,6 +4,7 @@ using DFDS.CapabilityService.WebApi.Domain.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Serilog.Context;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 {
@@ -12,7 +13,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
         private readonly ILogger<EventDispatcher> _logger;
         private readonly DomainEventRegistry _eventRegistry;
         private readonly EventHandlerFactory _eventHandlerFactory;
-        
+
         public EventDispatcher(
             ILogger<EventDispatcher> logger,
             DomainEventRegistry eventRegistry,
@@ -31,13 +32,19 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 
         public async Task SendAsync(GeneralDomainEvent generalDomainEvent, IServiceScope serviceScope)
         {
-            var eventType = _eventRegistry.GetInstanceTypeFor(generalDomainEvent.EventName);
-            dynamic domainEvent = Activator.CreateInstance(eventType, generalDomainEvent);
-            dynamic handlersList = _eventHandlerFactory.GetEventHandlersFor(domainEvent, serviceScope);
-            
-            foreach (var handler in handlersList)
+            var requestCorrelationHandler = serviceScope.ServiceProvider.GetRequiredService<IRequestCorrelation>();
+            requestCorrelationHandler.OverrideCorrelationId(generalDomainEvent.XCorrelationId);
+
+            using (LogContext.PushProperty("CorrelationId", requestCorrelationHandler.RequestCorrelationId))
             {
-                await handler.HandleAsync(domainEvent);
+                var eventType = _eventRegistry.GetInstanceTypeFor(generalDomainEvent.EventName);
+                dynamic domainEvent = Activator.CreateInstance(eventType, generalDomainEvent);
+                dynamic handlersList = _eventHandlerFactory.GetEventHandlersFor(domainEvent, serviceScope);
+
+                foreach (var handler in handlersList)
+                {
+                    await handler.HandleAsync(domainEvent);
+                }
             }
         }
     }
