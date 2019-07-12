@@ -8,7 +8,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
     public class RequestCorrelation : IRequestCorrelation
     {
         private readonly ICorrelationContextAccessor _correlationContextAccessor;
-        private static readonly AsyncLocal<string> OverriddenCorrelationId = new AsyncLocal<string>();
+        private string _overriddenCorrelationId;
 
         public RequestCorrelation(ICorrelationContextAccessor correlationContextAccessor) => _correlationContextAccessor = correlationContextAccessor;
 
@@ -16,20 +16,27 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
         {
             get
             {
-                return string.IsNullOrEmpty(OverriddenCorrelationId.Value)
-                    ? _correlationContextAccessor.CorrelationContext?.CorrelationId
-                    : OverriddenCorrelationId.Value;
+                if (HasStoredContextCorrelationId)
+                {
+                    return SafeGetStoredContextCorrelationId;
+                }
+
+                return SafeGetHttpContextCorrelationId;
             }
         }
 
         public void OverrideCorrelationId(string correlationId)
         {
-            Log.Information("Overriding correlationId in AsyncLocal to be {CorrelationId}", correlationId);
-            if (!String.IsNullOrEmpty(OverriddenCorrelationId.Value))
+            Log.Debug("Overriding correlationId to {CorrelationId}", correlationId);
+            if (!string.IsNullOrEmpty(_overriddenCorrelationId))
             {
                 throw new InvalidOperationException("CorrelationId has already been overridden. CorrelationIds are locked once set in a scope.");
             }
-            OverriddenCorrelationId.Value = string.IsNullOrWhiteSpace(correlationId) ? new Guid().ToString() : correlationId;
+            _overriddenCorrelationId = string.IsNullOrWhiteSpace(correlationId) ? new Guid().ToString() : correlationId;
         }
+        
+        private string SafeGetHttpContextCorrelationId => _correlationContextAccessor.CorrelationContext?.CorrelationId;
+        private string SafeGetStoredContextCorrelationId => _overriddenCorrelationId;
+        private bool HasStoredContextCorrelationId => !string.IsNullOrWhiteSpace(_overriddenCorrelationId);
     }
 }
