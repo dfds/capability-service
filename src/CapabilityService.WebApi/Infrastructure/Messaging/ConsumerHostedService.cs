@@ -60,25 +60,28 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
                                         var eventDispatcher =
                                             scope.ServiceProvider.GetRequiredService<IEventDispatcher>();
                                         await eventDispatcher.Send(msg.Value, scope);
+                                        await consumer.CommitAsync(msg);
+                                    }
+                                    catch (MessagingHandlerNotAvailable mhnae)
+                                    {
+                                        _logger.LogWarning(mhnae,
+                                            "Encountered a message {EventType} with no properly defined handler. A generic handler should be implemented. Skipping.",
+                                            mhnae.EventType);
+                                        await consumer.CommitAsync(msg);
+                                    }
+                                    catch (MessagingMessageIncomprehensible mmi)
+                                    {
+                                        _logger.LogWarning(mmi,
+                                            "Encountered a message that was irrecoverably incomprehensible. Skipping. Raw message included {@Message} with value '{@MessageValue}'",
+                                            msg, msg.Value);
+                                        await consumer.CommitAsync(msg);
                                     }
                                     catch (Exception ex)
                                     {
-                                        _logger.LogWarning($"Error consuming event. Exception message: {ex.Message}",
-                                            ex);
+                                        _logger.LogError(ex, "Error consuming event. Exception message: {ExceptionMessage}. Raw message included {@Message} with value '{@MessageValue}'",
+                                            ex.Message, msg, msg.Value);
+                                        // Do not commit the message, instead halt and wait
                                     }
-                                    finally
-                                    {
-                                        try
-                                        {
-                                            await consumer.CommitAsync(msg);
-                                        }
-                                        catch (Exception exFinally)
-                                        {
-                                            _logger.LogError($"Error committing message {msg} due to {exFinally}",
-                                                exFinally);
-                                        }
-                                    }
-                                        
                                 }
                             }
                         }
