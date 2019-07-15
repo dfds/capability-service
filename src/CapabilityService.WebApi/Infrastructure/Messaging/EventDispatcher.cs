@@ -32,19 +32,30 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 
         public async Task SendAsync(GeneralDomainEvent generalDomainEvent, IServiceScope serviceScope)
         {
+            if (generalDomainEvent == null)
+            {
+                throw new MessagingMessageIncomprehensible("Received a blank message");
+            }
             var requestCorrelationHandler = serviceScope.ServiceProvider.GetRequiredService<IRequestCorrelation>();
             requestCorrelationHandler.OverrideCorrelationId(generalDomainEvent.XCorrelationId);
 
-            using (LogContext.PushProperty("CorrelationId", requestCorrelationHandler.RequestCorrelationId))
+            using (LogContext.PushProperty("CorrelationId", generalDomainEvent.XCorrelationId))
             {
                 var eventType = _eventRegistry.GetInstanceTypeFor(generalDomainEvent.EventName);
-                dynamic domainEvent = Activator.CreateInstance(eventType, generalDomainEvent);
-                dynamic handlersList = _eventHandlerFactory.GetEventHandlersFor(domainEvent, serviceScope);
-
-                foreach (var handler in handlersList)
+                try
                 {
-                    await handler.HandleAsync(domainEvent);
+                    dynamic domainEvent = Activator.CreateInstance(eventType, generalDomainEvent);
+                    dynamic handlersList = _eventHandlerFactory.GetEventHandlersFor(domainEvent, serviceScope);
+
+                    foreach (var handler in handlersList)
+                    {
+                        await handler.HandleAsync(domainEvent);
+                    }
                 }
+                catch (MissingMethodException mme)
+                {
+                    throw new MessagingHandlerNotAvailable($"Handler not available, specific error {mme.Message}", generalDomainEvent.EventName, mme);
+                }    
             }
         }
     }

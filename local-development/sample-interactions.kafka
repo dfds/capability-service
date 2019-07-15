@@ -1,0 +1,17 @@
+Either (Linux)
+    kafka-console-producer.sh --broker-list localhost:9092 --topic build.capabilities
+or (Mac)
+    kafka-console-producer --broker-list localhost:9092 --topic build.capabilities
+
+Some template events:
+
+
+{"version":"1","eventName":"aws_context_account_created","x-correlationId":"0a4c0dc1-660e-4c39-bb2b-769bacd29c9e","x-sender":"K8sJanitor.WebApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null","payload":{"contextId":"8b8dcf9c-cd7c-44b5-995d-b75448dfd093","capabilityId":"0d03e3ad-2118-46b7-970e-0ca87b59a202","capabilityName": "Team One", "capabilityRootId": "", "contextName": "New context wowza", "accountId": "", "roleArn": "", "roleEmail": ""}}
+{"version":"1","eventName":"aws_context_account_created","x-correlationId":"22011556-c06b-48c8-9942-11c6a2a7e3aa","x-sender":"K8sJanitor.WebApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null","payload":{"contextId":"8b8dcf9c-cd7c-44b5-995d-b75448dfd093","capabilityId":"0d03e3ad-2118-46b7-970e-0ca87b59a202","capabilityName": "Team One", "capabilityRootId": "", "contextName": "New context wowza", "accountId": "", "roleArn": "", "roleEmail": ""}}
+
+
+{"version":"1","eventName":"capability_created","x-correlationId":"b6c4c898-02a1-4d5f-8635-7d68ecc1fd47","x-sender":"K8sJanitor.WebApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null","payload":{"capabilityName":"hellopelle","capabilityId":"00000000-0000-0000-0000-000000000000"}}
+
+
+
+
