@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
@@ -28,8 +29,20 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 
             return Tuple.Create<string, string>(key, value);
         }
+        
+        public ConsumerConfig GetConsumerConfiguration()
+        {
+            return new ConsumerConfig(AsEnumerable());
 
-        public IEnumerable<KeyValuePair<string, object>> AsEnumerable()
+        }
+
+        public ProducerConfig GetProducerConfiguration()
+        {
+            return new ProducerConfig(AsEnumerable());
+        }
+        
+
+        public IEnumerable<KeyValuePair<string, string>> AsEnumerable()
         {
             var configurationKeys = new[]
             {
@@ -48,10 +61,10 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
             var config = configurationKeys
                 .Select(key => GetConfiguration(key))
                 .Where(pair => pair != null)
-                .Select(pair => new KeyValuePair<string, object>(pair.Item1, pair.Item2))
+                .Select(pair => new KeyValuePair<string, string>(pair.Item1, pair.Item2))
                 .ToList();
                 
-            config.Add(new KeyValuePair<string, object>("request.timeout.ms", "3000"));
+            config.Add(new KeyValuePair<string, string>("request.timeout.ms", "3000"));
 
             return config;
         }
