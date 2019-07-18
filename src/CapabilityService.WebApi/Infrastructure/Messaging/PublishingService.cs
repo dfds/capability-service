@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Confluent.Kafka;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -70,19 +71,22 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
                         var topicName = eventRegistry.GetTopicFor(evt.Type);
                         var message = MessagingHelper.CreateMessageFrom(evt);
 
-                        var result = await producer.ProduceAsync(
-                            topic: topicName,
-                            key: evt.AggregateId,
-                            val: message
-                        );
-
-                        if (!result.Error.HasError)
+                        try
                         {
+                            var result = await producer.ProduceAsync(
+                                topic: topicName,
+                                message: new Message<string, string>
+                                {
+                                    Key = evt.AggregateId,
+                                    Value = message
+                                }
+                            );
+                            
                             evt.Sent = result.Timestamp.UtcDateTime;
                             await dbContext.SaveChangesAsync();
                             Log.Information($"Domain event \"{evt.Type}>{evt.EventId}\" has been published!");
                         }
-                        else
+                        catch (Exception)
                         {
                             throw new Exception($"Could not publish domain event \"{evt.Type}>{evt.EventId}\"!!!");
                         }

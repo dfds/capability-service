@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Confluent.Kafka;
-using Confluent.Kafka.Serialization;
 using Microsoft.Extensions.Configuration;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
@@ -17,15 +16,20 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
             _configuration = configuration;
         }
 
-        public Consumer<string, string> Create()
+        public IConsumer<string, string> Create()
         {
-            var config = _configuration.AsEnumerable().ToArray();
-            
-            return new Consumer<string, string>(
-                config: config,
-                keyDeserializer: new StringDeserializer(Encoding.UTF8),
-                valueDeserializer: new StringDeserializer(Encoding.UTF8)
-            );
+            var config = new ConsumerConfig(_configuration.GetConsumerConfiguration());
+            var builder = new ConsumerBuilder<string, string>(config);
+            builder.SetErrorHandler(OnKafkaError);
+            return builder.Build();
+        }
+        
+        private void OnKafkaError(IConsumer<string, string> producer, Error error)
+        {
+            if (error.IsFatal)
+                Environment.FailFast($"Fatal error in Kafka producer: {error.Reason}. Shutting down...");
+            else
+                throw new Exception(error.Reason);
         }
     }
 }

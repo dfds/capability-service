@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Confluent.Kafka;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -43,45 +44,51 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
                         _logger.LogInformation($"Event consumer started. Listening to topics: {string.Join(",", topics)}");
                                                 
                         consumer.Subscribe(topics);
-                        consumer.OnPartitionsRevoked += (sender, topicPartitions) => consumer.Unassign();
-                        consumer.OnPartitionsAssigned += (sender, topicPartitions) => consumer.Assign(topicPartitions);
                         
                         // consume loop
                         while (!_cancellationTokenSource.IsCancellationRequested)
                         {
-                            if (consumer.Consume(out var msg, 1000))
+                            ConsumeResult<string, string> msg;
+                            try
                             {
-                                using (var scope = _serviceProvider.CreateScope())
-                                {
-                                    _logger.LogInformation($"Received event: Topic: {msg.Topic} Partition: {msg.Partition}, Offset: {msg.Offset} {msg.Value}");
+                                msg = consumer.Consume(cancellationToken);
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError($"Consumption of event failed, reason: {ex}");
+                                continue;
+                            }
+                            
+                            using (var scope = _serviceProvider.CreateScope())
+                            {
+                                _logger.LogInformation($"Received event: Topic: {msg.Topic} Partition: {msg.Partition}, Offset: {msg.Offset} {msg.Value}");
 
-                                    try
-                                    {
-                                        var eventDispatcher =
-                                            scope.ServiceProvider.GetRequiredService<IEventDispatcher>();
-                                        await eventDispatcher.Send(msg.Value, scope);
-                                        await consumer.CommitAsync(msg);
-                                    }
-                                    catch (MessagingHandlerNotAvailable mhnae)
-                                    {
-                                        _logger.LogWarning(mhnae,
-                                            "Encountered a message {EventType} with no properly defined handler. A generic handler should be implemented. Skipping.",
-                                            mhnae.EventType);
-                                        await consumer.CommitAsync(msg);
-                                    }
-                                    catch (MessagingMessageIncomprehensible mmi)
-                                    {
-                                        _logger.LogWarning(mmi,
-                                            "Encountered a message that was irrecoverably incomprehensible. Skipping. Raw message included {@Message} with value '{@MessageValue}'",
-                                            msg, msg.Value);
-                                        await consumer.CommitAsync(msg);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        _logger.LogError(ex, "Error consuming event. Exception message: {ExceptionMessage}. Raw message included {@Message} with value '{@MessageValue}'",
-                                            ex.Message, msg, msg.Value);
-                                        // Do not commit the message, instead halt and wait
-                                    }
+                                try
+                                {
+                                    var eventDispatcher =
+                                        scope.ServiceProvider.GetRequiredService<IEventDispatcher>();
+                                    await eventDispatcher.Send(msg.Value, scope);
+                                    await Task.Run(() => consumer.Commit(msg));
+                                }
+                                catch (MessagingHandlerNotAvailable mhnae)
+                                {
+                                    _logger.LogWarning(mhnae,
+                                        "Encountered a message {EventType} with no properly defined handler. A generic handler should be implemented. Skipping.",
+                                        mhnae.EventType);
+                                    await Task.Run(() => consumer.Commit(msg));
+                                }
+                                catch (MessagingMessageIncomprehensible mmi)
+                                {
+                                    _logger.LogWarning(mmi,
+                                        "Encountered a message that was irrecoverably incomprehensible. Skipping. Raw message included {@Message} with value '{@MessageValue}'",
+                                        msg, msg.Value);
+                                    await Task.Run(() => consumer.Commit(msg));
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.LogError(ex, "Error consuming event. Exception message: {ExceptionMessage}. Raw message included {@Message} with value '{@MessageValue}'",
+                                        ex.Message, msg, msg.Value);
+                                    // Do not commit the message, instead halt and wait
                                 }
                             }
                         }
