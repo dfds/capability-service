@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using CorrelationId;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
@@ -16,10 +13,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
     public class CapabilityController : ControllerBase
     {
         private readonly ICapabilityApplicationService _capabilityApplicationService;
+        private readonly ITopicApplicationService _topicApplicationService;
 
-        public CapabilityController(ICapabilityApplicationService capabilityApplicationService)
+        public CapabilityController(ICapabilityApplicationService capabilityApplicationService, ITopicApplicationService topicApplicationService)
         {
             _capabilityApplicationService = capabilityApplicationService;
+            _topicApplicationService = topicApplicationService;
         }
 
         [HttpGet("")]
@@ -51,7 +50,8 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
                 });
             }
 
-            var dto = Capability.Create(capability);
+            var topics = await _topicApplicationService.GetAllTopics(capabilityId);
+            var dto = CapabilityDetails.Create(capability, topics);
 
             return Ok(dto);
         }

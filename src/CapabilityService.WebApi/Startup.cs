@@ -70,16 +70,12 @@ namespace DFDS.CapabilityService.WebApi
                     options.UseNpgsql(connectionString);
                 });
 
-            services.AddTransient<ICapabilityRepository, CapabilityRepository>();
-
             services.AddTransient<Outbox>();
             services.AddTransient<DomainEventEnvelopeRepository>();
 
-            services.AddTransient<CapabilityApplicationService>();
+            services.AddTransient<ICapabilityRepository, CapabilityRepository>();
             services.AddTransient<CapabilityOutboxEnabledDecorator>();
-
-            services.AddTransient<IRepository<DomainEventEnvelope>,DomainEventEnvelopeRepository>();
-
+            services.AddTransient<CapabilityApplicationService>();
             services.AddTransient<ICapabilityApplicationService>(serviceProvider => new CapabilityTransactionalDecorator(
                 inner: new CapabilityOutboxEnabledDecorator(
                     inner: serviceProvider.GetRequiredService<CapabilityApplicationService>(),
@@ -88,7 +84,11 @@ namespace DFDS.CapabilityService.WebApi
                 ),
                 dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>()
             ));
- 
+
+            services.AddTransient<ITopicRepository, TopicRepository>();
+            services.AddTransient<ITopicApplicationService, TopicApplicationService>();
+
+            services.AddTransient<IRepository<DomainEventEnvelope>,DomainEventEnvelopeRepository>();
         }
 
         private void ConfigureDomainEvents(IServiceCollection services)
