@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
 {
-    public class Capability
+    public class CapabilityDetails
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -13,9 +14,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
         public Member[] Members { get; set; }
         public Context[] Contexts { get; set; }
 
-        public static Capability Create(Domain.Models.Capability capability)
+        public Topic[] Topics { get; set; }
+
+        public static CapabilityDetails Create(Domain.Models.Capability capability, IEnumerable<Domain.Models.Topic> topics)
         {
-            return new Capability
+            return new CapabilityDetails
             {
                 Id = capability.Id,
                 Name = capability.Name,
@@ -34,6 +37,16 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
                         AWSRoleArn = context.AWSRoleArn,
                         AWSAccountId = context.AWSAccountId,
                         AWSRoleEmail = context.AWSRoleEmail
+                    })
+                    .ToArray(),
+                Topics = topics
+                    .Select(x => new Topic
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        Description = x.Description,
+                        IsPrivate = x.IsPrivate,
+                        CapabilityId = x.CapabilityId,
                     })
                     .ToArray(),
             };

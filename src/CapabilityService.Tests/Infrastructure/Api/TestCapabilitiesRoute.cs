@@ -71,12 +71,13 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 
                 var client = builder
                     .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
+                    .WithService<ITopicApplicationService>(new StubTopicApplicationService())
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[],\"topics\":[]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
@@ -95,12 +96,13 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 
                 var client = builder
                     .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
+                    .WithService<ITopicApplicationService>(new StubTopicApplicationService())
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[{{\"email\":\"{memberEmail}\"}}],\"contexts\":[]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[{{\"email\":\"{memberEmail}\"}}],\"contexts\":[],\"topics\":[]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
@@ -123,17 +125,61 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 
                 var client = builder
                     .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
+                    .WithService<ITopicApplicationService>(new StubTopicApplicationService())
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"foo-582a4\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[{{\"id\":\"{contextGuid}\",\"name\":\"{contextName}\",\"awsAccountId\":\"{awsAccountId}\",\"awsRoleArn\":\"{awsRoleArn}\",\"awsRoleEmail\":\"{awsRoleEmail}\"}}]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"foo-582a4\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[{{\"id\":\"{contextGuid}\",\"name\":\"{contextName}\",\"awsAccountId\":\"{awsAccountId}\",\"awsRoleArn\":\"{awsRoleArn}\",\"awsRoleEmail\":\"{awsRoleEmail}\"}}],\"topics\":[]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
         }
-        
+
+        [Fact]
+        public async Task get_single_capability_without_any_topics_returns_expected_body()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var stubCapability = new CapabilityBuilder().Build();
+
+                var client = builder
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
+                    .WithService<ITopicApplicationService>(new StubTopicApplicationService())
+                    .Build();
+
+                var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
+
+                Assert.Equal(
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[],\"topics\":[]}}",
+                    actual: await response.Content.ReadAsStringAsync()
+                );
+            }
+        }
+
+        [Fact]
+        public async Task get_single_capability_with_single_topic_returns_expected_body()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var stubCapability = new CapabilityBuilder().Build();
+                var stubTopic = new TopicBuilder().Build();
+
+                var client = builder
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
+                    .WithService<ITopicApplicationService>(new StubTopicApplicationService(stubTopic))
+                    .Build();
+
+                var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
+
+                Assert.Equal(
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[],\"topics\":[{{\"id\":\"{stubTopic.Id}\",\"name\":\"{stubTopic.Name}\",\"description\":\"{stubTopic.Description}\",\"isPrivate\":false,\"capabilityId\":\"{stubTopic.CapabilityId}\"}}]}}",
+                    actual: await response.Content.ReadAsStringAsync()
+                );
+            }
+        }
+
         [Fact]
         public async Task get_single_capability_returns_expected_status_code_when_capability_was_not_found()
         {
