@@ -151,5 +151,10 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             RaiseEvent(new ContextUpdated(Id, contextId, awsAccountId, awsRoleArn, awsRoleEmail ));
 
         }
+
+        public Topic AddTopic(string name, string description, bool isPrivate = false)
+        {
+            return Topic.Create(name, description, isPrivate, Id);
+        }
     }
 }

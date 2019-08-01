@@ -150,6 +150,33 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/errorObject'
+  /capabilities/{capabilityId}/topics:
+    post:
+      summary: Adds a topic to a capability 
+      parameters:
+        - in: path
+          name: capabilityId
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              isPrivate:
+                type: boolean
+      responses:
+        200:
+          description: Ok
+        404:
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errorObject'
 definitions:
   capability-list:
     type: object

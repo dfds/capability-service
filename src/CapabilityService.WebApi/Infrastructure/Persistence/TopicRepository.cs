@@ -23,5 +23,10 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
                 .Where(x => x.CapabilityId == capabilityId)
                 .ToListAsync();
         }
+
+        public async Task Add(Topic topic)
+        {
+            await _dbContext.Topics.AddAsync(topic);
+        }
     }
 }

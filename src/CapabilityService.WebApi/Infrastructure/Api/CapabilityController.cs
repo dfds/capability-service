@@ -13,12 +13,10 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
     public class CapabilityController : ControllerBase
     {
         private readonly ICapabilityApplicationService _capabilityApplicationService;
-        private readonly ITopicApplicationService _topicApplicationService;
 
-        public CapabilityController(ICapabilityApplicationService capabilityApplicationService, ITopicApplicationService topicApplicationService)
+        public CapabilityController(ICapabilityApplicationService capabilityApplicationService)
         {
             _capabilityApplicationService = capabilityApplicationService;
-            _topicApplicationService = topicApplicationService;
         }
 
         [HttpGet("")]
@@ -50,7 +48,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
                 });
             }
 
-            var topics = await _topicApplicationService.GetAllTopics(capabilityId);
+            var topics = await _capabilityApplicationService.GetTopicsForCapability(capabilityId);
             var dto = CapabilityDetails.Create(capability, topics);
 
             return Ok(dto);
@@ -172,5 +170,33 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 
             return Ok();
         }
+
+        [HttpPost("{id}/topics")]
+        public async Task<IActionResult> AddTopicToCapability(string id, [FromBody] TopicInput input)
+        {
+            var capabilityId = Guid.Empty;
+            Guid.TryParse(id, out capabilityId);
+
+            try
+            {
+                await _capabilityApplicationService.AddTopic(capabilityId, input.Name, input.Description, input.IsPrivate);
+            }
+            catch (CapabilityDoesNotExistException)
+            {
+                return NotFound(new
+                {
+                    Message = $"Capability with id {id} could not be found."
+                });
+            }
+
+            return Ok();
+        }
+    }
+
+    public class TopicInput
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public bool IsPrivate { get; set; }
     }
 }

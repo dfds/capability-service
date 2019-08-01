@@ -12,11 +12,13 @@ namespace DFDS.CapabilityService.WebApi.Application
     public class CapabilityApplicationService : ICapabilityApplicationService
     {
         private readonly ICapabilityRepository _capabilityRepository;
+        private readonly ITopicRepository _topicRepository;
         private readonly Regex _nameValidationRegex = new Regex("^[A-Z][a-zA-Z0-9\\-]{2,20}$", RegexOptions.Compiled);
 
-        public CapabilityApplicationService(ICapabilityRepository capabilityRepository)
+        public CapabilityApplicationService(ICapabilityRepository capabilityRepository, ITopicRepository topicRepository)
         {
             _capabilityRepository = capabilityRepository;
+            _topicRepository = topicRepository;
         }
 
         public Task<Capability> GetCapability(Guid id) => _capabilityRepository.Get(id);
@@ -99,6 +101,21 @@ namespace DFDS.CapabilityService.WebApi.Application
                 throw new ContextDoesNotExistException();
             }
             capability.UpdateContext(context.Id, awsAccountId, awsRoleArn, awsRoleEmail);
+        }
+
+        public async Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId) => await _topicRepository.GetByCapability(capabilityId);
+
+        public async Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
+        {
+            var capability = await _capabilityRepository.Get(capabilityId);
+
+            if (capability == null)
+            {
+                throw new CapabilityDoesNotExistException();
+            }
+
+            var topic = capability.AddTopic(topicName, topicDescription, isTopicPrivate);
+            await _topicRepository.Add(topic);
         }
     }
 }

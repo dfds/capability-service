@@ -23,13 +23,13 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
         public bool IsPrivate { get; private set; }
         public Guid CapabilityId { get; private set; }
 
-        public static Topic Create(string name, string description, Guid capabilityId)
+        public static Topic Create(string name, string description, bool isPrivate, Guid capabilityId)
         {
             return new Topic(
                 id: Guid.NewGuid(), 
                 name: name,
                 description: description,
-                isPrivate: true,
+                isPrivate: isPrivate,
                 capabilityId: capabilityId
             );
         }
