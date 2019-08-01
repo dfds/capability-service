@@ -52,8 +52,9 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
             {
                 var capOld = new CapabilityBuilder().WithRootId(null).Build();
 
+                Capability[] stubCapabilities = new[] {capOld};
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(capOld))
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: stubCapabilities))
                     .Build();
 
                 var response = await client.GetAsync("api/v1/adsync");
@@ -76,8 +77,9 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var populatedContext = new ContextBuilder().Build();
                 var capNewWithPopulatedContext = new CapabilityBuilder().WithContexts(populatedContext).Build();
 
+                Capability[] stubCapabilities = new[] {capNewWithContext, capNewWithoutContext, capNewWithPopulatedContext};
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(capNewWithContext, capNewWithoutContext, capNewWithPopulatedContext))
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: stubCapabilities))
                     .Build();
 
                 var response = await client.GetAsync("api/v1/adsync");
@@ -100,9 +102,10 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var capNewWithContext = new CapabilityBuilder().WithContexts(ctx).Build();
                 var populatedContext = new ContextBuilder().Build();
                 var capNewWithPopulatedContext = new CapabilityBuilder().WithContexts(populatedContext).Build();
-                
+
+                Capability[] stubCapabilities = new[] {capOld, capNewWithContext, capNewWithoutContext, capNewWithPopulatedContext};
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(capOld, capNewWithContext, capNewWithoutContext, capNewWithPopulatedContext))
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: stubCapabilities))
                     .Build();
 
                 var response = await client.GetAsync("api/v1/adsync");

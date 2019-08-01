@@ -53,7 +53,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var subCapability = new CapabilityBuilder().Build();
 
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(subCapability))
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: new[] {subCapability}))
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/capabilities/{subCapability.Id}");
@@ -70,8 +70,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var stubCapability = new CapabilityBuilder().Build();
 
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
-                    .WithService<ITopicApplicationService>(new StubTopicApplicationService())
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: new[] {stubCapability}))
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
@@ -95,8 +94,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                     .Build();
 
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
-                    .WithService<ITopicApplicationService>(new StubTopicApplicationService())
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: new[] {stubCapability}))
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
@@ -124,8 +122,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                     .Build();
 
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
-                    .WithService<ITopicApplicationService>(new StubTopicApplicationService())
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: new[] {stubCapability}))
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
@@ -145,8 +142,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var stubCapability = new CapabilityBuilder().Build();
 
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
-                    .WithService<ITopicApplicationService>(new StubTopicApplicationService())
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: new[] {stubCapability}))
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
@@ -167,8 +163,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var stubTopic = new TopicBuilder().Build();
 
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
-                    .WithService<ITopicApplicationService>(new StubTopicApplicationService(stubTopic))
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: new[] {stubCapability}, stubTopics: new[] {stubTopic}))
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
@@ -219,8 +214,9 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
             {
                 var dummyCapability = new CapabilityBuilder().Build();
 
+                Capability[] stubCapabilities = new[] {dummyCapability};
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(dummyCapability))
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: stubCapabilities))
                     .Build();
 
                 var stubInput = "{\"name\":\"foo\"}";
@@ -238,7 +234,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var subCapability = new CapabilityBuilder().Build();
 
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(subCapability))
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: new[] {subCapability}))
                     .Build();
 
                 var stubInput = "{\"name\":\"foo\"}";
@@ -259,7 +255,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var stubCapability = new CapabilityBuilder().Build();
 
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: new[] {stubCapability}))
                     .Build();
 
                 var stubInput = $"{{\"name\":\"{stubCapability.Name}\", \"description\":\"{stubCapability.Description}\"}}";
@@ -305,7 +301,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var subCapability = new CapabilityBuilder().Build();
 
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(subCapability))
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: new[] {subCapability}))
                     .Build();
 
                 var stubInput = "{\"email\":\"foo\"}";
@@ -325,7 +321,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                     .Build();
 
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(subCapability))
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: new[] {subCapability}))
                     .Build();
 
                 var response = await client.DeleteAsync($"api/v1/capabilities/{subCapability.Id}/members/foo");
@@ -396,7 +392,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var dummyCapability = new CapabilityBuilder().Build();
 
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(dummyCapability))
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: new[] {dummyCapability}))
                     .Build();
 
                 var dummyCapabilityId = "foo";
@@ -433,7 +429,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var stubCapability = new CapabilityBuilder().Build();
 
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapability))
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: new[] {stubCapability}))
                     .Build();
 
                 var dummyCapabilityId = "foo";

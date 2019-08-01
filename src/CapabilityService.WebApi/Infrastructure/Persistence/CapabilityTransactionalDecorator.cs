@@ -21,7 +21,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             _outbox = outbox;
         }
 
-
         public Task<IEnumerable<Capability>> GetAllCapabilities() => _inner.GetAllCapabilities();
         public Task<Capability> GetCapability(Guid id) => _inner.GetCapability(id);
 
@@ -79,8 +78,15 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             await _inner.UpdateContext(capabilityId, contextId, awsAccountId, awsRoleArn, awsRoleEmail);
             await QueueDomainEvents();
         }
-    }
 
+        public Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId) => _inner.GetTopicsForCapability(capabilityId);
+
+        public async Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
+        {
+            await _inner.AddTopic(capabilityId, topicName, topicDescription, isTopicPrivate);
+            await QueueDomainEvents();
+        }
+    }
 
     public class CapabilityTransactionalDecorator : ICapabilityApplicationService
     {
@@ -159,6 +165,19 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
                 await _inner.UpdateContext(capabilityId, contextId, awsAccountId, awsRoleArn, awsRoleEmail);
+
+                await _dbContext.SaveChangesAsync();
+                transaction.Commit();
+            }
+        }
+
+        public Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId) => _inner.GetTopicsForCapability(capabilityId);
+
+        public async Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
+        {
+            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            {
+                await _inner.AddTopic(capabilityId, topicName, topicDescription, isTopicPrivate);
 
                 await _dbContext.SaveChangesAsync();
                 transaction.Commit();
