@@ -115,8 +115,8 @@ namespace DFDS.CapabilityService.WebApi
                 .Register<MemberLeftCapability>("member_left_capability", capabilitiesTopicName)
                 .Register<ContextAddedToCapability>("context_added_to_capability", capabilitiesTopicName)
                 .Register<ContextUpdated>("context_updated", capabilitiesTopicName)
-                .Register<AWSContextAccountCreatedIntegrationEvent>("aws_context_account_created",
-                    capabilitiesTopicName);
+                .Register<AWSContextAccountCreatedIntegrationEvent>("aws_context_account_created", capabilitiesTopicName)
+                .Register<TopicAdded>("topic_added", "build.topics");
 
             var scanner = new DomainEventScanner(eventRegistry);
             scanner.EnsureNoUnregisteredDomainEventsIn(Assembly.GetExecutingAssembly());
