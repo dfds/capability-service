@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 
 namespace DFDS.CapabilityService.Tests.Builders
@@ -11,6 +12,8 @@ namespace DFDS.CapabilityService.Tests.Builders
         private bool _isPrivate;
         private Guid _capabilityId;
 
+        private List<MessageContract> _messageContracts = new List<MessageContract>();
+
         public TopicBuilder()
         {
             _id = new Guid("11111111-1111-1111-1111-111111111111");
@@ -20,9 +23,15 @@ namespace DFDS.CapabilityService.Tests.Builders
             _capabilityId = new Guid("11111111-1111-1111-1111-111111111111");
         }
 
+        public TopicBuilder WithMessageContracts(params MessageContract[] messageContracts)
+        {
+            _messageContracts = new List<MessageContract>(messageContracts);
+            return this;
+        }
+
         public Topic Build()
         {
-            return new Topic(_id, _name, _description, _isPrivate, _capabilityId);
+            return new Topic(_id, _name, _description, _isPrivate, _capabilityId, _messageContracts);
         }
     }
 }

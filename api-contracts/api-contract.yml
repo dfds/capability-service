@@ -11,10 +11,21 @@ schemes:
   - http
 host: localhost:5000
 basePath: /api/v1/
+tags:
+  - name: capability
+    description: access single or multiple capabilities
+  - name: membership
+    description: start and stop memberships for members
+  - name: context
+    description: access to capability contexts
+  - name: topic
+    description: manage topics for a capability
 paths:
   /capabilities: 
     get:
       summary: Returns a list of capabilities
+      tags:
+        - capability
       responses:
         200:
           description: OK
@@ -22,6 +33,8 @@ paths:
             $ref: '#/definitions/capability-list'
     post:
       summary: Create a new capability
+      tags:
+        - capability
       parameters: 
         - in: body
           name: body
@@ -49,6 +62,8 @@ paths:
   /capabilities/{capabilityId}:
     get:
       summary: Returns a single capability
+      tags:
+        - capability
       parameters:
         - in: path
           name: capabilityId
@@ -61,6 +76,8 @@ paths:
             $ref: '#/definitions/capability-details'
     put:
       summary: Update the info fields on a single capability
+      tags:
+        - capability
       parameters:
         - in: path
           name: capabilityId
@@ -90,6 +107,8 @@ paths:
   /capabilities/{capabilityId}/members:
     post:
       summary: Adds a person to a capability 
+      tags:
+        - membership
       parameters:
         - in: path
           name: capabilityId
@@ -113,6 +132,8 @@ paths:
   /capabilities/{capabilityId}/members/{email}:
     delete:
       summary: Deletes a person from a capability 
+      tags:
+        - membership
       parameters:
         - in: path
           name: capabilityId
@@ -130,6 +151,8 @@ paths:
   /capabilities/{capabilityId}/contexts:
     post:
       summary: Adds a context to a capability 
+      tags:
+        - context
       parameters:
         - in: path
           name: capabilityId
@@ -153,6 +176,8 @@ paths:
   /capabilities/{capabilityId}/topics:
     post:
       summary: Adds a topic to a capability 
+      tags:
+        - topic
       parameters:
         - in: path
           name: capabilityId
@@ -177,6 +202,98 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/errorObject'
+  /topics:
+    get:
+      summary: Returns a list of all topics
+      tags:
+        - topic
+      responses:
+        200:
+          description: Ok
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items: 
+                  $ref: '#/definitions/topic'
+  /topics/{topicId}:
+    get:
+      summary: Returns a single topic
+      tags:
+        - topic
+      parameters:
+        - in: query
+          name: topicId
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/topic'
+        404:
+          description: Not Found
+  /topics/{topicId}/messageContracts:
+    get:
+      summary: Returns all message contracts for a single topic
+      tags:
+        - topic
+      parameters:
+        - in: query
+          name: topicId
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/messageContract'
+        404:
+          description: Not Found
+    post:
+      summary: Adds a new message contracts to a single topic
+      tags:
+        - topic
+      parameters:
+        - in: query
+          name: topicId
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              type:
+                type: string
+              content:
+                type: string
+      responses:
+        204:
+          description: No Content
+        404:
+          description: Not Found
+  /topics/{topicId}/messageContracts/{type}:
+    delete:
+      summary: Deletes a message contracts from a topic
+      tags:
+        - topic
+      parameters:
+        - in: query
+          name: topicId
+          required: true
+          type: string
+        - in: query
+          name: type
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+        404:
+          description: Not Found
 definitions:
   capability-list:
     type: object
@@ -261,3 +378,16 @@ definitions:
         type: string
       isPrivate:
         type: boolean
+      messageContracts:
+        type: array
+        items:
+          $ref: '#/definitions/messageContract'
+  messageContract:
+    type: object
+    properties:
+      type:
+        type: string
+      description:
+        type: string
+      content:
+        type: string
