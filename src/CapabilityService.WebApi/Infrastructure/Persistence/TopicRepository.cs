@@ -17,16 +17,31 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             _dbContext = dbContext;
         }
 
+        public async Task<IEnumerable<Topic>> GetAll()
+        {
+            return await _dbContext.Topics
+                .Include(x => x.MessageContracts)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Topic>> GetByCapability(Guid capabilityId)
         {
             return await _dbContext.Topics
                 .Where(x => x.CapabilityId == capabilityId)
+                .Include(x => x.MessageContracts)
                 .ToListAsync();
         }
 
         public async Task Add(Topic topic)
         {
             await _dbContext.Topics.AddAsync(topic);
+        }
+
+        public async Task<Topic> Get(Guid id)
+        {
+            return await _dbContext.Topics
+                .Include(x => x.MessageContracts)
+                .SingleOrDefaultAsync(x => x.Id == id);
         }
     }
 }
