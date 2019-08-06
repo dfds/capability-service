@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.TestDoubles;
+using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using Xunit;
 
@@ -20,6 +20,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
             {
                 var client = builder
                     .WithService<ITopicRepository>(new StubTopicRepository())
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
                     .Build();
 
                 var response = await client.GetAsync("api/v1/topics");
@@ -35,6 +36,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
             {
                 var client = builder
                     .WithService<ITopicRepository>(new StubTopicRepository())
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
                     .Build();
 
                 var response = await client.GetAsync("api/v1/topics");
@@ -55,6 +57,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 
                 var client = builder
                     .WithService<ITopicRepository>(new StubTopicRepository(stubTopic))
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
                     .Build();
 
                 var response = await client.GetAsync("api/v1/topics");
@@ -79,6 +82,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 
                 var client = builder
                     .WithService<ITopicRepository>(new StubTopicRepository(dummyTopic))
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
                     .Build();
 
                 var response = await client.GetAsync("api/v1/topics/1");
@@ -99,6 +103,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 
                 var client = builder
                     .WithService<ITopicRepository>(new StubTopicRepository(stubTopic))
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
                     .Build();
 
                 var response = await client.GetAsync("api/v1/topics/1");
@@ -117,12 +122,93 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
             {
                 var client = builder
                     .WithService<ITopicRepository>(new StubTopicRepository())
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
                     .Build();
 
                 var response = await client.GetAsync("api/v1/topics/1");
 
                 Assert.Equal(
                     expected: HttpStatusCode.NotFound,
+                    actual: response.StatusCode
+                );
+            }
+        }
+
+        #endregion
+
+        #region update topic
+
+        [Fact]
+        public async Task put_update_topic_details_returns_expected_status_code_when_not_found()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var client = builder
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
+                    .WithService<ITopicRepository>(new StubTopicRepository())
+                    .Build();
+
+                var nonExistingTopicId = 1;
+                var dummyInput = "{}";
+
+                var response = await client.PutAsync($"api/v1/topics/{nonExistingTopicId}", new JsonContent(dummyInput));
+
+                Assert.Equal(
+                    expected: HttpStatusCode.NotFound,
+                    actual: response.StatusCode
+                );
+            }
+        }
+
+        [Fact]
+        public async Task put_update_topic_details_returns_expected_status_code()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var stubTopic = new TopicBuilder().Build();
+
+                var client = builder
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
+                    .WithService<ITopicRepository>(new StubTopicRepository(stubTopic))
+                    .Build();
+
+                var stubInput = $"{{\"name\":\"{stubTopic.Name}\",\"description\":\"foo\",\"isPrivate\":false}}";
+
+                var response = await client.PutAsync($"api/v1/topics/{stubTopic.Id}", new JsonContent(stubInput));
+
+                Assert.Equal(
+                    expected: HttpStatusCode.NoContent,
+                    actual: response.StatusCode
+                );
+            }
+        }
+
+        [Fact]
+        public async Task put_update_topic_details_returns_expected_status_code_when_topic_with_same_name_already_exist()
+        {
+            using (var builder = new HttpClientBuilder())
+            {
+                var currentTopic = new TopicBuilder()
+                    .WithId(Guid.NewGuid())
+                    .WithName("foo")
+                    .Build();
+
+                var anotherTopic = new TopicBuilder()
+                    .WithId(Guid.NewGuid())
+                    .WithName("bar")
+                    .Build();
+
+                var client = builder
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
+                    .WithService<ITopicRepository>(new StubTopicRepository(currentTopic, anotherTopic))
+                    .Build();
+
+                var stubInput = $"{{\"name\":\"{anotherTopic.Name}\",\"description\":\"foo\",\"isPrivate\":false}}";
+
+                var response = await client.PutAsync($"api/v1/topics/{currentTopic.Id}", new JsonContent(stubInput));
+
+                Assert.Equal(
+                    expected: HttpStatusCode.BadRequest,
                     actual: response.StatusCode
                 );
             }
@@ -139,6 +225,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
             {
                 var client = builder
                     .WithService<ITopicRepository>(new StubTopicRepository())
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
                     .Build();
 
                 var response = await client.GetAsync("api/v1/topics/1/messagecontracts");
@@ -159,6 +246,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 
                 var client = builder
                     .WithService<ITopicRepository>(new StubTopicRepository(stubTopic))
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/topics/{stubTopic.Id}/messagecontracts");
@@ -179,6 +267,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 
                 var client = builder
                     .WithService<ITopicRepository>(new StubTopicRepository(stubTopic))
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/topics/{stubTopic.Id}/messagecontracts");
@@ -207,6 +296,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 
                 var client = builder
                     .WithService<ITopicRepository>(new StubTopicRepository(stubTopic))
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/topics/{stubTopic.Id}/messagecontracts");
@@ -219,7 +309,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
         }
 
         [Fact]
-        public async Task post_message_contract_to_NON_EXISTING_topic_returns_expected_status_code()
+        public async Task put_message_contract_to_NON_EXISTING_topic_returns_expected_status_code()
         {
             using (var builder = new HttpClientBuilder())
             {
@@ -227,12 +317,15 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 
                 var client = builder
                     .WithService<ITopicRepository>(emptyStubTopicRepository)
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
                     .Build();
 
                 var nonExistingTopicId = 1;
-                var stubInput = "{\"type\":\"foo\",\"description\":\"bar\",\"content\":\"baz\"}";
 
-                var response = await client.PostAsync($"api/v1/topics/{nonExistingTopicId}/messagecontracts", new JsonContent(stubInput));
+                var dummyMessageType = "foo";
+                var dummyInput = "{}";
+
+                var response = await client.PutAsync($"api/v1/topics/{nonExistingTopicId}/messagecontracts/{dummyMessageType}", new JsonContent(dummyInput));
 
                 Assert.Equal(
                     expected: HttpStatusCode.NotFound,
@@ -242,7 +335,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
         }
 
         [Fact]
-        public async Task post_message_contract_to_topic_returns_expected_status_code()
+        public async Task put_message_contract_to_topic_returns_expected_status_code()
         {
             using (var builder = new HttpClientBuilder())
             {
@@ -251,11 +344,13 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 
                 var client = builder
                     .WithService<ITopicRepository>(new StubTopicRepository(stubTopic))
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
                     .Build();
 
-                var stubInput = "{\"type\":\"foo\",\"description\":\"bar\",\"content\":\"baz\"}";
+                var dummyMessageContractType = "foo";
+                var dummyInput = "{}";
 
-                var response = await client.PostAsync($"api/v1/topics/{stubTopic.Id}/messagecontracts", new JsonContent(stubInput));
+                var response = await client.PutAsync($"api/v1/topics/{stubTopic.Id}/messagecontracts/{dummyMessageContractType}", new JsonContent(dummyInput));
 
                 Assert.Equal(
                     expected: HttpStatusCode.NoContent,
@@ -273,6 +368,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 
                 var client = builder
                     .WithService<ITopicRepository>(emptyStubTopicRepository)
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
                     .Build();
 
                 var nonExtingTopicId = "foo";
@@ -296,6 +392,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 
                 var client = builder
                     .WithService<ITopicRepository>(new StubTopicRepository(stubTopic))
+                    .WithService<ITopicApplicationService, TopicApplicationService>()
                     .Build();
 
                 var nonExistingMessageId = "foo";
@@ -308,17 +405,6 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 );
             }
         }
-
-        // [x] GET, when topic NOT found => status code
-        // [x] GET, when topic found => status code
-        // [x] GET, when topic found => body when empty
-        // [x] GET, when topic found => body when single
-           
-        // [x] POST, when topic NOT found => status code
-        // [x] POST, when topic found => status code
-        
-        // [x] DELETE, when topic NOT found => status code
-        // [x] DELETE, when topic found => status code
 
         #endregion
     }

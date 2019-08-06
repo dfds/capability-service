@@ -78,29 +78,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
             return Ok(result);
         }
 
-        [HttpPost("{id}/messagecontracts")]
-        public async Task<IActionResult> AddMessageContract([FromRoute]string id, [FromBody]MessageContractInput messageContractInput)
-        {
-            Guid topicId;
-            Guid.TryParse(id, out topicId);
-
-            try
-            {
-                await _topicApplicationService.AddMessageContract(
-                    topicId: topicId,
-                    type: messageContractInput.Type,
-                    description: messageContractInput.Description,
-                    content: messageContractInput.Content
-                );
-
-                return NoContent();
-            }
-            catch (TopicDoesNotExistException)
-            {
-                return NotFound();
-            }
-        }
-
         [HttpDelete("{id}/messagecontracts/{messageType}")]
         public async Task<IActionResult> RemoveMessageContract([FromRoute]string id, [FromRoute]string messageType)
         {
@@ -119,6 +96,59 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
             catch (TopicDoesNotExistException)
             {
                 return NotFound();
+            }
+        }
+
+        [HttpPut("{id}/messagecontracts/{messageType}")]
+        public async Task<IActionResult> AddOrUpdateMessageContract([FromRoute]string id, [FromRoute]string messageType, [FromBody]MessageContractInput messageContractInput)
+        {
+            Guid topicId;
+            Guid.TryParse(id, out topicId);
+
+            try
+            {
+                await _topicApplicationService.UpdateMessageContract(
+                    topicId: topicId,
+                    type: messageType,
+                    description: messageContractInput.Description,
+                    content: messageContractInput.Content
+                );
+
+                return NoContent();
+            }
+            catch (TopicDoesNotExistException)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTopicDetails([FromRoute]string id, [FromBody]TopicInput input)
+        {
+            Guid topicId;
+            Guid.TryParse(id, out topicId);
+
+            try
+            {
+                await _topicApplicationService.UpdateTopic(
+                    topicId: topicId,
+                    name: input.Name,
+                    description: input.Description,
+                    isPrivate: input.IsPrivate
+                );
+
+                return NoContent();
+            }
+            catch (TopicDoesNotExistException)
+            {
+                return NotFound();
+            }
+            catch (TopicAlreadyExistException)
+            {
+                return BadRequest(new
+                {
+                    Message = $"A topic with the name \"{input.Name}\" already exist."
+                });
             }
         }
     }

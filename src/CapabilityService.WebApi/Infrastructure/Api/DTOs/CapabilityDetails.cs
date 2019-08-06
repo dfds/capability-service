@@ -40,14 +40,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
                     })
                     .ToArray(),
                 Topics = topics
-                    .Select(x => new Topic
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        Description = x.Description,
-                        IsPrivate = x.IsPrivate,
-                        CapabilityId = x.CapabilityId,
-                    })
+                    .Select(Topic.CreateFrom)
                     .ToArray(),
             };
         }

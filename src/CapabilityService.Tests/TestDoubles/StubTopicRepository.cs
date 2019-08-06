@@ -35,5 +35,10 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
         {
             return Task.FromResult(_topics.FirstOrDefault());
         }
+
+        public Task<IEnumerable<Topic>> FindBy(string name)
+        {
+            return GetAll();
+        }
     }
 }

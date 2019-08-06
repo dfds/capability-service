@@ -169,7 +169,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[],\"topics\":[{{\"id\":\"{stubTopic.Id}\",\"name\":\"{stubTopic.Name}\",\"description\":\"{stubTopic.Description}\",\"isPrivate\":false,\"capabilityId\":\"{stubTopic.CapabilityId}\"}}]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[],\"topics\":[{{\"id\":\"{stubTopic.Id}\",\"name\":\"{stubTopic.Name}\",\"description\":\"{stubTopic.Description}\",\"isPrivate\":false,\"capabilityId\":\"{stubTopic.CapabilityId}\",\"messageContracts\":[]}}]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }

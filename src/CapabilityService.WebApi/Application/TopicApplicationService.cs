@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
@@ -14,7 +15,7 @@ namespace DFDS.CapabilityService.WebApi.Application
             _topicRepository = topicRepository;
         }
 
-        public async Task AddMessageContract(Guid topicId, string type, string description, string content)
+        public async Task UpdateMessageContract(Guid topicId, string type, string description, string content)
         {
             var topic = await _topicRepository.Get(topicId);
 
@@ -23,7 +24,14 @@ namespace DFDS.CapabilityService.WebApi.Application
                 throw new TopicDoesNotExistException(topicId);
             }
 
-            topic.AddMessageContract(type, description, content);
+            if (topic.HasMessageContract(type))
+            {
+                topic.UpdateMessageContract(type, description, content);
+            }
+            else
+            {
+                topic.AddMessageContract(type, description, content);
+            }
         }
 
         public async Task RemoveMessageContract(Guid topicId, string type)
@@ -36,6 +44,29 @@ namespace DFDS.CapabilityService.WebApi.Application
             }
 
             topic.RemoveMessageContract(type);
+        }
+
+        public async Task UpdateTopic(Guid topicId, string name, string description, bool isPrivate)
+        {
+            var topic = await _topicRepository.Get(topicId);
+            if (topic == null)
+            {
+                throw new TopicDoesNotExistException(topicId);
+            }
+
+            var topicsWithSameName = await _topicRepository.FindBy(name);
+            var isTopicNameTakenByAnotherTopic = topicsWithSameName
+                .Where(x => x.Id != topicId)
+                .Any();
+
+            if (isTopicNameTakenByAnotherTopic)
+            {
+                throw new TopicAlreadyExistException($"A topic with the name \"{name}\" already exist.");
+            }
+
+            topic.Name = name;
+            topic.Description = description;
+            topic.IsPrivate = isPrivate;
         }
     }
 }

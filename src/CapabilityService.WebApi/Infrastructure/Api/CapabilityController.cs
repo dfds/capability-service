@@ -188,6 +188,13 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
                     Message = $"Capability with id {id} could not be found."
                 });
             }
+            catch (TopicAlreadyExistException)
+            {
+                return Conflict(new
+                {
+                    Message = $"A topic with name \"{input.Name}\" already exist."
+                });
+            }
 
             return Ok();
         }
