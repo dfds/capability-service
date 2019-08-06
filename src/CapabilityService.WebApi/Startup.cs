@@ -86,7 +86,11 @@ namespace DFDS.CapabilityService.WebApi
             ));
 
             services.AddTransient<ITopicRepository, TopicRepository>();
-            services.AddTransient<ITopicApplicationService, TopicApplicationService>();
+            services.AddTransient<TopicApplicationService>();
+            services.AddTransient<ITopicApplicationService>(serviceProvider => new TopicTransactionalDecorator(
+                inner: serviceProvider.GetRequiredService<TopicApplicationService>(),
+                dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>()
+            ));
 
             services.AddTransient<IRepository<DomainEventEnvelope>,DomainEventEnvelopeRepository>();
         }

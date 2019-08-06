@@ -234,6 +234,36 @@ paths:
             $ref: '#/definitions/topic'
         404:
           description: Not Found
+    put:
+      summary: Updates a single topic
+      tags:
+        - topic
+      parameters:
+        - in: query
+          name: topicId
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              isPrivate:
+                type: boolean
+      responses:
+        204:
+          description: No Content
+          # schema:
+          #   $ref: '#/definitions/topic'
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
   /topics/{topicId}/messageContracts:
     get:
       summary: Returns all message contracts for a single topic
@@ -251,13 +281,18 @@ paths:
             $ref: '#/definitions/messageContract'
         404:
           description: Not Found
-    post:
-      summary: Adds a new message contracts to a single topic
+  /topics/{topicId}/messageContracts/{type}:
+    put:
+      summary: Adds or updates a message contract on a single topic
       tags:
         - topic
       parameters:
         - in: query
           name: topicId
+          required: true
+          type: string
+        - in: query
+          name: type
           required: true
           type: string
         - in: body
@@ -266,7 +301,7 @@ paths:
           schema:
             type: object
             properties:
-              type:
+              description:
                 type: string
               content:
                 type: string
@@ -275,7 +310,6 @@ paths:
           description: No Content
         404:
           description: Not Found
-  /topics/{topicId}/messageContracts/{type}:
     delete:
       summary: Deletes a message contracts from a topic
       tags:

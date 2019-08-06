@@ -28,6 +28,16 @@ namespace DFDS.CapabilityService.Tests.Builders
             return WithService(typeof(TService), serviceInstance);
         }
 
+        public HttpClientBuilder WithService<TServiceContract, TServiceImplementation>()
+        {
+            var serviceType = typeof(TServiceContract);
+
+            _serviceDescriptors.Remove(serviceType);
+            _serviceDescriptors.Add(serviceType, ServiceDescriptor.Transient(serviceType, typeof(TServiceImplementation)));
+
+            return this;
+        }
+
         private IWebHostBuilder CreateWebHostBuilder()
         {
             return new WebHostBuilder()

@@ -43,5 +43,15 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
                 .Include(x => x.MessageContracts)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task<IEnumerable<Topic>> FindBy(string name)
+        {
+            var topics = await _dbContext.Topics
+                .Include(x => x.MessageContracts)
+                .Where(x => x.Name == name)
+                .ToListAsync();
+
+            return topics;
+        }
     }
 }

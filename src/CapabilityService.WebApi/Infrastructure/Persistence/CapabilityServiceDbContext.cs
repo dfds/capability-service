@@ -59,6 +59,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
                 cfg.ToTable("Topic");
                 cfg.Ignore(x => x.DomainEvents);
             });
+
+            modelBuilder.Entity<MessageContract>(cfg =>
+            {
+                cfg.ToTable("MessageContract");
+                cfg.HasKey(x => x.Type);
+            });
         }
     }
 }

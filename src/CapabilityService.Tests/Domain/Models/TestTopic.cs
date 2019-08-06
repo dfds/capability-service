@@ -44,6 +44,30 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
         }
 
         [Fact]
+        public void returns_expected_message_contracts_when_updating_single()
+        {
+            var expectedType = "foo";
+            var expectedDescription = "new-description";
+            var expectedContent = "new-content";
+
+            var spyMessageContract = new MessageContractBuilder()
+                .WithType(expectedType)
+                .WithDescription("foo-description")
+                .WithContent("foo-content")
+                .Build();
+
+            var sut = new TopicBuilder()
+                .WithMessageContracts(spyMessageContract)
+                .Build();
+
+            sut.UpdateMessageContract(expectedType, expectedDescription, expectedContent);
+
+            Assert.Equal(expectedType, spyMessageContract.Type);
+            Assert.Equal(expectedDescription, spyMessageContract.Description);
+            Assert.Equal(expectedContent, spyMessageContract.Content);
+        }
+
+        [Fact]
         public void has_expected_message_contracts_after_removing_one()
         {
             var expectedType = "foo";

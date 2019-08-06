@@ -5,7 +5,8 @@ namespace DFDS.CapabilityService.WebApi.Application
 {
     public interface ITopicApplicationService
     {
-        Task AddMessageContract(Guid topicId, string type, string description, string content);
+        Task UpdateMessageContract(Guid topicId, string type, string description, string content);
         Task RemoveMessageContract(Guid topicId, string type);
+        Task UpdateTopic(Guid topicId, string name, string description, bool isPrivate);
     }
 }

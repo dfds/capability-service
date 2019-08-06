@@ -108,10 +108,15 @@ namespace DFDS.CapabilityService.WebApi.Application
         public async Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
         {
             var capability = await _capabilityRepository.Get(capabilityId);
-
             if (capability == null)
             {
                 throw new CapabilityDoesNotExistException();
+            }
+
+            var existingTopicsWithSameName = await _topicRepository.FindBy(topicName);
+            if (existingTopicsWithSameName.Any())
+            {
+                throw new TopicAlreadyExistException($"A topic with the name \"{topicName}\" already exist.");
             }
 
             var topic = capability.AddTopic(topicName, topicDescription, isTopicPrivate);

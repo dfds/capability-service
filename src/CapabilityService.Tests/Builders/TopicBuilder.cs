@@ -23,6 +23,18 @@ namespace DFDS.CapabilityService.Tests.Builders
             _capabilityId = new Guid("11111111-1111-1111-1111-111111111111");
         }
 
+        public TopicBuilder WithId(Guid id)
+        {
+            _id = id;
+            return this;
+        }
+
+        public TopicBuilder WithName(string name)
+        {
+            _name = name;
+            return this;
+        }
+
         public TopicBuilder WithMessageContracts(params MessageContract[] messageContracts)
         {
             _messageContracts = new List<MessageContract>(messageContracts);

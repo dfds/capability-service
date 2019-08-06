@@ -11,5 +11,6 @@ namespace DFDS.CapabilityService.WebApi.Domain.Repositories
         Task<IEnumerable<Topic>> GetByCapability(Guid capabilityId);
         Task Add(Topic topic);
         Task<Topic> Get(Guid id);
+        Task<IEnumerable<Topic>> FindBy(string name);
     }
 }
