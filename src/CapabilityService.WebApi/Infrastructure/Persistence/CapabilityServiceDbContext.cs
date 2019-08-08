@@ -58,6 +58,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             {
                 cfg.ToTable("Topic");
                 cfg.Ignore(x => x.DomainEvents);
+                cfg.HasMany<MessageContract>(x => x.MessageContracts)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<MessageContract>(cfg =>
