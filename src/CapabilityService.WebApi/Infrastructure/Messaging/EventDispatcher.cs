@@ -26,8 +26,15 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 
         public async Task Send(string generalDomainEventJson, IServiceScope serviceScope)
         {
-            var generalDomainEventObj = JsonConvert.DeserializeObject<GeneralDomainEvent>(generalDomainEventJson);
-            await SendAsync(generalDomainEventObj, serviceScope);
+            try
+            {
+                var generalDomainEventObj = JsonConvert.DeserializeObject<GeneralDomainEvent>(generalDomainEventJson);
+                await SendAsync(generalDomainEventObj, serviceScope);
+            }
+            catch (JsonReaderException ex)
+            {
+                throw new MessagingMessageIncomprehensible($"Was unable to deserialize from JSON to GeneralDomainEvent: {ex.Message}");
+            }
         }
 
         public async Task SendAsync(GeneralDomainEvent generalDomainEvent, IServiceScope serviceScope)

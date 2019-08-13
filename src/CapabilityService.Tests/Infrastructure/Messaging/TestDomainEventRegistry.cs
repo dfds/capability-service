@@ -1,4 +1,5 @@
-﻿using DFDS.CapabilityService.Tests.Builders;
+﻿using System;
+using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.Helpers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
@@ -115,6 +116,40 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Messaging
 
             Assert.Throws<MessagingException>(() => sut.GetTypeNameFor(stubEvent));
         }
+        
+        [Theory]
+        [InlineData("")]
+        [InlineData("NewUnknownEvent")]
+        public void throws_expected_exception_when_no_instance_type_is_registered(string eventName)
+        {
+            var stubEvent = new FooDomainEvent();
+            var stubRegistration = new DomainEventRegistrationBuilder()
+                .WithEventInstanceType(stubEvent)
+                .Build();
+            
+            var sut = new DomainEventRegistryBuilder().Build();
+            sut.Register<FooDomainEvent>(stubRegistration.EventType, stubRegistration.Topic);
+
+            Assert.Throws<MessagingHandlerNotAvailable>(() => sut.GetInstanceTypeFor(eventName));
+        }
+
+        [Fact]
+        public void returns_expected_instance_type()
+        {
+            var stubEvent = new FooDomainEvent();
+            var stubRegistration = new DomainEventRegistrationBuilder()
+                .WithEventInstanceType(stubEvent)
+                .Build();
+            
+            var sut = new DomainEventRegistryBuilder().Build();
+            sut.Register<FooDomainEvent>(stubRegistration.EventType, stubRegistration.Topic);
+
+            var result = sut.GetInstanceTypeFor(stubRegistration.EventType);
+            
+            Assert.Equal(typeof(FooDomainEvent), result);
+        }
+        
+        
 
         #region helper classes
 
