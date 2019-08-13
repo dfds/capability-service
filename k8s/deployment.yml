@@ -50,10 +50,10 @@ spec:
           name: metrics
         resources:
           requests:
-            memory: "64Mi"
+            memory: "300Mi"
             cpu: "100m"
           limits:
-            memory: "128Mi"
+            memory: "500Mi"
             cpu: "200m"
         env:
         - name: CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING
