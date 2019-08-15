@@ -5,6 +5,7 @@ using Confluent.Kafka;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Prometheus;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 {
@@ -42,9 +43,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
                         var topics = _eventRegistry.GetAllTopics();
 
                         _logger.LogInformation($"Event consumer started. Listening to topics: {string.Join(",", topics)}");
-                                                
+
                         consumer.Subscribe(topics);
-                        
+
                         // consume loop
                         while (!_cancellationTokenSource.IsCancellationRequested)
                         {
@@ -58,7 +59,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
                                 _logger.LogError($"Consumption of event failed, reason: {ex}");
                                 continue;
                             }
-                            
+
                             using (var scope = _serviceProvider.CreateScope())
                             {
                                 _logger.LogInformation($"Received event: Topic: {msg.Topic} Partition: {msg.Partition}, Offset: {msg.Offset} {msg.Value}");
@@ -67,7 +68,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
                                 {
                                     var eventDispatcher =
                                         scope.ServiceProvider.GetRequiredService<IEventDispatcher>();
-                                    await eventDispatcher.Send(msg.Value, scope);
+                                    await FailedCosumedMessages.CountExceptionsAsync(async () => await eventDispatcher.Send(msg.Value, scope));
                                     await Task.Run(() => consumer.Commit(msg));
                                 }
                                 catch (MessagingHandlerNotAvailable mhnae)
@@ -118,5 +119,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 
             _cancellationTokenSource.Dispose();
         }
+
+        private static readonly Counter FailedCosumedMessages = Metrics.CreateCounter("consumed_messages_failed_total", "Number of consumed messages failed.");
     }
 }
