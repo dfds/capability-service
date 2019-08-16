@@ -76,11 +76,11 @@ spec:
         - name: CAPABILITY_SERVICE_KAFKA_SECURITY_PROTOCOL
           value: "SASL_SSL"
         - name: CAPABILITY_SERVICE_KAFKA_GROUP_ID
-          value: "capability-service-consumer"
+          value: "build.selfservice.capability-service-consumer"
         - name: CAPABILITY_SERVICE_KAFKA_ENABLE_AUTO_COMMIT
           value: "false"
         - name: CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY
-          value: "build.capabilities"
+          value: "build.selfservice.events.capabilities"
         - name: DOTNET_USE_POLLING_FILE_WATCHER
           value: "true"
         livenessProbe:
