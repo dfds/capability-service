@@ -112,6 +112,7 @@ namespace DFDS.CapabilityService.WebApi
             services.AddTransient<IEventDispatcher, EventDispatcher>();
 
             var capabilitiesTopicName = Configuration["CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY"];
+            var capabilitiesTopicsTopicName = Configuration["CAPABILITY_SERVICE_KAFKA_TOPIC_TOPICS"];
 
             eventRegistry
                 .Register<CapabilityCreated>("capability_created", capabilitiesTopicName)
@@ -121,7 +122,7 @@ namespace DFDS.CapabilityService.WebApi
                 .Register<ContextAddedToCapability>("context_added_to_capability", capabilitiesTopicName)
                 .Register<ContextUpdated>("context_updated", capabilitiesTopicName)
                 .Register<AWSContextAccountCreatedIntegrationEvent>("aws_context_account_created", capabilitiesTopicName)
-                .Register<TopicAdded>("topic_added", "build.topics");
+                .Register<TopicAdded>("topic_added", capabilitiesTopicsTopicName);
 
             var scanner = new DomainEventScanner(eventRegistry);
             scanner.EnsureNoUnregisteredDomainEventsIn(Assembly.GetExecutingAssembly());
