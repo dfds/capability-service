@@ -81,6 +81,8 @@ spec:
           value: "false"
         - name: CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY
           value: "build.selfservice.events.capabilities"
+        - name: CAPABILITY_SERVICE_KAFKA_TOPIC_TOPICS
+          value: "build.selfservice.events.topics"          
         - name: DOTNET_USE_POLLING_FILE_WATCHER
           value: "true"
         livenessProbe:
