@@ -9,7 +9,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string RootId { get; set; }
-
+        public string TopicCommonPrefix { get; set; }
         public string Description { get; set; }
         public Member[] Members { get; set; }
         public Context[] Contexts { get; set; }
@@ -24,6 +24,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
                 Name = capability.Name,
                 RootId = capability.RootId,
                 Description = capability.Description,
+                TopicCommonPrefix = capability.TopicCommonPrefix,
                 Members = capability
                     .Members
                     .Select(member => new Member {Email = member.Email})

@@ -133,6 +133,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
                 await _topicApplicationService.UpdateTopic(
                     topicId: topicId,
                     name: input.Name,
+                    nameBusinessArea: input.NameBusinessArea,
+                    nameType: input.NameType,
+                    nameMisc: input.NameMisc,
                     description: input.Description,
                     isPrivate: input.IsPrivate
                 );

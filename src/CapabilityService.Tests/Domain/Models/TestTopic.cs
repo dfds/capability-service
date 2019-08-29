@@ -24,6 +24,20 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
 
             Assert.Equal(new[]{stubMessageContract}, sut.MessageContracts);
         }
+        
+        [Fact]
+        public void returns_expected_name()
+        {
+            var expectedName = "build.foo.events.hello_pelle";
+            
+            var capability = new CapabilityBuilder().Build();
+            capability.TopicCommonPrefix = "foo";
+            var sut = new TopicBuilder().Build();
+
+            var result = sut.GetName(capability);
+            
+            Assert.Equal(expectedName, result);
+        }
 
         [Fact]
         public void returns_expected_message_contracts_when_adding_single()

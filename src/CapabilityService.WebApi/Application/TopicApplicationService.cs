@@ -46,7 +46,7 @@ namespace DFDS.CapabilityService.WebApi.Application
             topic.RemoveMessageContract(type);
         }
 
-        public async Task UpdateTopic(Guid topicId, string name, string description, bool isPrivate)
+        public async Task UpdateTopic(Guid topicId, string name, string nameBusinessArea, string nameType, string nameMisc, string description, bool isPrivate)
         {
             var topic = await _topicRepository.Get(topicId);
             if (topic == null)
@@ -65,6 +65,9 @@ namespace DFDS.CapabilityService.WebApi.Application
             }
 
             topic.Name = name;
+            topic.NameBusinessArea = nameBusinessArea;
+            topic.NameType = nameType;
+            topic.NameMisc = nameMisc;
             topic.Description = description;
             topic.IsPrivate = isPrivate;
         }

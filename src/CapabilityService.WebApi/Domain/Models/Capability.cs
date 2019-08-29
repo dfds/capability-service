@@ -16,17 +16,19 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
         public string Name { get; private set; }
         public string Description { get; private set; }
         public string RootId { get; private set; }
+        public string TopicCommonPrefix { get; set; } // TBD whether this is the right way.
         public IEnumerable<Member> Members => _memberships.Select(x => x.Member).Distinct(new MemberEqualityComparer());
         public IEnumerable<Membership> Memberships => _memberships;
         public IEnumerable<Context> Contexts => _contexts;
         
         
-        public Capability(Guid id, string name, string rootId, string description, IEnumerable<Membership> memberships, IEnumerable<Context> contexts)
+        public Capability(Guid id, string name, string rootId, string description, string topicCommonPrefix, IEnumerable<Membership> memberships, IEnumerable<Context> contexts)
         {
             Id = id;
             Name = name;
             RootId = rootId;
             Description = description;
+            TopicCommonPrefix = topicCommonPrefix;
             _memberships.AddRange(memberships);
             _contexts.AddRange(contexts);
         }
@@ -36,7 +38,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
         }
 
         
-        public static Capability Create(string name, string description)
+        public static Capability Create(string name, string description, string topicCommonPrefix)
         {
             var id = Guid.NewGuid();
             var capability = new Capability(
@@ -44,6 +46,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
                 name: name,
                 rootId: GenerateRootId(name, id),
                 description: description,
+                topicCommonPrefix: topicCommonPrefix,
                 memberships: Enumerable.Empty<Membership>(),
                 contexts:Enumerable.Empty<Context>()
             );
@@ -152,9 +155,9 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 
         }
 
-        public Topic AddTopic(string name, string description, bool isPrivate = false)
+        public Topic AddTopic(string name, string nameBusinessArea, string nameType, string nameMisc, string description, bool isPrivate = false)
         {
-            return Topic.Create(name, description, isPrivate, Id);
+            return Topic.Create(name, nameBusinessArea, nameType, nameMisc, description, isPrivate, Id);
         }
     }
 }

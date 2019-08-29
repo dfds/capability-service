@@ -76,7 +76,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[],\"topics\":[]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"topicCommonPrefix\":\"{stubCapability.TopicCommonPrefix}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[],\"topics\":[]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
@@ -100,7 +100,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[{{\"email\":\"{memberEmail}\"}}],\"contexts\":[],\"topics\":[]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"topicCommonPrefix\":\"{stubCapability.TopicCommonPrefix}\",\"description\":\"{stubCapability.Description}\",\"members\":[{{\"email\":\"{memberEmail}\"}}],\"contexts\":[],\"topics\":[]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
@@ -128,7 +128,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"foo-582a4\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[{{\"id\":\"{contextGuid}\",\"name\":\"{contextName}\",\"awsAccountId\":\"{awsAccountId}\",\"awsRoleArn\":\"{awsRoleArn}\",\"awsRoleEmail\":\"{awsRoleEmail}\"}}],\"topics\":[]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"foo-582a4\",\"topicCommonPrefix\":\"{stubCapability.TopicCommonPrefix}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[{{\"id\":\"{contextGuid}\",\"name\":\"{contextName}\",\"awsAccountId\":\"{awsAccountId}\",\"awsRoleArn\":\"{awsRoleArn}\",\"awsRoleEmail\":\"{awsRoleEmail}\"}}],\"topics\":[]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
@@ -148,7 +148,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[],\"topics\":[]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"topicCommonPrefix\":\"{stubCapability.TopicCommonPrefix}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[],\"topics\":[]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
@@ -169,7 +169,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[],\"topics\":[{{\"id\":\"{stubTopic.Id}\",\"name\":\"{stubTopic.Name}\",\"description\":\"{stubTopic.Description}\",\"isPrivate\":false,\"capabilityId\":\"{stubTopic.CapabilityId}\",\"messageContracts\":[]}}]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"topicCommonPrefix\":\"{stubCapability.TopicCommonPrefix}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[],\"topics\":[{{\"id\":\"{stubTopic.Id}\",\"name\":\"{stubTopic.Name}\",\"nameBusinessArea\":\"{stubTopic.NameBusinessArea}\",\"nameType\":\"{stubTopic.NameType}\",\"nameMisc\":\"{stubTopic.NameMisc}\",\"description\":\"{stubTopic.Description}\",\"isPrivate\":false,\"capabilityId\":\"{stubTopic.CapabilityId}\",\"messageContracts\":[]}}]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
@@ -262,7 +262,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.PostAsync("api/v1/capabilities", new JsonContent(stubInput));
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"topicCommonPrefix\":\"foo\",\"members\":[],\"contexts\":[]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
@@ -438,7 +438,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.PutAsync($"api/v1/capabilities/{dummyCapabilityId}", new JsonContent(stubInput));
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"members\":[],\"contexts\":[]}}",
+                    expected: $"{{\"id\":\"{stubCapability.Id}\",\"name\":\"{stubCapability.Name}\",\"rootId\":\"{stubCapability.RootId}\",\"description\":\"{stubCapability.Description}\",\"topicCommonPrefix\":\"foo\",\"members\":[],\"contexts\":[]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }

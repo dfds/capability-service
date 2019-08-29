@@ -30,6 +30,11 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
             return Task.FromResult(capability);
         }
 
+        public Task SetCapabilityTopicCommonPrefix(Guid id, string commonPrefix)
+        {
+            return Task.CompletedTask;
+        }
+
         public Task<IEnumerable<Capability>> GetAllCapabilities()
         {
             return Task.FromResult(_stubCapabilities.AsEnumerable());
@@ -66,7 +71,7 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
             return Task.FromResult(_stubTopics.AsEnumerable());
         }
 
-        public Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
+        public Task AddTopic(Guid capabilityId, string topicName, string nameBusinessArea, string nameType, string nameMisc, string topicDescription, bool isTopicPrivate)
         {
             throw new NotImplementedException();
         }
@@ -87,6 +92,11 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
         }
 
         public Task<Capability> UpdateCapability(Guid id, string newName, string newDescription)
+        {
+            throw _exceptionToThrow;
+        }
+
+        public Task SetCapabilityTopicCommonPrefix(Guid id, string commonPrefix)
         {
             throw _exceptionToThrow;
         }
@@ -126,7 +136,7 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
             throw _exceptionToThrow;
         }
 
-        public Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
+        public Task AddTopic(Guid capabilityId, string topicName, string nameBusinessArea, string nameType, string nameMisc, string topicDescription, bool isTopicPrivate)
         {
             throw _exceptionToThrow;
         }

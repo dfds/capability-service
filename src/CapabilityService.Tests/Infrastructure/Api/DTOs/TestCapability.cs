@@ -15,6 +15,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
             var capabilityName = "foo";
             var capabilityRootId = "foo-1234556";
             var capabilityDescription = "bar";
+            var capabilityTopicCommonPrefix = "foo";
             var domainMembership = new Membership(Guid.NewGuid(), new Member("fu@baa.com"));
             var domainContext = new Context(Guid.NewGuid(), "baa");
             var domainCapability = new Capability(
@@ -22,6 +23,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
                 capabilityName,
                 capabilityRootId,
                 capabilityDescription,
+                capabilityTopicCommonPrefix,
                 new []{domainMembership},
                 new []{domainContext}
             );
@@ -35,6 +37,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
             Assert.Equal(capabilityName, capabilityDto.Name);
             Assert.Equal(capabilityRootId, capabilityDto.RootId);
             Assert.Equal(capabilityDescription, capabilityDto.Description);
+            Assert.Equal(capabilityTopicCommonPrefix, capabilityDto.TopicCommonPrefix);
 
             var membershipDto = capabilityDto.Members.Single();
             Assert.Equal(domainMembership.Member.Email, membershipDto.Email);

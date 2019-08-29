@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 
 namespace DFDS.CapabilityService.WebApi.Domain.Models
@@ -14,10 +15,13 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 
         }
 
-        public Topic(Guid id, string name, string description, bool isPrivate, Guid capabilityId, IEnumerable<MessageContract> messageContracts)
+        public Topic(Guid id, string name, string description, string nameBusinessArea, string nameType, string nameMisc, bool isPrivate, Guid capabilityId, IEnumerable<MessageContract> messageContracts)
         {
             Id = id;
             Name = name;
+            NameBusinessArea = nameBusinessArea;
+            NameType = nameType;
+            NameMisc = nameMisc;
             Description = description;
             IsPrivate = isPrivate;
             CapabilityId = capabilityId;
@@ -25,10 +29,34 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
         }
 
         public string Name { get; set; }
+        public string NameBusinessArea { get; set; }
+        public string NameType { get; set; }
+        public string NameMisc { get; set; }
         public string Description { get; set; }
         public bool IsPrivate { get; set; }
         public Guid CapabilityId { get; private set; }
         public IEnumerable<MessageContract> MessageContracts => _messageContracts;
+
+        public string GetName(Capability capability) // This doesn't feel quite right, there should/is probably be a better way to do this without requiring the Capability as parameter.
+        {
+            var nameBuilder = new StringBuilder();
+            var name = "";
+            nameBuilder.Append(NameBusinessArea + "." + capability.TopicCommonPrefix);
+            name = NameBusinessArea + "." + capability.TopicCommonPrefix;
+            if (NameType.Length > 0)
+            {
+                nameBuilder.Append("." + NameType);
+                name = name + "." + NameType;
+            }
+
+            if (NameMisc.Length > 0)
+            {
+                nameBuilder.Append("." + NameMisc);
+                name = name + "." + NameMisc;
+            }
+
+            return name;
+        }
 
         public void AddMessageContract(string type, string description, string content)
         {
@@ -68,11 +96,14 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             }
         }
 
-        public static Topic Create(string name, string description, bool isPrivate, Guid capabilityId)
+        public static Topic Create(string name, string nameBusinessArea, string nameType, string nameMisc, string description, bool isPrivate, Guid capabilityId)
         {
             var topic = new Topic(
                 id: Guid.NewGuid(), 
                 name: name,
+                nameBusinessArea: nameBusinessArea,
+                nameType: nameType,
+                nameMisc: nameMisc,
                 description: description,
                 isPrivate: isPrivate,
                 capabilityId: capabilityId,

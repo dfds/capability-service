@@ -63,7 +63,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.GetAsync("api/v1/topics");
 
                 Assert.Equal(
-                    expected: $"{{\"items\":[{{\"id\":\"{stubTopic.Id}\",\"name\":\"{stubTopic.Name}\",\"description\":\"{stubTopic.Description}\",\"isPrivate\":{stubTopic.IsPrivate.ToString().ToLower()},\"capabilityId\":\"{stubTopic.CapabilityId}\",\"messageContracts\":[]}}]}}",
+                    expected: $"{{\"items\":[{{\"id\":\"{stubTopic.Id}\",\"name\":\"{stubTopic.Name}\",\"nameBusinessArea\":\"{stubTopic.NameBusinessArea}\",\"nameType\":\"{stubTopic.NameType}\",\"nameMisc\":\"{stubTopic.NameMisc}\",\"description\":\"{stubTopic.Description}\",\"isPrivate\":{stubTopic.IsPrivate.ToString().ToLower()},\"capabilityId\":\"{stubTopic.CapabilityId}\",\"messageContracts\":[]}}]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }
@@ -109,7 +109,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var response = await client.GetAsync("api/v1/topics/1");
 
                 Assert.Equal(
-                    expected: $"{{\"id\":\"{stubTopic.Id}\",\"name\":\"{stubTopic.Name}\",\"description\":\"{stubTopic.Description}\",\"isPrivate\":{stubTopic.IsPrivate.ToString().ToLower()},\"capabilityId\":\"{stubTopic.CapabilityId}\",\"messageContracts\":[]}}",
+                    expected: $"{{\"id\":\"{stubTopic.Id}\",\"name\":\"{stubTopic.Name}\",\"nameBusinessArea\":\"{stubTopic.NameBusinessArea}\",\"nameType\":\"{stubTopic.NameType}\",\"nameMisc\":\"{stubTopic.NameMisc}\",\"description\":\"{stubTopic.Description}\",\"isPrivate\":{stubTopic.IsPrivate.ToString().ToLower()},\"capabilityId\":\"{stubTopic.CapabilityId}\",\"messageContracts\":[]}}",
                     actual: await response.Content.ReadAsStringAsync()
                 );
             }

@@ -13,7 +13,7 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
         [Fact]
         public void expected_domain_event_is_raised_when_creating_a_capability()
         {
-            var capability = Capability.Create("foo","bar");
+            var capability = Capability.Create("foo","bar", "foo");
 
             Assert.Equal(
                 expected: new[] {new CapabilityCreated(capability.Id, "foo")},
@@ -26,7 +26,7 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
         public void rootid_is_generated_when_creating_a_capability()
         {
             var name = "foo";
-            var capability = Capability.Create(name,"bar");
+            var capability = Capability.Create(name,"bar", "foo");
 
            Assert.StartsWith($"{name}-", capability.RootId);
    
@@ -36,8 +36,8 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
         public void rootid_is_generated_when_creating_a_capability_and_is_unique()
         {
             var name = "foo";
-            var capabilityOne = Capability.Create(name,"bar");
-            var capabilityTwo = Capability.Create(name, "bar");
+            var capabilityOne = Capability.Create(name,"bar", "foo");
+            var capabilityTwo = Capability.Create(name, "bar", "foo");
 
            Assert.NotEqual(capabilityOne.RootId, capabilityTwo.RootId);
         }
@@ -46,7 +46,7 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
         public void rootid_full_string_is_formatted_correctly()
         {
             var name = "A23456789012345678901234";
-            var capability = Capability.Create(name,"bar");
+            var capability = Capability.Create(name,"bar", "foo");
 
             Assert.Matches("^[a-z0-9_\\-]{2,22}-[a-z]{5}$", capability.RootId);
             Assert.Equal(28, capability.RootId.Length);
@@ -56,7 +56,7 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
         public void rootid_preserves_prefix_of_name()
         {
             var name = "A23456789012345678901234";
-            var capability = Capability.Create(name,"bar");
+            var capability = Capability.Create(name,"bar", "foo");
 
             var namePrefix = capability.RootId.Split('-').First();
             

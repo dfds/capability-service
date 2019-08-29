@@ -17,7 +17,8 @@
         "CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING": "User ID=postgres;Password=p;Host=localhost;Port=5432;Database=capabilitydb;",
         "CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
         "CAPABILITY_SERVICE_KAFKA_GROUP_ID": "capability-service-consumer",
-        "CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY": "build.capabilities",
+        "CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY": "build.selfservice.events.capabilities",
+	"CAPABILITY_SERVICE_KAFKA_TOPIC_TOPICS": "build.selfservice.events.topics",
         "CAPABILITY_SERVICE_KAFKA_ENABLE_AUTO_COMMIT": "false"
       }
     },
@@ -29,10 +30,11 @@
         "CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING": "User ID=postgres;Password=p;Host=localhost;Port=5432;Database=capabilitydb;",
         "CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS": "localhost:9092",
         "CAPABILITY_SERVICE_KAFKA_GROUP_ID": "capability-service-consumer",
-        "CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY": "build.capabilities",
+        "CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY": "build.selfservice.events.capabilities",
+	"CAPABILITY_SERVICE_KAFKA_TOPIC_TOPICS": "build.selfservice.events.topics",
         "CAPABILITY_SERVICE_KAFKA_ENABLE_AUTO_COMMIT": "false"
       },
-      "applicationUrl": "http://localhost:5000",
+      "applicationUrl": "http://localhost:50900",
       "launchUrl": "api/v1/capabilities"
     }
   }

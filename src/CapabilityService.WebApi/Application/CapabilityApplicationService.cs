@@ -36,6 +36,38 @@ namespace DFDS.CapabilityService.WebApi.Application
             return capability;            
         }
 
+        public async Task SetCapabilityTopicCommonPrefix(Guid id, string commonPrefix)
+        {
+            var triggerError = false;
+            var errorMessages = new List<string>();
+            onError((commonPrefix == ""), "Common prefix is empty", ref errorMessages, ref triggerError);
+            onError((commonPrefix.Length > 32), "Common prefix length exceeds 32 characters", ref errorMessages, ref triggerError);
+
+            if (triggerError)
+            {
+                var msg = "An error occurred:\n";
+
+                foreach (var errorMessage in errorMessages)
+                {
+                    msg = msg + errorMessage + "\n";
+                }
+                
+                throw new CapabilityValidationException(msg);
+            }
+            
+            var capability = await _capabilityRepository.Get(id);
+            capability.TopicCommonPrefix = commonPrefix;
+        }
+
+        private void onError(bool condition, string message, ref List<string> messages, ref bool trigger)
+        {
+            if (condition)
+            {
+                messages.Add(message);
+                trigger = true;
+            }
+        }
+
         public Task<IEnumerable<Capability>> GetAllCapabilities() => _capabilityRepository.GetAll();
 
         public async Task<Capability> CreateCapability(string name, string description)
@@ -45,7 +77,8 @@ namespace DFDS.CapabilityService.WebApi.Application
                 throw new CapabilityValidationException("Name must be a string of length 3 to 21. consisting of only alphanumeric ASCII characters, starting with a capital letter. Hyphens is allowed.");
             }
 
-            var capability = Capability.Create(name, description);
+            const string topicCommonPrefix = ""; // With the CommonPrefix being an empty string, Blaster makes sure that the user can't create a new Topic right away, but must first set the CommonPrefix.
+            var capability = Capability.Create(name, description, topicCommonPrefix);
             await _capabilityRepository.Add(capability);
 
             return capability;
@@ -105,7 +138,7 @@ namespace DFDS.CapabilityService.WebApi.Application
 
         public async Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId) => await _topicRepository.GetByCapability(capabilityId);
 
-        public async Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
+        public async Task AddTopic(Guid capabilityId, string topicName, string nameBusinessArea, string nameType, string nameMisc, string topicDescription, bool isTopicPrivate)
         {
             var capability = await _capabilityRepository.Get(capabilityId);
             if (capability == null)
@@ -119,7 +152,7 @@ namespace DFDS.CapabilityService.WebApi.Application
                 throw new TopicAlreadyExistException($"A topic with the name \"{topicName}\" already exist.");
             }
 
-            var topic = capability.AddTopic(topicName, topicDescription, isTopicPrivate);
+            var topic = capability.AddTopic(topicName, nameBusinessArea, nameType, nameMisc, topicDescription, isTopicPrivate);
             await _topicRepository.Add(topic);
         }
     }

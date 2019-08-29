@@ -9,6 +9,7 @@ namespace DFDS.CapabilityService.WebApi.Application
     {
         Task<Capability> CreateCapability(string name, string description);
         Task<Capability> UpdateCapability(Guid id, string newName, string newDescription);
+        Task SetCapabilityTopicCommonPrefix(Guid id, string commonPrefix);
         Task<IEnumerable<Capability>> GetAllCapabilities();
         Task<Capability> GetCapability(Guid id);
         Task JoinCapability(Guid capabilityId, string memberEmail);
@@ -17,6 +18,6 @@ namespace DFDS.CapabilityService.WebApi.Application
         Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail);
 
         Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId);
-        Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate);
+        Task AddTopic(Guid capabilityId, string topicName, string nameBusinessArea, string nameType, string nameMisc, string topicDescription, bool isTopicPrivate);
     }
 }

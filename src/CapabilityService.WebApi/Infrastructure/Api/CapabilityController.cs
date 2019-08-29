@@ -179,7 +179,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 
             try
             {
-                await _capabilityApplicationService.AddTopic(capabilityId, input.Name, input.Description, input.IsPrivate);
+                await _capabilityApplicationService.AddTopic(capabilityId, input.Name, input.NameBusinessArea, input.NameType, input.NameMisc, input.Description, input.IsPrivate);
             }
             catch (CapabilityDoesNotExistException)
             {
@@ -197,6 +197,29 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
             }
 
             return Ok();
+        }
+
+        [HttpPost("{id}/commonprefix")]
+        public async Task<IActionResult> SetTopicCommonPrefix(string id, [FromBody] CapabilityCommonPrefixInput input)
+        {
+            var capabilityId = Guid.Empty;
+            Guid.TryParse(id, out capabilityId);
+
+            try
+            {
+                await _capabilityApplicationService.SetCapabilityTopicCommonPrefix(capabilityId, input.CommonPrefix);
+                return NoContent();
+            } catch (CapabilityDoesNotExistException) {
+                return NotFound(new
+                {
+                    Message = $"Capability with id {id} could not be found."
+                });                
+            } catch (CapabilityValidationException tve) {
+                return BadRequest(new
+                {
+                    Message = tve.Message
+                });
+            }
         }
     }
 }

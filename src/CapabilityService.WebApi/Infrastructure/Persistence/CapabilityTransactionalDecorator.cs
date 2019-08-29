@@ -38,7 +38,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             await QueueDomainEvents();
 
             return capability;
-        }        
+        }
+
+        public async Task SetCapabilityTopicCommonPrefix(Guid id, string commonPrefix)
+        {
+            await _inner.SetCapabilityTopicCommonPrefix(id, commonPrefix);
+        }
 
         private async Task QueueDomainEvents()
         {
@@ -81,9 +86,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
 
         public Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId) => _inner.GetTopicsForCapability(capabilityId);
 
-        public async Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
+        public async Task AddTopic(Guid capabilityId, string topicName, string nameBusinessArea, string nameType, string nameMisc, string topicDescription, bool isTopicPrivate)
         {
-            await _inner.AddTopic(capabilityId, topicName, topicDescription, isTopicPrivate);
+            await _inner.AddTopic(capabilityId, topicName, nameBusinessArea, nameType, nameMisc, topicDescription, isTopicPrivate);
             await QueueDomainEvents();
         }
     }
@@ -141,9 +146,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             return ExecuteInTransaction(() => _inner.RemoveMessageContract(topicId, type));
         }
 
-        public Task UpdateTopic(Guid topicId, string name, string description, bool isPrivate)
+        public Task UpdateTopic(Guid topicId, string name, string nameBusinessArea, string nameType, string nameMisc, string description, bool isPrivate)
         {
-            return ExecuteInTransaction(() => _inner.UpdateTopic(topicId, name, description, isPrivate));
+            return ExecuteInTransaction(() => _inner.UpdateTopic(topicId, name, nameBusinessArea, nameType, nameMisc, description, isPrivate));
         }
     }
 
@@ -168,6 +173,17 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
                 transaction.Commit();
                 return cap;
             }        
+        }
+
+        public async Task SetCapabilityTopicCommonPrefix(Guid id, string commonPrefix)
+        {
+            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            {
+                await _inner.SetCapabilityTopicCommonPrefix(id, commonPrefix);
+
+                await _dbContext.SaveChangesAsync();
+                transaction.Commit();
+            }
         }
 
         public Task<IEnumerable<Capability>> GetAllCapabilities() => _inner.GetAllCapabilities();
@@ -232,11 +248,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
 
         public Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId) => _inner.GetTopicsForCapability(capabilityId);
 
-        public async Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
+        public async Task AddTopic(Guid capabilityId, string topicName, string nameBusinessArea, string nameType, string nameMisc, string topicDescription, bool isTopicPrivate)
         {
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
-                await _inner.AddTopic(capabilityId, topicName, topicDescription, isTopicPrivate);
+                await _inner.AddTopic(capabilityId, topicName, nameBusinessArea, nameType, nameMisc, topicDescription, isTopicPrivate);
 
                 await _dbContext.SaveChangesAsync();
                 transaction.Commit();

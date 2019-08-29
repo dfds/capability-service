@@ -8,6 +8,9 @@ namespace DFDS.CapabilityService.Tests.Builders
     {
         private Guid _id;
         private string _name;
+        private string _nameBusinessArea;
+        private string _nameType;
+        private string _nameMisc;
         private string _description;
         private bool _isPrivate;
         private Guid _capabilityId;
@@ -18,6 +21,9 @@ namespace DFDS.CapabilityService.Tests.Builders
         {
             _id = new Guid("11111111-1111-1111-1111-111111111111");
             _name = "foo";
+            _nameBusinessArea = "build";
+            _nameType = "events";
+            _nameMisc = "hello_pelle";
             _description = "bar";
             _isPrivate = false;
             _capabilityId = new Guid("11111111-1111-1111-1111-111111111111");
@@ -43,7 +49,7 @@ namespace DFDS.CapabilityService.Tests.Builders
 
         public Topic Build()
         {
-            return new Topic(_id, _name, _description, _isPrivate, _capabilityId, _messageContracts);
+            return new Topic(_id, _name, _description, _nameBusinessArea, _nameType, _nameMisc, _isPrivate, _capabilityId, _messageContracts);
         }
     }
 }
