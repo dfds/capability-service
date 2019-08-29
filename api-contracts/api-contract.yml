@@ -104,6 +104,29 @@ paths:
             $ref: '#/definitions/errorObject'
         404:
           description: Not found
+  /capabilities/{capabilityId}/commonprefix:
+    post:
+      summary: Sets the Topic common prefix for a Capability
+      parameters:
+        - in: path
+          name: capabilityId
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              commonPrefix:
+                type: string
+      responses:
+        200:
+          description: Ok
+        400:
+          description: BadRequest
+          schema:
+            $ref: '#/definitions/errorObject'
   /capabilities/{capabilityId}/members:
     post:
       summary: Adds a person to a capability 
@@ -195,6 +218,12 @@ paths:
                 type: string
               isPrivate:
                 type: boolean
+              nameBusinessArea:
+                type: string
+              nameType:
+                type: string
+              nameMisc:
+                type: string
       responses:
         200:
           description: Ok
@@ -255,6 +284,12 @@ paths:
                 type: string
               isPrivate:
                 type: boolean
+              nameBusinessArea:
+                type: string
+              nameType:
+                type: string
+              nameMisc:
+                type: string                
       responses:
         204:
           description: No Content
@@ -407,6 +442,12 @@ definitions:
       id:
         type: string
       name:
+        type: string
+      nameBusinessArea:
+        type: string
+      nameType:
+        type: string
+      nameMisc:
         type: string
       description:
         type: string
