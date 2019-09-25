@@ -1,7 +1,5 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.TestDoubles;
@@ -12,44 +10,6 @@ namespace DFDS.CapabilityService.Tests.Application
 {
     public class TestCapabilityApplicationService
     {
-        [Theory]
-        [InlineData("an-otherwise-acceptable-name")]
-        [InlineData("AName!")]
-        [InlineData("Aa")]
-        [InlineData("A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A012345678901234567890123456789A")]
-        public async Task cannot_create_capabilities_with_invalid_names(string input) {
-            var sut = new CapabilityApplicationServiceBuilder()
-                .WithCapabilityRepository(new StubCapabilityRepository())
-                .Build();
-
-            await Assert.ThrowsAsync<CapabilityValidationException>(() => sut.CreateCapability(input, string.Empty));
-        }
-
-        [Theory]
-        [InlineData("AName")]
-        [InlineData("A-Name")]
-        [InlineData("AZ0")]
-        [InlineData("A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A012345678901234567890123456789")]
-        public async Task can_create_capability_with_an_acceptable_name(string input) {
-            var sut = new CapabilityApplicationServiceBuilder()
-                .WithCapabilityRepository(new StubCapabilityRepository())
-                .Build();
-
-            await sut.CreateCapability(input, string.Empty);
-        }
-        
-        [Theory]
-        [InlineData("ADescription")]
-        [InlineData("")]
-        [InlineData(null)]
-        public async Task can_create_capability_with_an_acceptable_description(string input) {
-            var sut = new CapabilityApplicationServiceBuilder()
-                .WithCapabilityRepository(new StubCapabilityRepository())
-                .Build();
-
-            await sut.CreateCapability("AName",input);
-        }
-
         [Fact]
         public async Task expected_member_is_added_to_capability()
         {
