@@ -13,10 +13,10 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
         [Fact]
         public void expected_domain_event_is_raised_when_creating_a_capability()
         {
-            var capability = Capability.Create("foo","bar");
+            var capability = Capability.Create("Foo","bar");
 
             Assert.Equal(
-                expected: new[] {new CapabilityCreated(capability.Id, "foo")},
+                expected: new[] {new CapabilityCreated(capability.Id, "Foo")},
                 actual: capability.DomainEvents,
                 comparer: new PropertiesComparer<IDomainEvent>()
             );
@@ -25,17 +25,17 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
         [Fact]
         public void rootid_is_generated_when_creating_a_capability()
         {
-            var name = "foo";
+            var name = "Foo";
             var capability = Capability.Create(name,"bar");
 
-           Assert.StartsWith($"{name}-", capability.RootId);
+           Assert.StartsWith($"{name.ToLower()}-", capability.RootId);
    
         }
 
         [Fact]
         public void rootid_is_generated_when_creating_a_capability_and_is_unique()
         {
-            var name = "foo";
+            var name = "Foo";
             var capabilityOne = Capability.Create(name,"bar");
             var capabilityTwo = Capability.Create(name, "bar");
 
