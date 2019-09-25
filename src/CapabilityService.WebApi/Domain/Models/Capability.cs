@@ -36,13 +36,13 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
         {           
         }
 
-        private static readonly Regex ValidNameRegex = new Regex("^[A-Z][a-zA-Z0-9_\\-]{2,30}$", RegexOptions.Compiled);
+        private static readonly Regex ValidNameRegex = new Regex("^[A-Z][a-zA-Z0-9\\-]{2,254}$", RegexOptions.Compiled);
 
         public static Capability Create(string name, string description)
         {
             if (!ValidNameRegex.Match(name).Success)
             {
-                throw new CapabilityValidationException("Name must be a string of length 3 to 32. consisting of only alphanumeric ASCII characters, starting with a capital letter. Underscores and hyphens are allowed.");
+                throw new CapabilityValidationException("Name must be a string of length 3 to 255. consisting of only alphanumeric ASCII characters, starting with a capital letter. Underscores and hyphens are allowed.");
             }
             
             var id = Guid.NewGuid();

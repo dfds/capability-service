@@ -8,7 +8,6 @@ using DFDS.CapabilityService.Tests.TestDoubles;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using Xunit;
-
 namespace DFDS.CapabilityService.Tests.Application
 {
     public class TestCapabilityApplicationService
@@ -17,8 +16,7 @@ namespace DFDS.CapabilityService.Tests.Application
         [InlineData("an-otherwise-acceptable-name")]
         [InlineData("AName!")]
         [InlineData("Aa")]
-        [InlineData("A0123456789012345678901234567890")]
-        [InlineData("A234567890123456789012")]
+        [InlineData("A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A012345678901234567890123456789A")]
         public async Task cannot_create_capabilities_with_invalid_names(string input) {
             var sut = new CapabilityApplicationServiceBuilder()
                 .WithCapabilityRepository(new StubCapabilityRepository())
@@ -31,8 +29,7 @@ namespace DFDS.CapabilityService.Tests.Application
         [InlineData("AName")]
         [InlineData("A-Name")]
         [InlineData("AZ0")]
-        // FIXME Temporary disabled because we need to restrict to 21 chars until downstream harald is fixed: [InlineData("A012345678901234567890123456789")]
-        [InlineData("A23456789012345678901")]
+        [InlineData("A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A012345678901234567890123456789")]
         public async Task can_create_capability_with_an_acceptable_name(string input) {
             var sut = new CapabilityApplicationServiceBuilder()
                 .WithCapabilityRepository(new StubCapabilityRepository())
