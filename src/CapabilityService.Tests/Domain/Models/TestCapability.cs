@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Linq;
 using DFDS.CapabilityService.Tests.Helpers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
+using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using Xunit;
 
@@ -13,10 +12,10 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
         [Fact]
         public void expected_domain_event_is_raised_when_creating_a_capability()
         {
-            var capability = Capability.Create("foo","bar");
+            var capability = Capability.Create("Foo","bar");
 
             Assert.Equal(
-                expected: new[] {new CapabilityCreated(capability.Id, "foo")},
+                expected: new[] {new CapabilityCreated(capability.Id, "Foo")},
                 actual: capability.DomainEvents,
                 comparer: new PropertiesComparer<IDomainEvent>()
             );
@@ -25,44 +24,60 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
         [Fact]
         public void rootid_is_generated_when_creating_a_capability()
         {
-            var name = "foo";
+            var name = "Foo";
             var capability = Capability.Create(name,"bar");
 
-           Assert.StartsWith($"{name}-", capability.RootId);
+           Assert.StartsWith($"{name.ToLower()}-", capability.RootId);
    
         }
 
         [Fact]
         public void rootid_is_generated_when_creating_a_capability_and_is_unique()
         {
-            var name = "foo";
+            var name = "Foo";
             var capabilityOne = Capability.Create(name,"bar");
             var capabilityTwo = Capability.Create(name, "bar");
 
            Assert.NotEqual(capabilityOne.RootId, capabilityTwo.RootId);
         }
-               
+        
         [Fact]
-        public void rootid_full_string_is_formatted_correctly()
+        public void rootid_is_generated_from_id()
         {
-            var name = "A23456789012345678901234";
+            var name = "Foo";
             var capability = Capability.Create(name,"bar");
 
-            Assert.Matches("^[a-z0-9_\\-]{2,22}-[a-z]{5}$", capability.RootId);
-            Assert.Equal(28, capability.RootId.Length);
+            var idPartFromRootId = capability.RootId.Split('-').First();
+            
+            Assert.StartsWith(idPartFromRootId, capability.RootId);
         }
 
-        [Fact]
-        public void rootid_preserves_prefix_of_name()
+        [Theory]
+        [InlineData("an-otherwise-acceptable-name")]
+        [InlineData("AName!")]
+        [InlineData("Aa")]
+        [InlineData("A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A012345678901234567890123456789A")]
+        public void cannot_create_capabilities_with_invalid_names(string input) {
+            Assert.Throws<CapabilityValidationException>(() => Capability.Create(input, string.Empty));
+        }
+
+        [Theory]
+        [InlineData("AName")]
+        [InlineData("AZ0")]
+        [InlineData(
+            "A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A0123456789012345678901234567891A012345678901234567890123456789")]
+        public void can_create_capability_with_an_acceptable_name(string input)
         {
-            var name = "A23456789012345678901234";
-            var capability = Capability.Create(name,"bar");
+            Capability.Create(input, string.Empty);
+        }
 
-            var namePrefix = capability.RootId.Split('-').First();
-            
-            Assert.StartsWith(namePrefix, name, StringComparison.OrdinalIgnoreCase);
-        }       
-
-
+        [Theory]
+        [InlineData("ADescription")]
+        [InlineData("")]
+        [InlineData(null)]
+        public void can_create_capability_with_an_acceptable_description(string input)
+        {
+            Capability.Create("Foo", input);
+        }
     }
 }

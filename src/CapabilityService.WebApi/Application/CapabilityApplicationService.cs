@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Domain.Models;
@@ -13,10 +12,9 @@ namespace DFDS.CapabilityService.WebApi.Application
     {
         private readonly ICapabilityRepository _capabilityRepository;
         private readonly ITopicRepository _topicRepository;
-        private readonly Regex _nameValidationRegex = new Regex("^[A-Z][a-zA-Z0-9\\-]{2,20}$", RegexOptions.Compiled);
 
         public CapabilityApplicationService(ICapabilityRepository capabilityRepository, ITopicRepository topicRepository)
-        {
+       {
             _capabilityRepository = capabilityRepository;
             _topicRepository = topicRepository;
         }
@@ -24,10 +22,7 @@ namespace DFDS.CapabilityService.WebApi.Application
         public Task<Capability> GetCapability(Guid id) => _capabilityRepository.Get(id);
         public async Task<Capability> UpdateCapability(Guid id, string newName, string newDescription)
         {
-            if (!_nameValidationRegex.Match(newName).Success)
-            {
-                throw new CapabilityValidationException("Name must be a string of length 3 to 21. consisting of only alphanumeric ASCII characters, starting with a capital letter. Hyphens is allowed.");
-            }
+            Capability.Create(newName, newDescription);
 
 
             var capability = await _capabilityRepository.Get(id);
@@ -40,11 +35,6 @@ namespace DFDS.CapabilityService.WebApi.Application
 
         public async Task<Capability> CreateCapability(string name, string description)
         {
-            if (!_nameValidationRegex.Match(name).Success)
-            {
-                throw new CapabilityValidationException("Name must be a string of length 3 to 21. consisting of only alphanumeric ASCII characters, starting with a capital letter. Hyphens is allowed.");
-            }
-
             var capability = Capability.Create(name, description);
             await _capabilityRepository.Add(capability);
 
