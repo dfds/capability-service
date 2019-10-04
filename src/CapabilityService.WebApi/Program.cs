@@ -23,8 +23,16 @@ namespace DFDS.CapabilityService.WebApi
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker", LogEventLevel.Information)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Internal.WebHost", LogEventLevel.Information)
+                .Filter.ByExcluding(@event => {
+                    var requestPathPropertyExists = @event.Properties.TryGetValue("RequestPath", out LogEventPropertyValue logEventPropertyValue);
+                    if (!requestPathPropertyExists)
+                    {
+                        return false;
+                    }
+                    return logEventPropertyValue.ToString() == "\"/healthz\"";
+                })
                 .Enrich.FromLogContext();
-            
+
             if (humanLog)
             {
                 logcfg.WriteTo.Console(theme: AnsiConsoleTheme.Code);
@@ -33,7 +41,7 @@ namespace DFDS.CapabilityService.WebApi
             {
                 logcfg.WriteTo.Console(new CompactJsonFormatter());
             }
-            
+
             Log.Logger = logcfg.CreateLogger();
 
             try
@@ -64,12 +72,12 @@ namespace DFDS.CapabilityService.WebApi
                     var sourcesToRemove = config.Sources
                         .Where(s => s.GetType() == typeof(JsonConfigurationSource))
                         .ToArray();
-                    
+
                     foreach (var source in sourcesToRemove)
                     {
                         config.Sources.Remove(source);
                     }
-                    
+
                     config
                         .AddJsonFile(
                             path: "appsettings.json",
