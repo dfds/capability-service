@@ -87,14 +87,14 @@ spec:
           value: "true"
         livenessProbe:
           initialDelaySeconds: 5
-          periodSeconds: 60
+          periodSeconds: 5
           timeoutSeconds: 5
           httpGet:
             port: web
             path: /healthz
         readinessProbe:
           initialDelaySeconds: 5
-          periodSeconds: 5
+          periodSeconds: 60
           timeoutSeconds: 5
           httpGet:
             port: web
