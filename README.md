@@ -87,3 +87,19 @@ After adding new migrations, run `docker-compose down` and re-run the above comm
 
 ## Domain Events
 For information about which domain events are published refere to the [domain events document](docs/domain_events.md).
+
+## Capability persistance layers
+
+Information about capabilities is persisted in layers by applying the the [decorator pattern](https://en.wikipedia.org/wiki/Decorator_pattern) to the ICapabilityApplicationService interface.
+
+The layers act in the following order:
+
+1. The CapabilityApplicationService will use the ICapabilityRepository to attach a Capability to the CapabilityServiceDbContext on CreateCapability().
+1. The CapabilityOutboxEnabledDecorator will use the db contexts ChangeTracker to find IAggregateDomainEvents and pass them to the Outbox. The outbox will create DomainEventEnvelopes and call the IRepository\<DomainEventEnvelope\> with the DomainEventEnvelopes which will be added to the db context,
+
+1. CapabilityTransactionalDecorator will:
+    1. Create a new transaction
+    1. Persist all changes made to the CapabilityServiceDbContext with the call of SaveChangesAsync.
+    1. Commit the created transaction
+
+The effect of this is that no change to database will be made if any of the operations the CapabilityApplicationService or CapabilityOutboxEnabledDecorator fails. Meaning you will not get a inconsistent state where changes made to the capability object is persisted but not reflected in a persisted DomainEventEnvelop.
