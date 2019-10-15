@@ -474,6 +474,8 @@ definitions:
     properties:
       id:
         type: string
+      capabilityId:
+        type: string
       status:
         type: string
         enum:
