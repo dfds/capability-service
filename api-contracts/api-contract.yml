@@ -104,6 +104,20 @@ paths:
             $ref: '#/definitions/errorObject'
         404:
           description: Not found
+    delete:
+      summary: Deletes a capability 
+      tags:
+        - capability
+      parameters:
+        - in: path
+          name: capabilityId
+          required: true
+          type: string
+      responses:
+        200:
+          description: Ok
+        404:
+          description: Not Found
   /capabilities/{capabilityId}/members:
     post:
       summary: Adds a person to a capability 
