@@ -148,6 +148,50 @@ paths:
           description: Ok
         404:
           description: Not Found
+  /capability-retirement/:
+    post:
+      summary: starts the process of retiring a capability
+      tags:
+        - capability-retirement
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              capabilityId:
+                type: string
+      responses:
+        201:
+          description: Created
+          headers:
+            location:
+              type: string
+              description: URI where the state of the retirement process can be retrieved
+        404:
+          description: A capability with the given id not found
+          schema:
+            $ref: '#/definitions/errorObject'
+  /capability-retirement/{capabilityRetirementId}:
+    get:
+      summary: Gets the status of a retirement process
+      tags:
+        - capability-retirement
+      parameters:
+        - in: path
+          name: capabilityRetirementId
+          type: string
+          required: true
+      responses:
+        200:
+          description: Ok
+          schema:
+            $ref: '#/definitions/retirementProcess'
+        404:
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errorObject'
   /capabilities/{capabilityId}/contexts:
     post:
       summary: Adds a context to a capability 
@@ -425,3 +469,14 @@ definitions:
         type: string
       content:
         type: string
+  retirementProcess:
+    type: object
+    properties:
+      id:
+        type: string
+      status:
+        type: string
+        enum:
+        - pending
+        - processing
+        - completed
