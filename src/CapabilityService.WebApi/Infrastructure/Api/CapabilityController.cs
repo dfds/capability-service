@@ -101,6 +101,28 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
             }
         }
         
+        
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCapability(string id)
+        {
+            var capabilityId = Guid.Empty;
+            Guid.TryParse(id, out capabilityId);
+
+            var capability = await _capabilityApplicationService.GetCapability(capabilityId);
+
+            if (capability == null)
+            {
+                return NotFound(new
+                {
+                    Message = $"A capability with id \"{id}\" could not be found."
+                });
+            }
+
+            
+            
+            return Ok();
+        }
+        
         [HttpPost("{id}/members")]
         public async Task<IActionResult> AddMemberToCapability(string id, [FromBody] MemberInput input)
         {
