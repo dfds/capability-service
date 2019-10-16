@@ -13,17 +13,19 @@ namespace DFDS.CapabilityService.WebApi.Application
         private readonly ICapabilityRepository _capabilityRepository;
         private readonly ITopicRepository _topicRepository;
 
-        public CapabilityApplicationService(ICapabilityRepository capabilityRepository, ITopicRepository topicRepository)
-       {
+        public CapabilityApplicationService(ICapabilityRepository capabilityRepository,
+            ITopicRepository topicRepository)
+        {
             _capabilityRepository = capabilityRepository;
             _topicRepository = topicRepository;
         }
 
         public Task<Capability> GetCapability(Guid id) => _capabilityRepository.Get(id);
+
         public async Task DeleteCapability(Guid id)
         {
             var capability = await _capabilityRepository.Get(id);
-
+            capability.Delete();
             await _capabilityRepository.Remove(capability);
         }
 
@@ -36,7 +38,7 @@ namespace DFDS.CapabilityService.WebApi.Application
             var capability = await _capabilityRepository.Get(id);
             capability.UpdateInfoFields(newName, newDescription);
 
-            return capability;            
+            return capability;
         }
 
         public Task<IEnumerable<Capability>> GetAllCapabilities() => _capabilityRepository.GetAll();
@@ -81,11 +83,12 @@ namespace DFDS.CapabilityService.WebApi.Application
             {
                 throw new CapabilityDoesNotExistException();
             }
-            
+
             capability.AddContext(contextName);
         }
 
-        public async Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
+        public async Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn,
+            string awsRoleEmail)
         {
             var capability = await _capabilityRepository.Get(capabilityId);
             if (capability == null)
@@ -98,10 +101,12 @@ namespace DFDS.CapabilityService.WebApi.Application
             {
                 throw new ContextDoesNotExistException();
             }
+
             capability.UpdateContext(context.Id, awsAccountId, awsRoleArn, awsRoleEmail);
         }
 
-        public async Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId) => await _topicRepository.GetByCapability(capabilityId);
+        public async Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId) =>
+            await _topicRepository.GetByCapability(capabilityId);
 
         public async Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
         {

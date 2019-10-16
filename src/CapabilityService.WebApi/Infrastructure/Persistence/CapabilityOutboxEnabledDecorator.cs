@@ -26,6 +26,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
         public async Task DeleteCapability(Guid id)
         {
             await _inner.DeleteCapability(id);
+            await QueueDomainEvents();
         }
 
         public async Task<Capability> CreateCapability(string name, string description)

@@ -46,7 +46,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
         public async Task Remove(Capability capability)
         {
             _dbContext.Capabilities.Remove(capability);
-            await _dbContext.SaveChangesAsync();
         }
     }
 }

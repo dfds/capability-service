@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.WebApi.Application;
@@ -27,7 +28,6 @@ namespace DFDS.CapabilityService.Tests.Scenarios
             await When_delete_capability_is_posted();
             await Then_the_given_capability_will_not_be_listed_in_api();
             await And_a_capability_deleted_event_is_outboxed();
-            And_capability_is_deleted_from_database();
         }
 
         private void Given_a_service_collection_with_a_imMemoryDb()
@@ -68,10 +68,10 @@ namespace DFDS.CapabilityService.Tests.Scenarios
         {
             var domainEventEnvelopeRepository = _serviceProvider.GetService<IRepository<DomainEventEnvelope>>();
             var outBoxedEvents = await domainEventEnvelopeRepository.GetAll();
-        }
 
-        private void And_capability_is_deleted_from_database()
-        {
+            outBoxedEvents.Single(envelope =>
+                envelope.Type== "capability_deleted"
+            );
         }
     }
 }
