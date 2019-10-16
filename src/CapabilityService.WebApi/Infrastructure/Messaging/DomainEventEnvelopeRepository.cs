@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 {
@@ -16,6 +18,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
         public async Task Add(IEnumerable<DomainEventEnvelope> domainEvents)
         {
             await _dbContext.DomainEvents.AddRangeAsync(domainEvents);
+        }
+
+        public async Task<IEnumerable<DomainEventEnvelope>> GetAll()
+        {
+            return await _dbContext.DomainEvents.ToListAsync();
         }
     }
 }

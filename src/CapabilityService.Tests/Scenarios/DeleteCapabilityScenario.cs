@@ -4,6 +4,7 @@ using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
+using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -25,7 +26,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
             await And_a_existing_capability();
             await When_delete_capability_is_posted();
             await Then_the_given_capability_will_not_be_listed_in_api();
-            And_a_capability_deleted_event_is_emitted();
+            await And_a_capability_deleted_event_is_outboxed();
             And_capability_is_deleted_from_database();
         }
 
@@ -63,8 +64,10 @@ namespace DFDS.CapabilityService.Tests.Scenarios
             Assert.Empty(capabilityResponse.Items);
         }
 
-        private void And_a_capability_deleted_event_is_emitted()
+        private async Task And_a_capability_deleted_event_is_outboxed()
         {
+            var domainEventEnvelopeRepository = _serviceProvider.GetService<IRepository<DomainEventEnvelope>>();
+            var outBoxedEvents = await domainEventEnvelopeRepository.GetAll();
         }
 
         private void And_capability_is_deleted_from_database()
