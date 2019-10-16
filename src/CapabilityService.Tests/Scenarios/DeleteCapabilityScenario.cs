@@ -2,10 +2,12 @@ using System;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.WebApi.Application;
-using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api;
+using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using Capability = DFDS.CapabilityService.WebApi.Domain.Models.Capability;
 
 namespace DFDS.CapabilityService.Tests.Scenarios
 {
@@ -19,14 +21,15 @@ namespace DFDS.CapabilityService.Tests.Scenarios
         [Fact]
         public async Task DeleteCapabilityRecipe()
         {
-            await Given_a_service_collection_with_a_imMemoryDb();
+                  Given_a_service_collection_with_a_imMemoryDb();
             await And_a_existing_capability();
             await When_delete_capability_is_posted();
-            Then_capability_deleted_event_is_emitted();
+            await Then_the_given_capability_will_not_be_listed_in_api();
+            And_a_capability_deleted_event_is_emitted();
             And_capability_is_deleted_from_database();
         }
 
-        private async Task Given_a_service_collection_with_a_imMemoryDb()
+        private void Given_a_service_collection_with_a_imMemoryDb()
         {
             var serviceProviderBuilder = new ServiceProviderBuilder();
 
@@ -45,13 +48,22 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 
         private async Task When_delete_capability_is_posted()
         {
-            //var capabilityController = _serviceProvider.GetService<CapabilityController>();
             var capabilityController = new CapabilityController(_capabilityApplicationService);
 
-           await capabilityController.DeleteCapability(_capability.Id.ToString());
+            await capabilityController.DeleteCapability(_capability.Id.ToString());
         }
 
-        private void Then_capability_deleted_event_is_emitted()
+        private async Task Then_the_given_capability_will_not_be_listed_in_api()
+        {
+            var capabilityController = new CapabilityController(_capabilityApplicationService);
+            var actionResult = await capabilityController.GetAllCapabilities();
+            var objectResult = actionResult as OkObjectResult;
+            var capabilityResponse = objectResult.Value as CapabilityResponse;
+
+            Assert.Empty(capabilityResponse.Items);
+        }
+
+        private void And_a_capability_deleted_event_is_emitted()
         {
         }
 

@@ -20,6 +20,14 @@ namespace DFDS.CapabilityService.WebApi.Application
         }
 
         public Task<Capability> GetCapability(Guid id) => _capabilityRepository.Get(id);
+        public async Task DeleteCapability(Guid id)
+        {
+            var capability = await _capabilityRepository.Get(id);
+
+            await _capabilityRepository.Remove(capability);
+        }
+
+
         public async Task<Capability> UpdateCapability(Guid id, string newName, string newDescription)
         {
             Capability.Create(newName, newDescription);

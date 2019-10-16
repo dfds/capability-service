@@ -118,8 +118,8 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
                 });
             }
 
-            
-            
+
+            await _capabilityApplicationService.DeleteCapability(capabilityId);
             return Ok();
         }
         

@@ -23,6 +23,10 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
 
         public Task<IEnumerable<Capability>> GetAllCapabilities() => _inner.GetAllCapabilities();
         public Task<Capability> GetCapability(Guid id) => _inner.GetCapability(id);
+        public async Task DeleteCapability(Guid id)
+        {
+            await _inner.DeleteCapability(id);
+        }
 
         public async Task<Capability> CreateCapability(string name, string description)
         {
