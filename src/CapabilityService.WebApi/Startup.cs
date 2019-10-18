@@ -13,6 +13,7 @@ using DFDS.CapabilityService.WebApi.Domain.EventHandlers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Enablers.CorrelationId;
+using DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming;
 using DFDS.CapabilityService.WebApi.Enablers.Metrics;
 using DFDS.CapabilityService.WebApi.Enablers.PrometheusHealthCheck;
 using DFDS.CapabilityService.WebApi.Infrastructure.Events;
@@ -32,16 +33,16 @@ namespace DFDS.CapabilityService.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services
+                .AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
-
             services.AddCorrelationIdDependencies();
                 
-
-
             var connectionString = Configuration["CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING"];
 
             ConfigureApplicationServices(services, connectionString);
+            services.AddKafkaStreamingDependencies();
             ConfigureDomainEvents(services);
             services.AddMetricsDependencies();
 
@@ -90,12 +91,7 @@ namespace DFDS.CapabilityService.WebApi
         {
             var eventRegistry = new DomainEventRegistry();
             services.AddSingleton<IDomainEventRegistry>(eventRegistry);
-            services.AddTransient<KafkaConfiguration>();
-            services.AddTransient<KafkaPublisherFactory>();
-            services.AddTransient<KafkaConsumerFactory>();
-            services.AddHostedService<PublishingService>();
-            services.AddHostedService<ConsumerHostedService>();
-
+           
 
             services.AddSingleton(eventRegistry);
             services.AddTransient<EventHandlerFactory>();
