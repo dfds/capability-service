@@ -1,4 +1,3 @@
-using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Hosting;
 using Prometheus;
 using CorrelationId;
 using System.Net.Http;
@@ -21,6 +19,7 @@ using DFDS.CapabilityService.WebApi.Domain.EventHandlers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Enablers.Metrics;
 using DFDS.CapabilityService.WebApi.Infrastructure.Events;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
@@ -52,7 +51,7 @@ namespace DFDS.CapabilityService.WebApi
 
             ConfigureApplicationServices(services, connectionString);
             ConfigureDomainEvents(services);
-			services.AddHostedService<MetricHostedService>();
+            services.AddMetricsDependencies();
 
 			// health checks
             var health = services
@@ -179,33 +178,6 @@ namespace DFDS.CapabilityService.WebApi
             }
 
             return base.SendAsync(request, cancellationToken);
-        }
-    }
-
-    public class MetricHostedService : IHostedService
-    {
-        private const string Host = "0.0.0.0";
-        private const int Port = 8080;
-
-        private IMetricServer _metricServer;
-
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            Console.WriteLine($"Starting metric server on {Host}:{Port}");
-
-            _metricServer = new KestrelMetricServer(Host, Port).Start();
-
-            return Task.CompletedTask;
-        }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            using (_metricServer)
-            {
-                Console.WriteLine("Shutting down metric server");
-                await _metricServer.StopAsync();
-                Console.WriteLine("Done shutting down metric server");
-            }
         }
     }
 
