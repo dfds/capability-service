@@ -2,9 +2,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,14 +15,12 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.EventHandlers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
-using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Enablers.Metrics;
+using DFDS.CapabilityService.WebApi.Enablers.PrometheusHealthCheck;
 using DFDS.CapabilityService.WebApi.Infrastructure.Events;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Serilog;
 
 
 namespace DFDS.CapabilityService.WebApi
@@ -149,12 +145,9 @@ namespace DFDS.CapabilityService.WebApi
             app.UseHttpMetrics();
 
             app.UseMvc();
-            
 
-            app.UseHealthChecks("/healthz", new HealthCheckOptions
-            {
-                ResponseWriter = MyPrometheusStuff.WriteResponseAsync
-            });
+
+            app.UsePrometheusHealthCheck();
         }
     }
     
@@ -178,53 +171,6 @@ namespace DFDS.CapabilityService.WebApi
             }
 
             return base.SendAsync(request, cancellationToken);
-        }
-    }
-
-    public static class MyPrometheusStuff
-    {
-        private const string HealthCheckLabelServiceName = "service";
-        private const string HealthCheckLabelStatusName = "status";
-
-        private static readonly Gauge HealthChecksDuration;
-        private static readonly Gauge HealthChecksResult;
-
-        static MyPrometheusStuff()
-        {
-            HealthChecksResult = Metrics.CreateGauge("healthcheck",
-                "Shows health check status (status=unhealthy|degraded|healthy) 1 for triggered, otherwise 0", new GaugeConfiguration
-                {
-                    LabelNames = new[] {HealthCheckLabelServiceName, HealthCheckLabelStatusName},
-                    SuppressInitialValue = false
-                });
-
-            HealthChecksDuration = Metrics.CreateGauge("healthcheck_duration_seconds",
-                "Shows duration of the health check execution in seconds",
-                new GaugeConfiguration
-                {
-                    LabelNames = new[] {HealthCheckLabelServiceName},
-                    SuppressInitialValue = false
-                });
-        }
-
-        public static Task WriteResponseAsync(HttpContext httpContext, HealthReport healthReport)
-        {
-            UpdateMetrics(healthReport);
-
-            httpContext.Response.ContentType = "text/plain";
-            return httpContext.Response.WriteAsync(healthReport.Status.ToString());
-        }
-
-        private static void UpdateMetrics(HealthReport report)
-        {
-            foreach (var (key, value) in report.Entries)
-            {
-                HealthChecksResult.Labels(key, "healthy").Set(value.Status == HealthStatus.Healthy ? 1 : 0);
-                HealthChecksResult.Labels(key, "unhealthy").Set(value.Status == HealthStatus.Unhealthy ? 1 : 0);
-                HealthChecksResult.Labels(key, "degraded").Set(value.Status == HealthStatus.Degraded ? 1 : 0);
-
-                HealthChecksDuration.Labels(key).Set(value.Duration.TotalSeconds);
-            }
         }
     }
 }
