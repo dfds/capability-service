@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.WebApi.Domain.Events;
@@ -35,6 +36,11 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Messaging
             {
                 _list.AddRange(obj);
                 return Task.CompletedTask;
+            }
+
+            public Task<IEnumerable<DomainEventEnvelope>> GetAll()
+            {
+                return Task.FromResult(_list.AsEnumerable());
             }
         }
         [Fact]

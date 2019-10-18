@@ -9,12 +9,12 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
 {
     public class StubCapabilityApplicationService : ICapabilityApplicationService
     {
-        private readonly Capability[] _stubCapabilities;
+        private readonly List<Capability> _stubCapabilities;
         private readonly Topic[] _stubTopics;
 
         public StubCapabilityApplicationService(Capability[] stubCapabilities = null, Topic[] stubTopics = null)
         {
-            _stubCapabilities = stubCapabilities ?? new Capability[0];
+            _stubCapabilities = stubCapabilities?.ToList() ?? new List<Capability>();
             _stubTopics = stubTopics ?? new Topic[0];
         }
 
@@ -39,6 +39,14 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
         {
             var capability = _stubCapabilities.FirstOrDefault();
             return Task.FromResult(capability);
+        }
+
+        public Task DeleteCapability(Guid id)
+        {
+            var capabilityToRemove = _stubCapabilities.Single(c => c.Id == id);
+            _stubCapabilities.Remove(capabilityToRemove);
+            
+            return Task.CompletedTask;
         }
 
         public Task JoinCapability(Guid capabilityId, string memberEmail)
@@ -97,6 +105,11 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
         }
 
         public Task<Capability> GetCapability(Guid id)
+        {
+            throw _exceptionToThrow;
+        }
+
+        public Task DeleteCapability(Guid id)
         {
             throw _exceptionToThrow;
         }

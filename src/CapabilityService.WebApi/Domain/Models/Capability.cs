@@ -63,6 +63,13 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             return capability;
         }
 
+        public void Delete()
+        {
+            RaiseEvent(new CapabilityDeleted(
+                capabilityId: Id
+            ));
+        }
+        
         public void UpdateInfoFields(string newName, string newDescription)
         {
             Name = newName;

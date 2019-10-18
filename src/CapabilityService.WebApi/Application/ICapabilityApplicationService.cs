@@ -11,6 +11,7 @@ namespace DFDS.CapabilityService.WebApi.Application
         Task<Capability> UpdateCapability(Guid id, string newName, string newDescription);
         Task<IEnumerable<Capability>> GetAllCapabilities();
         Task<Capability> GetCapability(Guid id);
+        Task DeleteCapability(Guid id);
         Task JoinCapability(Guid capabilityId, string memberEmail);
         Task LeaveCapability(Guid capabilityId, string memberEmail);
         Task AddContext(Guid capabilityId, string contextName);

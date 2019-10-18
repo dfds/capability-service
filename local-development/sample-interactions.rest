@@ -6,6 +6,22 @@ GET http://localhost:50900/api/v1/capabilities
 
 ###
 
+# Add a capability
+POST http://localhost:50900/api/v1/capabilities HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Default",
+    "description": "I won't tell"
+}
+
+###
+
+# Delete a capability
+DELETE  http://localhost:50900/api/v1/capabilities/{insert-capabilit-id} HTTP/1.1
+
+###
+
 # Add Context to capability
 POST http://localhost:50900/api/v1/capabilities/{insert-capabilit-id}/contexts HTTP/1.1
 content-type: application/json

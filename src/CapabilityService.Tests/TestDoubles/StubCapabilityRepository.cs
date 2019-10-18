@@ -9,11 +9,11 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
 {
     public class StubCapabilityRepository : ICapabilityRepository
     {
-        private readonly Capability[] _capabilities;
+        private readonly List<Capability> _capabilities;
 
         public StubCapabilityRepository(params Capability[] capabilities)
         {
-            _capabilities = capabilities;
+            _capabilities = capabilities?.ToList() ?? new List<Capability>();
         }
 
         public Task<IEnumerable<Capability>> GetAll()
@@ -30,6 +30,13 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
         {
             var capability = _capabilities.FirstOrDefault();
             return Task.FromResult(capability);
+        }
+
+        public Task Remove(Capability capability)
+        {
+            _capabilities.Remove(capability);
+            
+            return Task.CompletedTask;
         }
     }
 }
