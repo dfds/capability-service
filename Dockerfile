@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.2.1-aspnetcore-runtime-stretch-slim
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim
 
 # RUN apt-get update -y && apt-get upgrade -y 
 # RUN apt-get install ca-certificates && rm -rf /var/cache/apk/*
