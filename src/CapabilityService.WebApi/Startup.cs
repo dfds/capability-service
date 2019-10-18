@@ -1,6 +1,4 @@
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -9,19 +7,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Prometheus;
-using CorrelationId;
-using System.Net.Http;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.EventHandlers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Enablers.CorrelationId;
 using DFDS.CapabilityService.WebApi.Enablers.Metrics;
 using DFDS.CapabilityService.WebApi.Enablers.PrometheusHealthCheck;
 using DFDS.CapabilityService.WebApi.Infrastructure.Events;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
-
 
 namespace DFDS.CapabilityService.WebApi
 {
@@ -37,10 +33,10 @@ namespace DFDS.CapabilityService.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddHttpContextAccessor();
-            services.AddCorrelationId();
-            services.AddTransient<CorrelationIdRequestAppendHandler>();
-            services.AddScoped<IRequestCorrelation, RequestCorrelation>();
+            
+
+            services.AddCorrelationIdDependencies();
+                
 
 
             var connectionString = Configuration["CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING"];
@@ -125,14 +121,8 @@ namespace DFDS.CapabilityService.WebApi
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseCorrelationId(new CorrelationIdOptions
-            {
-                Header = "x-correlation-id",
-                UpdateTraceIdentifier = true,
-                IncludeInResponse = true,
-                UseGuidForCorrelationId = true
-            });     
-
+            app.UseCorrelationId();
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -148,29 +138,6 @@ namespace DFDS.CapabilityService.WebApi
 
 
             app.UsePrometheusHealthCheck();
-        }
-    }
-    
-    public class CorrelationIdRequestAppendHandler : DelegatingHandler
-    {
-        private readonly ICorrelationContextAccessor _correlationContextAccessor;
-
-        public CorrelationIdRequestAppendHandler(ICorrelationContextAccessor correlationContextAccessor)
-        {
-            _correlationContextAccessor = correlationContextAccessor;
-        }
-
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            var headerName = _correlationContextAccessor.CorrelationContext.Header;
-            var correlationId = _correlationContextAccessor.CorrelationContext.CorrelationId;
-
-            if (!request.Headers.Contains(headerName))
-            {
-                request.Headers.Add(headerName, correlationId);
-            }
-
-            return base.SendAsync(request, cancellationToken);
         }
     }
 }
