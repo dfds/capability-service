@@ -66,7 +66,8 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
         public void Delete()
         {
             RaiseEvent(new CapabilityDeleted(
-                capabilityId: Id
+                capabilityId: Id,
+                capabilityName: Name
             ));
         }
         
