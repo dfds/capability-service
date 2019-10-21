@@ -43,8 +43,8 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             return capability;
         }
 
-        public async Task Remove(Capability capability)
-        {
+        public void Remove(Capability capability)
+        { 
             _dbContext.Capabilities.Remove(capability);
         }
     }

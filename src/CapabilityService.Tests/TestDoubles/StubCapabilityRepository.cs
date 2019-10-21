@@ -32,11 +32,9 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
             return Task.FromResult(capability);
         }
 
-        public Task Remove(Capability capability)
+        public void Remove(Capability capability)
         {
             _capabilities.Remove(capability);
-            
-            return Task.CompletedTask;
         }
     }
 }
