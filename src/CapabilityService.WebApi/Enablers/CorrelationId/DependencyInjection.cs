@@ -6,10 +6,10 @@ namespace DFDS.CapabilityService.WebApi.Enablers.CorrelationId
 {
     public static class DependencyInjection
     {
-        public static void AddCorrelationIdDependencies(this IServiceCollection services)
+        public static void AddCorrelationId(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
-            services.AddCorrelationId();
+            CorrelationIdServiceExtensions.AddCorrelationId(services);
             services.AddTransient<CorrelationIdRequestAppendHandler>();
             services.AddScoped<IRequestCorrelation, RequestCorrelation>();
         }

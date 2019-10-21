@@ -5,7 +5,7 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 {
     public static class DependencyInjection
     {
-        public static void AddKafkaStreamingDependencies(this IServiceCollection services)
+        public static void AddKafkaStreaming(this IServiceCollection services)
         {
             services.AddTransient<KafkaConfiguration>();
             services.AddTransient<KafkaPublisherFactory>();

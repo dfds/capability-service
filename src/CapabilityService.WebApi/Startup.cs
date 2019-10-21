@@ -37,14 +37,14 @@ namespace DFDS.CapabilityService.WebApi
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
-            services.AddCorrelationIdDependencies();
+            services.AddCorrelationId();
                 
             var connectionString = Configuration["CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING"];
 
             ConfigureApplicationServices(services, connectionString);
-            services.AddKafkaStreamingDependencies();
+            services.AddKafkaStreaming();
             ConfigureDomainEvents(services);
-            services.AddMetricsDependencies();
+            services.AddMetrics();
 
 			// health checks
             var health = services

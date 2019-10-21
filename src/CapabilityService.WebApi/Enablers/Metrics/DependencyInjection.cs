@@ -4,7 +4,7 @@ namespace DFDS.CapabilityService.WebApi.Enablers.Metrics
 {
     public static class DependencyInjection
     {
-        public static void AddMetricsDependencies(this IServiceCollection services)
+        public static void AddMetrics(this IServiceCollection services)
         {
             services.AddHostedService<MetricHostedService>();
         }
