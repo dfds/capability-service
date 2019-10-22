@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CorrelationId;
 using DFDS.CapabilityService.WebApi.Domain.Models;
+using DFDS.CapabilityService.WebApi.Enablers.CorrelationId;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Serilog;

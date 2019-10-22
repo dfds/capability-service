@@ -1,9 +1,9 @@
 using System;
-using System.Threading;
 using CorrelationId;
+using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using Serilog;
 
-namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
+namespace DFDS.CapabilityService.WebApi.Enablers.CorrelationId
 {
     public class RequestCorrelation : IRequestCorrelation
     {

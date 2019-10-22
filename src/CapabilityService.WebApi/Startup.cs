@@ -1,32 +1,23 @@
-using System;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Hosting;
 using Prometheus;
-using CorrelationId;
-using System.Net.Http;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.EventHandlers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
-using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Enablers.CorrelationId;
+using DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming;
+using DFDS.CapabilityService.WebApi.Enablers.Metrics;
+using DFDS.CapabilityService.WebApi.Enablers.PrometheusHealthCheck;
 using DFDS.CapabilityService.WebApi.Infrastructure.Events;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Serilog;
-
 
 namespace DFDS.CapabilityService.WebApi
 {
@@ -41,23 +32,21 @@ namespace DFDS.CapabilityService.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddHttpContextAccessor();
+            services
+                .AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            
             services.AddCorrelationId();
-            services.AddTransient<CorrelationIdRequestAppendHandler>();
-            services.AddScoped<IRequestCorrelation, RequestCorrelation>();
-
-
+                
             var connectionString = Configuration["CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING"];
 
             ConfigureApplicationServices(services, connectionString);
+            services.AddKafkaStreaming();
             ConfigureDomainEvents(services);
-			services.AddHostedService<MetricHostedService>();
+            services.AddMetrics();
 
-			// health checks
-            var health = services
-                .AddHealthChecks()
-                .AddCheck("self", () => HealthCheckResult.Healthy())
+            services
+                .AddPrometheusHealthCheck()
                 .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
         }
 
@@ -99,12 +88,7 @@ namespace DFDS.CapabilityService.WebApi
         {
             var eventRegistry = new DomainEventRegistry();
             services.AddSingleton<IDomainEventRegistry>(eventRegistry);
-            services.AddTransient<KafkaConfiguration>();
-            services.AddTransient<KafkaPublisherFactory>();
-            services.AddTransient<KafkaConsumerFactory>();
-            services.AddHostedService<PublishingService>();
-            services.AddHostedService<ConsumerHostedService>();
-
+           
 
             services.AddSingleton(eventRegistry);
             services.AddTransient<EventHandlerFactory>();
@@ -131,14 +115,8 @@ namespace DFDS.CapabilityService.WebApi
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseCorrelationId(new CorrelationIdOptions
-            {
-                Header = "x-correlation-id",
-                UpdateTraceIdentifier = true,
-                IncludeInResponse = true,
-                UseGuidForCorrelationId = true
-            });     
-
+            app.UseCorrelationId();
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -151,109 +129,9 @@ namespace DFDS.CapabilityService.WebApi
             app.UseHttpMetrics();
 
             app.UseMvc();
-            
 
-            app.UseHealthChecks("/healthz", new HealthCheckOptions
-            {
-                ResponseWriter = MyPrometheusStuff.WriteResponseAsync
-            });
-        }
-    }
-    
-    public class CorrelationIdRequestAppendHandler : DelegatingHandler
-    {
-        private readonly ICorrelationContextAccessor _correlationContextAccessor;
 
-        public CorrelationIdRequestAppendHandler(ICorrelationContextAccessor correlationContextAccessor)
-        {
-            _correlationContextAccessor = correlationContextAccessor;
-        }
-
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            var headerName = _correlationContextAccessor.CorrelationContext.Header;
-            var correlationId = _correlationContextAccessor.CorrelationContext.CorrelationId;
-
-            if (!request.Headers.Contains(headerName))
-            {
-                request.Headers.Add(headerName, correlationId);
-            }
-
-            return base.SendAsync(request, cancellationToken);
-        }
-    }
-
-    public class MetricHostedService : IHostedService
-    {
-        private const string Host = "0.0.0.0";
-        private const int Port = 8080;
-
-        private IMetricServer _metricServer;
-
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            Console.WriteLine($"Starting metric server on {Host}:{Port}");
-
-            _metricServer = new KestrelMetricServer(Host, Port).Start();
-
-            return Task.CompletedTask;
-        }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            using (_metricServer)
-            {
-                Console.WriteLine("Shutting down metric server");
-                await _metricServer.StopAsync();
-                Console.WriteLine("Done shutting down metric server");
-            }
-        }
-    }
-
-    public static class MyPrometheusStuff
-    {
-        private const string HealthCheckLabelServiceName = "service";
-        private const string HealthCheckLabelStatusName = "status";
-
-        private static readonly Gauge HealthChecksDuration;
-        private static readonly Gauge HealthChecksResult;
-
-        static MyPrometheusStuff()
-        {
-            HealthChecksResult = Metrics.CreateGauge("healthcheck",
-                "Shows health check status (status=unhealthy|degraded|healthy) 1 for triggered, otherwise 0", new GaugeConfiguration
-                {
-                    LabelNames = new[] {HealthCheckLabelServiceName, HealthCheckLabelStatusName},
-                    SuppressInitialValue = false
-                });
-
-            HealthChecksDuration = Metrics.CreateGauge("healthcheck_duration_seconds",
-                "Shows duration of the health check execution in seconds",
-                new GaugeConfiguration
-                {
-                    LabelNames = new[] {HealthCheckLabelServiceName},
-                    SuppressInitialValue = false
-                });
-        }
-
-        public static Task WriteResponseAsync(HttpContext httpContext, HealthReport healthReport)
-        {
-            UpdateMetrics(healthReport);
-
-            httpContext.Response.ContentType = "text/plain";
-            return httpContext.Response.WriteAsync(healthReport.Status.ToString());
-        }
-
-        private static void UpdateMetrics(HealthReport report)
-        {
-            foreach (var (key, value) in report.Entries)
-            {
-                HealthChecksResult.Labels(key, "healthy").Set(value.Status == HealthStatus.Healthy ? 1 : 0);
-                HealthChecksResult.Labels(key, "unhealthy").Set(value.Status == HealthStatus.Unhealthy ? 1 : 0);
-                HealthChecksResult.Labels(key, "degraded").Set(value.Status == HealthStatus.Degraded ? 1 : 0);
-
-                HealthChecksDuration.Labels(key).Set(value.Duration.TotalSeconds);
-            }
+            app.UsePrometheusHealthCheck();
         }
     }
 }
