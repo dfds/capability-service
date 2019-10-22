@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Prometheus;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using DFDS.CapabilityService.WebApi.Application;
@@ -46,10 +45,8 @@ namespace DFDS.CapabilityService.WebApi
             ConfigureDomainEvents(services);
             services.AddMetrics();
 
-			// health checks
-            var health = services
-                .AddHealthChecks()
-                .AddCheck("self", () => HealthCheckResult.Healthy())
+            services
+                .AddPrometheusHealthCheck()
                 .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
         }
 
