@@ -1,4 +1,4 @@
-namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
+namespace DFDS.CapabilityService.WebApi.Enablers.CorrelationId
 {
     public interface IRequestCorrelation
     {
