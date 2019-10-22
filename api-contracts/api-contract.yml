@@ -59,6 +59,12 @@ paths:
           description: BadRequest
           schema:
             $ref: '#/definitions/errorObject'
+        409:
+          description: Conflict with existing capabilities
+          schema:
+            $ref: '#/definitions/errorObject'
+          examples:
+            application/json: { "message": "A capability with the name:'{name}' already exits, please give your capability a other name." }
   /capabilities/{capabilityId}:
     get:
       summary: Returns a single capability
