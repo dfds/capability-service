@@ -1,3 +1,4 @@
+using System.Linq;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.Helpers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
@@ -16,8 +17,8 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
             sut.StartMembershipFor(stubMemberEmail);
 
             Assert.Equal(
-                expected: new IDomainEvent[] {new MemberJoinedCapability(sut.Id, stubMemberEmail)},
-                actual: sut.DomainEvents,
+                expected: new MemberJoinedCapability(sut.Id, stubMemberEmail),
+                actual: sut.DomainEvents.Last(),
                 comparer: new PropertiesComparer<IDomainEvent>()
             );
         }
@@ -34,8 +35,8 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
             sut.StopMembershipFor(stubMemberEmail);
 
             Assert.Equal(
-                expected: new IDomainEvent[] {new MemberLeftCapability(sut.Id, stubMemberEmail)},
-                actual: sut.DomainEvents,
+                expected: new MemberLeftCapability(sut.Id, stubMemberEmail),
+                actual: sut.DomainEvents.Last(),
                 comparer: new PropertiesComparer<IDomainEvent>()
             );
         }

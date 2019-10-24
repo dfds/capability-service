@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
+using DFDS.CapabilityService.WebApi.Domain.Factories;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 
@@ -12,12 +13,16 @@ namespace DFDS.CapabilityService.WebApi.Application
     {
         private readonly ICapabilityRepository _capabilityRepository;
         private readonly ITopicRepository _topicRepository;
-
-        public CapabilityApplicationService(ICapabilityRepository capabilityRepository,
-            ITopicRepository topicRepository)
+        private readonly ICapabilityFactory _capabilityFactory;
+        public CapabilityApplicationService(
+            ICapabilityRepository capabilityRepository,
+            ITopicRepository topicRepository, 
+            ICapabilityFactory capabilityFactory
+        )
         {
             _capabilityRepository = capabilityRepository;
             _topicRepository = topicRepository;
+            _capabilityFactory = capabilityFactory;
         }
 
         public Task<Capability> GetCapability(Guid id) => _capabilityRepository.Get(id);
@@ -32,7 +37,7 @@ namespace DFDS.CapabilityService.WebApi.Application
 
         public async Task<Capability> UpdateCapability(Guid id, string newName, string newDescription)
         {
-            Capability.Create(newName, newDescription);
+            _capabilityFactory.Create(newName, newDescription);
 
 
             var capability = await _capabilityRepository.Get(id);
@@ -45,7 +50,7 @@ namespace DFDS.CapabilityService.WebApi.Application
 
         public async Task<Capability> CreateCapability(string name, string description)
         {
-            var capability = Capability.Create(name, description);
+            var capability = _capabilityFactory.Create(name, description);
             await _capabilityRepository.Add(capability);
 
             return capability;

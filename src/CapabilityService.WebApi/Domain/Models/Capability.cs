@@ -30,37 +30,16 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             Description = description;
             _memberships.AddRange(memberships);
             _contexts.AddRange(contexts);
+            
+            RaiseEvent(new CapabilityCreated(
+                capabilityId: Id,
+                capabilityName: Name
+            ));
         }
 
+        // Used by Entity Framework to construct a object
         private Capability()
         {           
-        }
-
-        private static readonly Regex ValidNameRegex = new Regex("^[A-Z][a-zA-Z0-9\\-]{2,254}$", RegexOptions.Compiled);
-
-        public static Capability Create(string name, string description)
-        {
-            if (!ValidNameRegex.Match(name).Success)
-            {
-                throw new CapabilityValidationException("Name must be a string of length 3 to 255. consisting of only alphanumeric ASCII characters, starting with a capital letter. Underscores and hyphens are allowed.");
-            }
-            
-            var id = Guid.NewGuid();
-            var capability = new Capability(
-                id: id,
-                name: name,
-                rootId: GenerateRootId(name, id),
-                description: description,
-                memberships: Enumerable.Empty<Membership>(),
-                contexts:Enumerable.Empty<Context>()
-            );
-
-            capability.RaiseEvent(new CapabilityCreated(
-                capabilityId: capability.Id,
-                capabilityName: capability.Name
-            ));
-
-            return capability;
         }
 
         public void Delete()

@@ -19,6 +19,7 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Application.EventHandlers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
+using DFDS.CapabilityService.WebApi.Domain.Factories;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Infrastructure.Events;
@@ -59,6 +60,8 @@ namespace DFDS.CapabilityService.WebApi
                 .AddHealthChecks()
                 .AddCheck("self", () => HealthCheckResult.Healthy())
                 .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
+
+            services.AddTransient<ICapabilityFactory, CapabilityFactory>();
         }
 
         private void ConfigureApplicationServices(IServiceCollection services, string connectionString)
