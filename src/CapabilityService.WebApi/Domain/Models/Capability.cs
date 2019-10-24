@@ -9,7 +9,6 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 {
     public class Capability : AggregateRoot<Guid>
     {
-        private static readonly string ROOTID_SALT = "fvvjaaqpagbb";
         private readonly List<Membership> _memberships = new List<Membership>();
         private readonly List<Context> _contexts = new List<Context>();
   
@@ -22,7 +21,14 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
         public IEnumerable<Context> Contexts => _contexts;
         
         
-        public Capability(Guid id, string name, string rootId, string description, IEnumerable<Membership> memberships, IEnumerable<Context> contexts)
+        public Capability(
+            Guid id, 
+            string name, 
+            string rootId, 
+            string description, 
+            IEnumerable<Membership> memberships, 
+            IEnumerable<Context> contexts
+        )
         {
             Id = id;
             Name = name;
@@ -62,21 +68,6 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             ));
         }
 
-        private static string GenerateRootId(string name, Guid id)
-        {
-            const int maxPreservedNameLength = 22;
-            
-            if (name.Length < 2)
-                throw new ArgumentException("Value is too short", nameof(name));
-
-            var microHash = new HashidsNet.Hashids(ROOTID_SALT, 5, "abcdefghijklmnopqrstuvwxyz").EncodeHex(id.ToString("N")).Substring(0,5);
-            
-            var rootId = (name.Length > maxPreservedNameLength)
-                ? $"{name.Substring(0, maxPreservedNameLength)}-{microHash}"
-                : $"{name}-{microHash}";
-            return rootId.ToLowerInvariant();
-        }
-        
         private bool IsAlreadyMember(string memberEmail)
         {
             return Members.Any(member => member.Email.Equals(memberEmail, StringComparison.InvariantCultureIgnoreCase));
