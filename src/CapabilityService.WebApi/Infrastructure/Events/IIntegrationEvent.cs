@@ -1,8 +1,8 @@
-using System;
+using DFDS.CapabilityService.WebApi.Domain.Events;
 
-namespace DFDS.CapabilityService.WebApi.Domain.Events
+namespace DFDS.CapabilityService.WebApi.Infrastructure.Events
 {
-    public interface IReceivedDomainEvent<T> : IEvent
+    public interface IIntegrationEvent<T> : IEvent
     {
         string Version { get; }
         string EventName { get; }
