@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 
@@ -10,7 +11,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Factories
     {
         private static readonly Regex ValidNameRegex = new Regex("^[A-Z][a-zA-Z0-9\\-]{2,254}$", RegexOptions.Compiled);
 
-        public Capability Create(string name, string description)
+        public ValueTask<Capability> Create(string name, string description)
         {
             if (!ValidNameRegex.Match(name).Success)
             {
@@ -28,7 +29,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Factories
                 contexts: Enumerable.Empty<Context>()
             );
 
-            return capability;
+            return new ValueTask<Capability>(capability);
         }
 
         private static readonly string ROOTID_SALT = "fvvjaaqpagbb";
@@ -36,17 +37,17 @@ namespace DFDS.CapabilityService.WebApi.Domain.Factories
         private static string GenerateRootId(string name, Guid id)
         {
             const int maxPreservedNameLength = 22;
-            
+
             if (name.Length < 2)
                 throw new ArgumentException("Value is too short", nameof(name));
 
-            var microHash = new HashidsNet.Hashids(ROOTID_SALT, 5, "abcdefghijklmnopqrstuvwxyz").EncodeHex(id.ToString("N")).Substring(0,5);
-            
+            var microHash = new HashidsNet.Hashids(ROOTID_SALT, 5, "abcdefghijklmnopqrstuvwxyz")
+                .EncodeHex(id.ToString("N")).Substring(0, 5);
+
             var rootId = (name.Length > maxPreservedNameLength)
                 ? $"{name.Substring(0, maxPreservedNameLength)}-{microHash}"
                 : $"{name}-{microHash}";
             return rootId.ToLowerInvariant();
         }
-
     }
 }

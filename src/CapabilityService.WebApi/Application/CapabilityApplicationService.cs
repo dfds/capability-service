@@ -50,7 +50,7 @@ namespace DFDS.CapabilityService.WebApi.Application
 
         public async Task<Capability> CreateCapability(string name, string description)
         {
-            var capability = _capabilityFactory.Create(name, description);
+            var capability = await _capabilityFactory.Create(name, description);
             await _capabilityRepository.Add(capability);
 
             return capability;
