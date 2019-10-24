@@ -57,16 +57,10 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
         [HttpPost("")]
         public async Task<IActionResult> CreateCapability(CapabilityInput input)
         {
+            Domain.Models.Capability capability;
             try
             {
-                var capability = await _capabilityApplicationService.CreateCapability(input.Name, input.Description);
-                var dto = Capability.Create(capability);
-
-                return CreatedAtAction(
-                    actionName: nameof(GetCapability),
-                    routeValues: new {id = capability.Id},
-                    value: dto
-                );
+                capability = await _capabilityApplicationService.CreateCapability(input.Name, input.Description);
             }
             catch (CapabilityValidationException tve)
             {
@@ -82,6 +76,14 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
                     Message = $"A capability with the name:'{input.Name}' already exits, please give your capability a other name."
                 });
             }
+            
+            var dto = Capability.Create(capability);
+
+            return CreatedAtAction(
+                actionName: nameof(GetCapability),
+                routeValues: new {id = capability.Id},
+                value: dto
+            );
         }
 
         [HttpPut("{id}")]
