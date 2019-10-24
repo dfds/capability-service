@@ -61,7 +61,13 @@ namespace DFDS.CapabilityService.WebApi
                 .AddCheck("self", () => HealthCheckResult.Healthy())
                 .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
 
-            services.AddTransient<ICapabilityFactory, CapabilityFactory>();
+            services.AddTransient<ICapabilityFactory>(ServiceProvider => new CapabilityWithNoDuplicateNameFactory(
+                    inner: new CapabilityFactory(), 
+                    capabilityRepository: ServiceProvider.GetRequiredService<ICapabilityRepository>()
+                )
+            );
+            
+            
         }
 
         private void ConfigureApplicationServices(IServiceCollection services, string connectionString)

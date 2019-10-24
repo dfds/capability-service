@@ -57,7 +57,8 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
         [HttpPost("")]
         public async Task<IActionResult> CreateCapability(CapabilityInput input)
         {
-            try {
+            try
+            {
                 var capability = await _capabilityApplicationService.CreateCapability(input.Name, input.Description);
                 var dto = Capability.Create(capability);
 
@@ -66,10 +67,19 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
                     routeValues: new {id = capability.Id},
                     value: dto
                 );
-            } catch (CapabilityValidationException tve) {
+            }
+            catch (CapabilityValidationException tve)
+            {
                 return BadRequest(new
                 {
                     Message = tve.Message
+                });
+            }
+            catch (CapabilityWithSameNameExistException)
+            {
+                return Conflict(new
+                {
+                    Message = $"A capability with the name:'{input.Name}' already exits, please give your capability a other name."
                 });
             }
         }

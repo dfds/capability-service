@@ -8,15 +8,15 @@ namespace DFDS.CapabilityService.WebApi.Domain.Factories
 {
     public class CapabilityWithNoDuplicateNameFactory :ICapabilityFactory
     {
-        readonly ICapabilityFactory _successor;
+        readonly ICapabilityFactory _inner;
         private readonly ICapabilityRepository _capabilityRepository;
 
         public CapabilityWithNoDuplicateNameFactory(
-            ICapabilityFactory successor, 
+            ICapabilityFactory inner, 
             ICapabilityRepository capabilityRepository
         )
         {
-            _successor = successor;
+            _inner = inner;
             _capabilityRepository = capabilityRepository;
         }
 
@@ -28,7 +28,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Factories
             
             if(capabilitiesWithSameName.Any()) { throw  new CapabilityWithSameNameExistException();}
 
-            return await _successor.Create(name, description);
+            return await _inner.Create(name, description);
         }
     }
 }
