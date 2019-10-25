@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.TestDoubles;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
+using DFDS.CapabilityService.WebApi.Domain.Factories;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using Xunit;
 namespace DFDS.CapabilityService.Tests.Application
@@ -31,6 +32,7 @@ namespace DFDS.CapabilityService.Tests.Application
         {
             var sut = new CapabilityApplicationServiceBuilder()
                 .WithCapabilityRepository(new StubCapabilityRepository())
+                .WithCapabilityFactory(new CapabilityFactory())
                 .Build();
 
             var dummyName = "A_Name";

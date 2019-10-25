@@ -1,5 +1,6 @@
 using DFDS.CapabilityService.Tests.TestDoubles;
 using DFDS.CapabilityService.WebApi.Application;
+using DFDS.CapabilityService.WebApi.Domain.Factories;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 
 namespace DFDS.CapabilityService.Tests.Builders
@@ -8,11 +9,12 @@ namespace DFDS.CapabilityService.Tests.Builders
     {
         private ICapabilityRepository _capabilityRepository;
         private ITopicRepository _topicRepository;
-
+        private ICapabilityFactory _capabilityFactory;
         public CapabilityApplicationServiceBuilder()
         {
             _capabilityRepository = Dummy.Of<ICapabilityRepository>();
             _topicRepository = Dummy.Of<ITopicRepository>();
+            _capabilityFactory = Dummy.Of<ICapabilityFactory>();
         }
 
         public CapabilityApplicationServiceBuilder WithCapabilityRepository(ICapabilityRepository capabilityRepository)
@@ -26,12 +28,19 @@ namespace DFDS.CapabilityService.Tests.Builders
             _topicRepository = topicRepository;
             return this;
         }
-       
+        
+        public CapabilityApplicationServiceBuilder WithCapabilityFactory(ICapabilityFactory capabilityFactory)
+        {
+            _capabilityFactory = capabilityFactory;
+            return this;
+        }
+        
         public CapabilityApplicationService Build()
         {
             return new CapabilityApplicationService(
                 capabilityRepository: _capabilityRepository,
-                topicRepository: _topicRepository
+                topicRepository: _topicRepository,
+                capabilityFactory: _capabilityFactory
             );
         }
     }
