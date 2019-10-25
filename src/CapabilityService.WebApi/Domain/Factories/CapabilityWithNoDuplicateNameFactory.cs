@@ -8,7 +8,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Factories
 {
     public class CapabilityWithNoDuplicateNameFactory :ICapabilityFactory
     {
-        readonly ICapabilityFactory _inner;
+        private readonly ICapabilityFactory _inner;
         private readonly ICapabilityRepository _capabilityRepository;
 
         public CapabilityWithNoDuplicateNameFactory(
