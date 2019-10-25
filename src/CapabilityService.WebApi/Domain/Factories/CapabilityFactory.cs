@@ -32,7 +32,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Factories
             return new ValueTask<Capability>(capability);
         }
 
-        private static readonly string ROOTID_SALT = "fvvjaaqpagbb";
+        private const string ROOTID_SALT = "fvvjaaqpagbb";
 
         private static string GenerateRootId(string name, Guid id)
         {
