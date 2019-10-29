@@ -4,7 +4,7 @@ using System.Linq;
 using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 
-namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
+namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 {
     public class KafkaConfiguration
     {

@@ -2,25 +2,26 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
+using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Prometheus;
 
-namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
+namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 {
-    public class ConsumerHostedService : IHostedService
+    public class KafkaEventConsumer : IHostedService
     {
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-        private readonly ILogger<ConsumerHostedService> _logger;
+        private readonly ILogger<KafkaEventConsumer> _logger;
         private readonly KafkaConsumerFactory _consumerFactory;
         private readonly IServiceProvider _serviceProvider;
         private readonly IDomainEventRegistry _eventRegistry;
 
         private Task _executingTask;
 
-        public ConsumerHostedService(
-            ILogger<ConsumerHostedService> logger,
+        public KafkaEventConsumer(
+            ILogger<KafkaEventConsumer> logger,
             IServiceProvider serviceProvider,
             KafkaConsumerFactory kafkaConsumerFactory,
             IDomainEventRegistry domainEventRegistry)
@@ -120,6 +121,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
             _cancellationTokenSource.Dispose();
         }
 
-        private static readonly Counter FailedCosumedMessages = Metrics.CreateCounter("consumed_messages_failed_total", "Number of consumed messages failed.");
+        private static readonly Counter FailedCosumedMessages = Prometheus.Metrics.CreateCounter("consumed_messages_failed_total", "Number of consumed messages failed.");
     }
 }

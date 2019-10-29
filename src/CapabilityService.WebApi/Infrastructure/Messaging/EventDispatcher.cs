@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Infrastructure.Events;
+using DFDS.CapabilityService.WebApi.Domain.Events;
+using DFDS.CapabilityService.WebApi.Enablers.CorrelationId;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
