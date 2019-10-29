@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.TestDoubles;
 using DFDS.CapabilityService.WebApi.Domain.EventHandlers;
-using DFDS.CapabilityService.WebApi.Infrastructure.Events;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.EventHandlers;
 using Microsoft.Extensions.Logging;
 using Xunit;
 

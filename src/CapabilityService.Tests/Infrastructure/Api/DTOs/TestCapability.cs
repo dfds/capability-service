@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using DFDS.CapabilityService.WebApi.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models;
 using Xunit;
 
 namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
@@ -28,7 +29,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
             
             
             // Act
-            var capabilityDto = WebApi.Infrastructure.Api.DTOs.Capability.Create(domainCapability);
+            var capabilityDto = WebApi.Features.Capabilities.Infrastructure.Api.DTOs.Capability.Create(domainCapability);
             
             // Assert
             Assert.Equal(capabilityId, capabilityDto.Id);

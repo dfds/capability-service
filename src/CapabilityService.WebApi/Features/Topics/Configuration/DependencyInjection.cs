@@ -1,4 +1,5 @@
 using DFDS.CapabilityService.WebApi.Domain.Events;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Persistence;
 using DFDS.CapabilityService.WebApi.Features.Topics.Application;
 using DFDS.CapabilityService.WebApi.Features.Topics.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Features.Topics.Persistence;

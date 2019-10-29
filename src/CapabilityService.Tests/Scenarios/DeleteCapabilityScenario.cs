@@ -2,14 +2,14 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
-using DFDS.CapabilityService.WebApi.Application;
-using DFDS.CapabilityService.WebApi.Infrastructure.Api;
-using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Application;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Api;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Api.DTOs;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using Capability = DFDS.CapabilityService.WebApi.Domain.Models.Capability;
+using Capability = DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models.Capability;
 
 namespace DFDS.CapabilityService.Tests.Scenarios
 {

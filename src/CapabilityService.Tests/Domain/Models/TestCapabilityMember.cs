@@ -1,6 +1,7 @@
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.Helpers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Events;
 using Xunit;
 
 namespace DFDS.CapabilityService.Tests.Domain.Models

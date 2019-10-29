@@ -3,9 +3,9 @@ using System.Net;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.TestDoubles;
-using DFDS.CapabilityService.WebApi.Application;
-using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Application;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models;
 using Xunit;
 
 namespace DFDS.CapabilityService.Tests.Infrastructure.Api

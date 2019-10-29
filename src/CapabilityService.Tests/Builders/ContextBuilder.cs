@@ -1,5 +1,6 @@
 using System;
 using DFDS.CapabilityService.WebApi.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models;
 
 namespace DFDS.CapabilityService.Tests.Builders
 {

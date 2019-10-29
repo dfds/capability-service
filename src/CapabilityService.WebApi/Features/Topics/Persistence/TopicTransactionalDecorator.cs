@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using DFDS.CapabilityService.WebApi.Application;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Persistence;
 using DFDS.CapabilityService.WebApi.Features.Topics.Application;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
 

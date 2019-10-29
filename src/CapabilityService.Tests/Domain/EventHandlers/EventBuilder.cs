@@ -1,6 +1,6 @@
 using System;
 using DFDS.CapabilityService.WebApi.Domain.Events;
-using DFDS.CapabilityService.WebApi.Infrastructure.Events;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Events;
 using Newtonsoft.Json.Linq;
 
 namespace DFDS.CapabilityService.Tests.Domain.EventHandlers

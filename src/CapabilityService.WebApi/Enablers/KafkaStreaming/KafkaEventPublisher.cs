@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Persistence;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;

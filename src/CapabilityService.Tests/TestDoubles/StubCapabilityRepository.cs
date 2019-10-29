@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Models;
-using DFDS.CapabilityService.WebApi.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Repositories;
 
 namespace DFDS.CapabilityService.Tests.TestDoubles
 {

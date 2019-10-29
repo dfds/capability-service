@@ -1,0 +1,49 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DFDS.CapabilityService.WebApi.Features.Topics.Infrastructure.Api.DTOs;
+
+namespace DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Api.DTOs
+{
+    public class CapabilityDetails
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string RootId { get; set; }
+
+        public string Description { get; set; }
+        public Member[] Members { get; set; }
+        public Context[] Contexts { get; set; }
+
+        public Topic[] Topics { get; set; }
+
+        public static CapabilityDetails Create(Features.Capabilities.Domain.Models.Capability capability, IEnumerable<Features.Topics.Domain.Models.Topic> topics)
+        {
+            return new CapabilityDetails
+            {
+                Id = capability.Id,
+                Name = capability.Name,
+                RootId = capability.RootId,
+                Description = capability.Description,
+                Members = capability
+                    .Members
+                    .Select(member => new Member {Email = member.Email})
+                    .ToArray(),
+                Contexts = capability
+                    .Contexts
+                    .Select(context => new Context
+                    {
+                        Id = context.Id,
+                        Name = context.Name,
+                        AWSRoleArn = context.AWSRoleArn,
+                        AWSAccountId = context.AWSAccountId,
+                        AWSRoleEmail = context.AWSRoleEmail
+                    })
+                    .ToArray(),
+                Topics = topics
+                    .Select(Topic.CreateFrom)
+                    .ToArray(),
+            };
+        }
+    }
+}

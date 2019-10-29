@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Persistence;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
 {

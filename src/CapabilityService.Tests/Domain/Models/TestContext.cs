@@ -1,4 +1,5 @@
 using System;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models;
 using Xunit;
 
 namespace DFDS.CapabilityService.Tests.Domain.Models
@@ -14,7 +15,7 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
             
             
             // Act
-            var context = new WebApi.Domain.Models.Context(id, name);
+            var context = new Context(id, name);
             
             
             // Assert

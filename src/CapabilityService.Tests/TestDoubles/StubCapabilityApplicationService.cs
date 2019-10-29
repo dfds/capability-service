@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Application;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Topics.Domain.Models;
 
 namespace DFDS.CapabilityService.Tests.TestDoubles

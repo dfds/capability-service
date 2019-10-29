@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using DFDS.CapabilityService.Tests.Helpers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
-using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Events;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Exceptions;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models;
 using Xunit;
 
 namespace DFDS.CapabilityService.Tests.Domain.Models

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Persistence;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 

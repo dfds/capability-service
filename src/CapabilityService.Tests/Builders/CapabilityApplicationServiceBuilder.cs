@@ -1,6 +1,6 @@
 using DFDS.CapabilityService.Tests.TestDoubles;
-using DFDS.CapabilityService.WebApi.Application;
-using DFDS.CapabilityService.WebApi.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Application;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Features.Topics.Domain.Repositories;
 
 namespace DFDS.CapabilityService.Tests.Builders

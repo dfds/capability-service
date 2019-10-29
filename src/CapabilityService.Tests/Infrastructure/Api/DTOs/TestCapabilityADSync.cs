@@ -1,7 +1,11 @@
 using System;
 using System.Linq;
-using DFDS.CapabilityService.WebApi.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Api.DTOs;
 using Xunit;
+using Capability = DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models.Capability;
+using Context = DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models.Context;
+using Member = DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models.Member;
 
 namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
 {
@@ -32,7 +36,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
             );
             
             // Act
-            var capabilityDto = WebApi.Infrastructure.Api.DTOs.CapabilityADSync.Create(domainCapability);
+            var capabilityDto = CapabilityADSync.Create(domainCapability);
             
             // Assert
             Assert.Equal(capabilityName, capabilityDto.Identifier);
@@ -68,7 +72,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
             );
             
             // Act
-            var capabilityDto = WebApi.Infrastructure.Api.DTOs.CapabilityADSync.Create(domainCapability);
+            var capabilityDto = CapabilityADSync.Create(domainCapability);
             
             // Assert
             Assert.Equal(capabilityRootId, capabilityDto.Identifier);
