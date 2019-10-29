@@ -1,4 +1,5 @@
 ﻿using DFDS.CapabilityService.WebApi.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Topics.Domain.Models;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using Microsoft.EntityFrameworkCore;
 

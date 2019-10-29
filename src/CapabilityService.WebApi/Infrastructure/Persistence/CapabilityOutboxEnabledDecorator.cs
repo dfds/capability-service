@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Topics.Domain.Models;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence

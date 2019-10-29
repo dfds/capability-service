@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DFDS.CapabilityService.WebApi.Features.Topics.Infrastructure.Api.DTOs;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
 {
@@ -16,7 +17,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
 
         public Topic[] Topics { get; set; }
 
-        public static CapabilityDetails Create(Domain.Models.Capability capability, IEnumerable<Domain.Models.Topic> topics)
+        public static CapabilityDetails Create(Domain.Models.Capability capability, IEnumerable<Features.Topics.Domain.Models.Topic> topics)
         {
             return new CapabilityDetails
             {

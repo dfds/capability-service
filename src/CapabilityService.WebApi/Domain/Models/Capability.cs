@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
+using DFDS.CapabilityService.WebApi.Features.Topics.Domain.Models;
 
 namespace DFDS.CapabilityService.WebApi.Domain.Models
 {

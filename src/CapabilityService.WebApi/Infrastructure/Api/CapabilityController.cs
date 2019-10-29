@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
+using DFDS.CapabilityService.WebApi.Features.Topics.Domain.Exceptions;
+using DFDS.CapabilityService.WebApi.Features.Topics.Infrastructure.Api.DTOs;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
 using Microsoft.AspNetCore.Mvc;
 

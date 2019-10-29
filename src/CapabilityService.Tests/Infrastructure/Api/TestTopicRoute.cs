@@ -5,6 +5,8 @@ using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.TestDoubles;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Features.Topics.Application;
+using DFDS.CapabilityService.WebApi.Features.Topics.Domain.Repositories;
 using Xunit;
 
 namespace DFDS.CapabilityService.Tests.Infrastructure.Api
