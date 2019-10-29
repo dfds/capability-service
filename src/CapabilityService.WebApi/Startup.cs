@@ -15,7 +15,7 @@ using DFDS.CapabilityService.WebApi.Enablers.CorrelationId;
 using DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming;
 using DFDS.CapabilityService.WebApi.Enablers.Metrics;
 using DFDS.CapabilityService.WebApi.Enablers.PrometheusHealthCheck;
-using DFDS.CapabilityService.WebApi.Features.Configuration;
+using DFDS.CapabilityService.WebApi.Features.Topics.Configuration;
 using DFDS.CapabilityService.WebApi.Infrastructure.Events;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;

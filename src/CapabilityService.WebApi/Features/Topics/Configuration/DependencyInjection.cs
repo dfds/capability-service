@@ -6,7 +6,7 @@ using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DFDS.CapabilityService.WebApi.Features.Configuration
+namespace DFDS.CapabilityService.WebApi.Features.Topics.Configuration
 {
     public static class DependencyInjection
     {
