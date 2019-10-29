@@ -15,9 +15,8 @@ using DFDS.CapabilityService.WebApi.Enablers.CorrelationId;
 using DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming;
 using DFDS.CapabilityService.WebApi.Enablers.Metrics;
 using DFDS.CapabilityService.WebApi.Enablers.PrometheusHealthCheck;
-using DFDS.CapabilityService.WebApi.Features.Topics.Application;
-using DFDS.CapabilityService.WebApi.Features.Topics.Domain.Repositories;
-using DFDS.CapabilityService.WebApi.Features.Topics.Persistence;
+using DFDS.CapabilityService.WebApi.Features;
+using DFDS.CapabilityService.WebApi.Features.Configuration;
 using DFDS.CapabilityService.WebApi.Infrastructure.Events;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
@@ -45,12 +44,32 @@ namespace DFDS.CapabilityService.WebApi
 
             ConfigureApplicationServices(services, connectionString);
             services.AddKafkaStreaming();
-            ConfigureDomainEvents(services);
             services.AddMetrics();
 
             services
                 .AddPrometheusHealthCheck()
                 .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
+            
+            var eventRegistry = new DomainEventRegistry();
+            services.AddSingleton<IDomainEventRegistry>(eventRegistry);
+           
+
+            services.AddSingleton(eventRegistry);
+            services.AddTransient<EventHandlerFactory>();
+            services.AddTransient<IEventHandler<AWSContextAccountCreatedIntegrationEvent>, AWSContextAccountCreatedEventHandler>();
+            services.AddTransient<IEventDispatcher, EventDispatcher>();
+            
+            var capabilitiesTopicsTopicName = Configuration["CAPABILITY_SERVICE_KAFKA_TOPIC_TOPICS"];
+            services.AddTopics(
+                eventRegistry,
+                capabilitiesTopicsTopicName
+            );
+            
+            ConfigureCapabilitiesDomainEvents(eventRegistry);
+            
+            
+            var scanner = new DomainEventScanner(eventRegistry);
+            scanner.EnsureNoUnregisteredDomainEventsIn(Assembly.GetExecutingAssembly());
         }
 
         private void ConfigureApplicationServices(IServiceCollection services, string connectionString)
@@ -77,29 +96,11 @@ namespace DFDS.CapabilityService.WebApi
                 dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>()
             ));
 
-            services.AddTransient<ITopicRepository, TopicRepository>();
-            services.AddTransient<TopicApplicationService>();
-            services.AddTransient<ITopicApplicationService>(serviceProvider => new TopicTransactionalDecorator(
-                inner: serviceProvider.GetRequiredService<TopicApplicationService>(),
-                dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>()
-            ));
-
             services.AddTransient<IRepository<DomainEventEnvelope>,DomainEventEnvelopeRepository>();
         }
-
-        private void ConfigureDomainEvents(IServiceCollection services)
+        private void ConfigureCapabilitiesDomainEvents(IDomainEventRegistry eventRegistry)
         {
-            var eventRegistry = new DomainEventRegistry();
-            services.AddSingleton<IDomainEventRegistry>(eventRegistry);
-           
-
-            services.AddSingleton(eventRegistry);
-            services.AddTransient<EventHandlerFactory>();
-            services.AddTransient<IEventHandler<AWSContextAccountCreatedIntegrationEvent>, AWSContextAccountCreatedEventHandler>();
-            services.AddTransient<IEventDispatcher, EventDispatcher>();
-
             var capabilitiesTopicName = Configuration["CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY"];
-            var capabilitiesTopicsTopicName = Configuration["CAPABILITY_SERVICE_KAFKA_TOPIC_TOPICS"];
 
             eventRegistry
                 .Register<CapabilityCreated>("capability_created", capabilitiesTopicName)
@@ -109,11 +110,7 @@ namespace DFDS.CapabilityService.WebApi
                 .Register<MemberLeftCapability>("member_left_capability", capabilitiesTopicName)
                 .Register<ContextAddedToCapability>("context_added_to_capability", capabilitiesTopicName)
                 .Register<ContextUpdated>("context_updated", capabilitiesTopicName)
-                .Register<AWSContextAccountCreatedIntegrationEvent>("aws_context_account_created", capabilitiesTopicName)
-                .Register<TopicAdded>("topic_added", capabilitiesTopicsTopicName);
-
-            var scanner = new DomainEventScanner(eventRegistry);
-            scanner.EnsureNoUnregisteredDomainEventsIn(Assembly.GetExecutingAssembly());
+                .Register<AWSContextAccountCreatedIntegrationEvent>("aws_context_account_created", capabilitiesTopicName);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
