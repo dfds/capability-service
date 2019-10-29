@@ -15,7 +15,6 @@ using DFDS.CapabilityService.WebApi.Enablers.CorrelationId;
 using DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming;
 using DFDS.CapabilityService.WebApi.Enablers.Metrics;
 using DFDS.CapabilityService.WebApi.Enablers.PrometheusHealthCheck;
-using DFDS.CapabilityService.WebApi.Features;
 using DFDS.CapabilityService.WebApi.Features.Configuration;
 using DFDS.CapabilityService.WebApi.Infrastructure.Events;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
@@ -34,21 +33,23 @@ namespace DFDS.CapabilityService.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Configuration["CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING"];
+
+            
             services
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            
             services.AddCorrelationId();
-                
-            var connectionString = Configuration["CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING"];
-
-            ConfigureApplicationServices(services, connectionString);
             services.AddKafkaStreaming();
             services.AddMetrics();
-
             services
                 .AddPrometheusHealthCheck()
                 .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
+                
+
+            ConfigureApplicationServices(services, connectionString);
+
+           
             
             var eventRegistry = new DomainEventRegistry();
             services.AddSingleton<IDomainEventRegistry>(eventRegistry);
