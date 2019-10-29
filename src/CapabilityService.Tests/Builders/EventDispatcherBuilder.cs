@@ -1,4 +1,4 @@
-using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
+using DFDS.CapabilityService.WebApi.Features.Shared.Infrastructure.Messaging;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 

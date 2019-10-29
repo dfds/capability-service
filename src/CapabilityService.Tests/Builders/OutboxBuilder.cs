@@ -1,6 +1,6 @@
 using CorrelationId;
 using DFDS.CapabilityService.WebApi.Enablers.CorrelationId;
-using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
+using DFDS.CapabilityService.WebApi.Features.Shared.Infrastructure.Messaging;
 
 namespace DFDS.CapabilityService.Tests.Builders
 {

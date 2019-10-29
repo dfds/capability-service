@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Topics.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Topics.Domain.Repositories;
 

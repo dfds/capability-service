@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Events;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Exceptions;
+using DFDS.CapabilityService.WebApi.Features.Shared.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Topics.Domain.Models;
 
 namespace DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models

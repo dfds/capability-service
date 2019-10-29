@@ -1,9 +1,12 @@
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Application;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Events;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.EventHandlers;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Events;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Persistence;
-using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
+using DFDS.CapabilityService.WebApi.Features.Shared.Domain.EventHandlers;
+using DFDS.CapabilityService.WebApi.Features.Shared.Infrastructure.Messaging;
+using DFDS.CapabilityService.WebApi.Features.Shared.Infrastructure.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DFDS.CapabilityService.WebApi.Features.Capabilities.Configuration
@@ -29,6 +32,9 @@ namespace DFDS.CapabilityService.WebApi.Features.Capabilities.Configuration
                     dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>()
                 ));
             
+            services
+                .AddTransient<IEventHandler<AWSContextAccountCreatedIntegrationEvent>,
+                    AWSContextAccountCreatedEventHandler>();
             
             domainEventRegistry
                 .Register<CapabilityCreated>("capability_created", capabilitiesTopicName)

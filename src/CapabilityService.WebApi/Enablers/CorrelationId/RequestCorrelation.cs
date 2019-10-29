@@ -1,6 +1,5 @@
 using System;
 using CorrelationId;
-using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using Serilog;
 
 namespace DFDS.CapabilityService.WebApi.Enablers.CorrelationId

@@ -1,5 +1,5 @@
 ﻿using System;
-using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
+using DFDS.CapabilityService.WebApi.Features.Shared.Infrastructure.Messaging;
 using Xunit;
 
 namespace DFDS.CapabilityService.Tests.Infrastructure.Messaging

@@ -1,6 +1,7 @@
 ﻿using System;
 using DFDS.CapabilityService.WebApi.Domain.Events;
-using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
+using DFDS.CapabilityService.WebApi.Features.Shared.Domain.Events;
+using DFDS.CapabilityService.WebApi.Features.Shared.Infrastructure.Messaging;
 
 namespace DFDS.CapabilityService.Tests.Builders
 {

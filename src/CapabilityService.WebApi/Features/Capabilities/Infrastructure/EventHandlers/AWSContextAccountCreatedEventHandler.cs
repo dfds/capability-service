@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using DFDS.CapabilityService.WebApi.Domain.EventHandlers;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Application;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Events;
+using DFDS.CapabilityService.WebApi.Features.Shared.Domain.EventHandlers;
 using Microsoft.Extensions.Logging;
 
 namespace DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.EventHandlers

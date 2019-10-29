@@ -5,7 +5,7 @@ using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Application;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Api;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Api.DTOs;
-using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
+using DFDS.CapabilityService.WebApi.Features.Shared.Infrastructure.Messaging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;

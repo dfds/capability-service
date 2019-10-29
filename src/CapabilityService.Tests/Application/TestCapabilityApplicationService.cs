@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.TestDoubles;
-using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models;
 using Xunit;

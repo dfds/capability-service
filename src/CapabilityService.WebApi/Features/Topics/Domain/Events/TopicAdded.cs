@@ -1,4 +1,6 @@
-﻿namespace DFDS.CapabilityService.WebApi.Domain.Events
+﻿using DFDS.CapabilityService.WebApi.Features.Shared.Domain.Events;
+
+namespace DFDS.CapabilityService.WebApi.Domain.Events
 {
     public class TopicAdded : IDomainEvent
     {

@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using DFDS.CapabilityService.WebApi;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Infrastructure.Persistence;
-using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
+using DFDS.CapabilityService.WebApi.Features.Shared.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;

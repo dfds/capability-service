@@ -2,7 +2,8 @@
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.Helpers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
-using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
+using DFDS.CapabilityService.WebApi.Features.Shared.Domain.Events;
+using DFDS.CapabilityService.WebApi.Features.Shared.Infrastructure.Messaging;
 using Xunit;
 
 namespace DFDS.CapabilityService.Tests.Infrastructure.Messaging

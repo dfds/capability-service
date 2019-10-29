@@ -1,4 +1,3 @@
-using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming

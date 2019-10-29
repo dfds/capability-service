@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Capabilities.Domain.Models;
 using Xunit;
 
