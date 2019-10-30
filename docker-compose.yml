@@ -1,6 +1,11 @@
-version: '3'
+version: '3.4'
 
 services:
+  capabilityservice.webapi:
+    build:
+      context: .
+      dockerfile: src/CapabilityService.WebApi/Dockerfile
+      
   database:
     image: postgres:latest
     ports:
