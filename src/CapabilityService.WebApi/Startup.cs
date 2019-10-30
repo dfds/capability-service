@@ -1,12 +1,3 @@
-using System.Reflection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Prometheus;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.EventHandlers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
@@ -18,6 +9,16 @@ using DFDS.CapabilityService.WebApi.Enablers.PrometheusHealthCheck;
 using DFDS.CapabilityService.WebApi.Infrastructure.Events;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Prometheus;
+using System.Reflection;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace DFDS.CapabilityService.WebApi
 {
@@ -48,6 +49,9 @@ namespace DFDS.CapabilityService.WebApi
             services
                 .AddPrometheusHealthCheck()
                 .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
+
+            services.AddAuthentication(options => { })
+                    .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
         }
 
         private void ConfigureApplicationServices(IServiceCollection services, string connectionString)
@@ -129,8 +133,7 @@ namespace DFDS.CapabilityService.WebApi
             app.UseHttpMetrics();
 
             app.UseMvc();
-
-
+            
             app.UsePrometheusHealthCheck();
         }
     }
