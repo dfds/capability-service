@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Run the Postgres database migrations as well as seeding the database
+# Run the Postgres database migrations as well as seeding the database.
 
 readonly GREEN="\\033[32m"
 readonly RESET="\\033[0m"
