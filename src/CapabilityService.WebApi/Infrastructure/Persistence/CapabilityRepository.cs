@@ -43,10 +43,5 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
                 .SingleOrDefaultAsync(x => x.Id == id);
             return capability;
         }
-
-        public void Remove(Capability capability)
-        { 
-            _dbContext.Capabilities.Remove(capability);
-        }
     }
 }

@@ -10,7 +10,5 @@ namespace DFDS.CapabilityService.WebApi.Domain.Repositories
         Task<IEnumerable<Capability>> GetAll();
         Task Add(Capability capability);
         Task<Capability> Get(Guid id);
-
-        void Remove(Capability capability);
     }
 }
