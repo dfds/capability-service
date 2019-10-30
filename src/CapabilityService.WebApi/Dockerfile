@@ -20,12 +20,6 @@ RUN dotnet publish -c Release -o /build/out
 FROM mcr.microsoft.com/dotnet/core/aspnet:2.2 AS runtime
 WORKDIR /app
 
-#Application ports
-EXPOSE 5000 5001 
-
-#Visual studio override ports
-EXPOSE 80 443 44307
-
 #Copy binaries from publish container to final container
 COPY --from=build-env /build/out .
 

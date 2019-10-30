@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: src/CapabilityService.WebApi/Dockerfile
+    environment:
+      - CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING=User ID=postgres;Password=p;Host=database;Port=5432;Database=capabilitydb;
       
   database:
     image: postgres:latest
