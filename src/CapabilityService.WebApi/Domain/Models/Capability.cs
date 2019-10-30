@@ -21,7 +21,8 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
         public IEnumerable<Membership> Memberships => _memberships;
         public IEnumerable<Context> Contexts => _contexts;
         
-        
+        public DateTime? Deleted { get; set; }
+
         public Capability(Guid id, string name, string rootId, string description, IEnumerable<Membership> memberships, IEnumerable<Context> contexts)
         {
             Id = id;
@@ -65,12 +66,14 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 
         public void Delete()
         {
+            Deleted = DateTime.UtcNow;
             RaiseEvent(new CapabilityDeleted(
                 capabilityId: Id,
                 capabilityName: Name
             ));
         }
-        
+
+
         public void UpdateInfoFields(string newName, string newDescription)
         {
             Name = newName;
