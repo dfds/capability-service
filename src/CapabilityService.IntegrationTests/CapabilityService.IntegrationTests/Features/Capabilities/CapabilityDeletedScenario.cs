@@ -26,6 +26,7 @@ namespace CapabilityService.IntegrationTests.Features.Capabilities
             var description = name;
 
             _capabilityDto = await CapabilityApiClient.Capabilities.PostAsync(name, description);
+            await CapabilityApiClient.Capabilities.GetAsync(_capabilityDto.Id);
         }
 
         private async Task When_a_capability_is_deleted()
