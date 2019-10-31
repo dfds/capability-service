@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using DFDS.CapabilityService.WebApi.Domain.EventHandlers;
+using DFDS.CapabilityService.WebApi.Application.EventHandlers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
