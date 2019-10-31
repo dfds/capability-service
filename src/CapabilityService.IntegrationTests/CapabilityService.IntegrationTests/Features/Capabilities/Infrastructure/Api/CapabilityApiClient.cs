@@ -18,32 +18,20 @@ namespace CapabilityService.IntegrationTests.Features.Capabilities.Infrastructur
                 var uri = new Uri(CapabilitiesUrl + "/" + capabilityId);
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
 
-                var httpClient = new HttpClient();
-                var responseMessage = await httpClient.SendAsync(httpRequestMessage);
+                var responseMessage = await SendRequest(httpRequestMessage);
 
-                var contentString = await responseMessage.Content.ReadAsStringAsync();
-
-                if (responseMessage.IsSuccessStatusCode == false)
-                {
-                    throw new Exception(responseMessage.ReasonPhrase);
-                }
-                
-                var deserializeObject = JsonConvert.DeserializeObject<CapabilityDto>(contentString);
-                return deserializeObject;
+                return await DeserializeContent<CapabilityDto>(responseMessage);
             }
+
+
             public static async Task<ItemsEnvelope<CapabilityDto>> GetAsync()
             {
                 var uri = new Uri(CapabilitiesUrl);
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
 
-                var httpClient = new HttpClient();
-                var responseMessage = await httpClient.SendAsync(httpRequestMessage);
+                var responseMessage = await SendRequest(httpRequestMessage);
 
-                var contentString = await responseMessage.Content.ReadAsStringAsync();
-
-                var deserializeObject = JsonConvert.DeserializeObject<ItemsEnvelope<CapabilityDto>>(contentString);
-
-                return deserializeObject;
+                return await DeserializeContent<ItemsEnvelope<CapabilityDto>>(responseMessage);
             }
 
             public static async Task<CapabilityDto> PostAsync(string name, string description)
@@ -64,35 +52,41 @@ namespace CapabilityService.IntegrationTests.Features.Capabilities.Infrastructur
                     "application/json"
                 );
 
+                var responseMessage = await SendRequest(httpRequestMessage);
 
-                var httpClient = new HttpClient();
-                var responseMessage = await httpClient.SendAsync(httpRequestMessage);
-
-                if (responseMessage.IsSuccessStatusCode == false)
-                {
-                    throw new Exception(responseMessage.ReasonPhrase);
-                }
-
-                var contentString = await responseMessage.Content.ReadAsStringAsync();
-
-                var deserializeObject = JsonConvert.DeserializeObject<CapabilityDto>(contentString);
-
-                return deserializeObject;
+                return await DeserializeContent<CapabilityDto>(responseMessage);
             }
+
 
             public static async Task DeleteAsync(Guid capabilityId)
             {
                 var uri = new Uri(CapabilitiesUrl + "/" + capabilityId);
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, uri);
 
+                await SendRequest(httpRequestMessage);
+            }
+
+            
+            private static async Task<T> DeserializeContent<T>(HttpResponseMessage httpResponseMessage)
+            {
+                var contentString = await httpResponseMessage.Content.ReadAsStringAsync();
+
+
+                var deserializeObject = JsonConvert.DeserializeObject<T>(contentString);
+                return deserializeObject;
+            }
+
+            private static async Task<HttpResponseMessage> SendRequest(HttpRequestMessage httpRequestMessage)
+            {
                 var httpClient = new HttpClient();
                 var responseMessage = await httpClient.SendAsync(httpRequestMessage);
-
 
                 if (responseMessage.IsSuccessStatusCode == false)
                 {
                     throw new Exception(responseMessage.ReasonPhrase);
                 }
+
+                return responseMessage;
             }
         }
     }
