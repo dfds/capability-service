@@ -1,9 +1,8 @@
-using System;
 using Newtonsoft.Json;
 
-namespace DFDS.CapabilityService.WebApi.Domain.Events
+namespace DFDS.CapabilityService.WebApi.Infrastructure.Events
 {
-    public class GeneralDomainEvent : IReceivedDomainEvent<object>
+    public class GeneralIntegrationEvent : IIntegrationEvent<object>
     {
         public string Version { get; private set; }
         public string EventName { get; private set; }
@@ -14,7 +13,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Events
 
         public object Payload { get; private set; }
 
-        public GeneralDomainEvent(
+        public GeneralIntegrationEvent(
             string version, string eventName, string xCorrelationId, string xSender, object payload)
         {
             Version = version;

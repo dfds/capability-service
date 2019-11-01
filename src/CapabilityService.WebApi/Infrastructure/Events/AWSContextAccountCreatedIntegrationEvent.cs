@@ -4,15 +4,15 @@ using Newtonsoft.Json.Linq;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Events
 {
-    public class AWSContextAccountCreatedIntegrationEvent : IReceivedDomainEvent<AWSContextAccountCreatedData>
+    public class AWSContextAccountCreatedIntegrationEvent : IIntegrationEvent<AWSContextAccountCreatedData>
     {
-        public AWSContextAccountCreatedIntegrationEvent(GeneralDomainEvent domainEvent)
+        public AWSContextAccountCreatedIntegrationEvent(GeneralIntegrationEvent integrationEvent)
         {
-            Version = domainEvent.Version;
-            EventName = domainEvent.EventName;
-            XCorrelationId = domainEvent.XCorrelationId;
-            XSender = domainEvent.XSender;
-            Payload = (domainEvent.Payload as JObject)?.ToObject<AWSContextAccountCreatedData>();
+            Version = integrationEvent.Version;
+            EventName = integrationEvent.EventName;
+            XCorrelationId = integrationEvent.XCorrelationId;
+            XSender = integrationEvent.XSender;
+            Payload = (integrationEvent.Payload as JObject)?.ToObject<AWSContextAccountCreatedData>();
         }
 
         public string Version { get; }

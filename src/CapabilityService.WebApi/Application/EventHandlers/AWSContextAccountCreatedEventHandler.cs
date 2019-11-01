@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
-using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Infrastructure.Events;
 using Microsoft.Extensions.Logging;
 
-namespace DFDS.CapabilityService.WebApi.Domain.EventHandlers
+namespace DFDS.CapabilityService.WebApi.Application.EventHandlers
 {
     public class AWSContextAccountCreatedEventHandler : IEventHandler<AWSContextAccountCreatedIntegrationEvent>
     {
