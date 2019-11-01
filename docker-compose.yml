@@ -1,13 +1,15 @@
 version: '3.4'
 
 services:
-  capabilityservice.webapi:
-    build:
-      context: .
-      dockerfile: src/CapabilityService.WebApi/Dockerfile
-    environment:
-      - "CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING=User ID=postgres;Password=p;Host=database;Port=5432;Database=capabilitydb;"
-      
+  #capabilityservice.webapi:
+  #  build:
+  #    context: .
+  #    dockerfile: src/CapabilityService.WebApi/Dockerfile
+  #  depends_on:
+  #    - db-migration
+  #  environment:
+  #    - "CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING=User ID=postgres;Password=p;Host=database;Port=5432;Database=capabilitydb;"
+  #    
   database:
     image: postgres:latest
     ports:
@@ -25,7 +27,7 @@ services:
     # volumes:
     #   - ${PWD}/db/export:/tmp
     environment:
-      # - DEBUG=1                     # enable script debugging
+      - "DEBUG=1"                     # enable script debugging
       - "LOCAL_DEVELOPMENT=1"         # will try to CREATE DATABASE ${PGDATABASE}
       - "PGDATABASE=capabilitydb"     # database name
       - "PGHOST=database"             # same as avove - docker-compose service name
