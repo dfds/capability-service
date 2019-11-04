@@ -21,6 +21,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
         {
             return await _dbContext
                          .Capabilities
+                         .Where(c => c.Deleted == null)
                          .OrderBy(x => x.Name)
                          .Include(x => x.Memberships)
                          .Include(x => x.Contexts)
@@ -41,11 +42,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
                 .Include(x => x.Contexts)
                 .SingleOrDefaultAsync(x => x.Id == id);
             return capability;
-        }
-
-        public void Remove(Capability capability)
-        { 
-            _dbContext.Capabilities.Remove(capability);
         }
     }
 }

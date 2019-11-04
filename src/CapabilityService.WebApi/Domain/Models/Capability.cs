@@ -19,8 +19,8 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
         public IEnumerable<Member> Members => _memberships.Select(x => x.Member).Distinct(new MemberEqualityComparer());
         public IEnumerable<Membership> Memberships => _memberships;
         public IEnumerable<Context> Contexts => _contexts;
-        
-        
+        public DateTime? Deleted { get; set; }
+
         public Capability(
             Guid id, 
             string name, 
@@ -50,12 +50,14 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 
         public void Delete()
         {
+            Deleted = DateTime.UtcNow;
             RaiseEvent(new CapabilityDeleted(
                 capabilityId: Id,
                 capabilityName: Name
             ));
         }
-        
+
+
         public void UpdateInfoFields(string newName, string newDescription)
         {
             Name = newName;

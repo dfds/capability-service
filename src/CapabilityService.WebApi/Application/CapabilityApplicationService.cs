@@ -31,7 +31,6 @@ namespace DFDS.CapabilityService.WebApi.Application
         {
             var capability = await _capabilityRepository.Get(id);
             capability.Delete();
-            _capabilityRepository.Remove(capability);
         }
 
 
