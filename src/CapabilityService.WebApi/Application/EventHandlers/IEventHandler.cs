@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace DFDS.CapabilityService.WebApi.Domain.EventHandlers
+namespace DFDS.CapabilityService.WebApi.Application.EventHandlers
 {
     public interface IEventHandler<in T>
     {

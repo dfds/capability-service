@@ -20,14 +20,14 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
             var sut = new CapabilityBuilder()
                 .WithContexts(existingContext)
                 .Build();
-            
-            
+
+
             // Act
             sut.AddContext(contextName);
 
-            
+
             // Assert
-            Assert.Empty(sut.DomainEvents);
+            Assert.Single(sut.DomainEvents);
             Assert.Equal(existingContext, sut.Contexts.Single());
         }
 
@@ -36,70 +36,72 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
         {
             // Arrange
             var contextName = "foo";
-            
+
             var sut = new CapabilityBuilder().Build();
-            
-            
+
+
             // Act
             sut.AddContext(contextName);
-            
-            
+
+
             // Assert
-            var @event = sut.DomainEvents.Single() as ContextAddedToCapability;
+            var @event =
+                sut.DomainEvents.Single(c => c.GetType() == typeof(ContextAddedToCapability)) as
+                    ContextAddedToCapability;
             Assert.Equal(
                 sut.Id,
                 @event.CapabilityId
             );
-            
+
             Assert.Equal(
                 contextName,
                 @event.ContextName
             );
-            
         }
-        
+
         [Fact]
         public void domain_event_is_not_raised_when_Context_with_same_name_is_added_multiple_times()
         {
             // Arrange
             var contextName = "foo";
-            
+
             var sut = new CapabilityBuilder().Build();
-            
-            
+
+
             // Act
             sut.AddContext(contextName);
             sut.AddContext(contextName);
             sut.AddContext(contextName);
 
-            
+
             // Assert
-            var @event = sut.DomainEvents.Single() as ContextAddedToCapability;
+            var @event =
+                sut.DomainEvents.Single(c => c.GetType() == typeof(ContextAddedToCapability)) as
+                    ContextAddedToCapability;
             Assert.Equal(
                 sut.Id,
                 @event.CapabilityId
             );
-            
+
             Assert.Equal(
                 contextName,
                 @event.ContextName
             );
-            
         }
-        
+
         [Fact]
         public void expected_context_is_added_to_contexts()
         {
             // Arrange
             var contextName = "foo";
-            
+
             var sut = new CapabilityBuilder().Build();
-            
-            
+
+
             // Act
             sut.AddContext(contextName);
-            
-            
+
+
             // Assert
             Assert.Contains(sut.Contexts, context => context.Name == contextName);
         }

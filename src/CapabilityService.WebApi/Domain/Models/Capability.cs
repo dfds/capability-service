@@ -9,7 +9,6 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 {
     public class Capability : AggregateRoot<Guid>
     {
-        private static readonly string ROOTID_SALT = "fvvjaaqpagbb";
         private readonly List<Membership> _memberships = new List<Membership>();
         private readonly List<Context> _contexts = new List<Context>();
   
@@ -20,10 +19,16 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
         public IEnumerable<Member> Members => _memberships.Select(x => x.Member).Distinct(new MemberEqualityComparer());
         public IEnumerable<Membership> Memberships => _memberships;
         public IEnumerable<Context> Contexts => _contexts;
-        
         public DateTime? Deleted { get; set; }
 
-        public Capability(Guid id, string name, string rootId, string description, IEnumerable<Membership> memberships, IEnumerable<Context> contexts)
+        public Capability(
+            Guid id, 
+            string name, 
+            string rootId, 
+            string description, 
+            IEnumerable<Membership> memberships, 
+            IEnumerable<Context> contexts
+        )
         {
             Id = id;
             Name = name;
@@ -31,37 +36,16 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             Description = description;
             _memberships.AddRange(memberships);
             _contexts.AddRange(contexts);
+            
+            RaiseEvent(new CapabilityCreated(
+                capabilityId: Id,
+                capabilityName: Name
+            ));
         }
 
+        // Used by Entity Framework to construct a object
         private Capability()
         {           
-        }
-
-        private static readonly Regex ValidNameRegex = new Regex("^[A-Z][a-zA-Z0-9\\-]{2,254}$", RegexOptions.Compiled);
-
-        public static Capability Create(string name, string description)
-        {
-            if (!ValidNameRegex.Match(name).Success)
-            {
-                throw new CapabilityValidationException("Name must be a string of length 3 to 255. consisting of only alphanumeric ASCII characters, starting with a capital letter. Underscores and hyphens are allowed.");
-            }
-            
-            var id = Guid.NewGuid();
-            var capability = new Capability(
-                id: id,
-                name: name,
-                rootId: GenerateRootId(name, id),
-                description: description,
-                memberships: Enumerable.Empty<Membership>(),
-                contexts:Enumerable.Empty<Context>()
-            );
-
-            capability.RaiseEvent(new CapabilityCreated(
-                capabilityId: capability.Id,
-                capabilityName: capability.Name
-            ));
-
-            return capability;
         }
 
         public void Delete()
@@ -86,21 +70,6 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
             ));
         }
 
-        private static string GenerateRootId(string name, Guid id)
-        {
-            const int maxPreservedNameLength = 22;
-            
-            if (name.Length < 2)
-                throw new ArgumentException("Value is too short", nameof(name));
-
-            var microHash = new HashidsNet.Hashids(ROOTID_SALT, 5, "abcdefghijklmnopqrstuvwxyz").EncodeHex(id.ToString("N")).Substring(0,5);
-            
-            var rootId = (name.Length > maxPreservedNameLength)
-                ? $"{name.Substring(0, maxPreservedNameLength)}-{microHash}"
-                : $"{name}-{microHash}";
-            return rootId.ToLowerInvariant();
-        }
-        
         private bool IsAlreadyMember(string memberEmail)
         {
             return Members.Any(member => member.Email.Equals(memberEmail, StringComparison.InvariantCultureIgnoreCase));

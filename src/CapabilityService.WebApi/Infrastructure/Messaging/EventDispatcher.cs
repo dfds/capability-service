@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using DFDS.CapabilityService.WebApi.Infrastructure.Events;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Enablers.CorrelationId;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
         {
             try
             {
-                var generalDomainEventObj = JsonConvert.DeserializeObject<GeneralDomainEvent>(generalDomainEventJson);
+                var generalDomainEventObj = JsonConvert.DeserializeObject<GeneralIntegrationEvent>(generalDomainEventJson);
                 await SendAsync(generalDomainEventObj, serviceScope);
             }
             catch (JsonReaderException ex)
@@ -38,21 +39,21 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
             }
         }
 
-        public async Task SendAsync(GeneralDomainEvent generalDomainEvent, IServiceScope serviceScope)
+        public async Task SendAsync(GeneralIntegrationEvent generalIntegrationEvent, IServiceScope serviceScope)
         {
-            if (generalDomainEvent == null)
+            if (generalIntegrationEvent == null)
             {
                 throw new MessagingMessageIncomprehensible("Received a blank message");
             }
             var requestCorrelationHandler = serviceScope.ServiceProvider.GetRequiredService<IRequestCorrelation>();
-            requestCorrelationHandler.OverrideCorrelationId(generalDomainEvent.XCorrelationId);
+            requestCorrelationHandler.OverrideCorrelationId(generalIntegrationEvent.XCorrelationId);
 
-            using (LogContext.PushProperty("CorrelationId", generalDomainEvent.XCorrelationId))
+            using (LogContext.PushProperty("CorrelationId", generalIntegrationEvent.XCorrelationId))
             {
-                var eventType = _eventRegistry.GetInstanceTypeFor(generalDomainEvent.EventName);
+                var eventType = _eventRegistry.GetInstanceTypeFor(generalIntegrationEvent.EventName);
                 try
                 {
-                    dynamic domainEvent = Activator.CreateInstance(eventType, generalDomainEvent);
+                    dynamic domainEvent = Activator.CreateInstance(eventType, generalIntegrationEvent);
                     dynamic handlersList = _eventHandlerFactory.GetEventHandlersFor(domainEvent, serviceScope);
 
                     foreach (var handler in handlersList)
@@ -62,7 +63,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
                 }
                 catch (MissingMethodException mme)
                 {
-                    throw new MessagingHandlerNotAvailable($"Handler not available, specific error {mme.Message}", generalDomainEvent.EventName, mme);
+                    throw new MessagingHandlerNotAvailable($"Handler not available, specific error {mme.Message}", generalIntegrationEvent.EventName, mme);
                 }    
             }
         }

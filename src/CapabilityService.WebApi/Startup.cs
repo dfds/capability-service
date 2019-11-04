@@ -8,8 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Prometheus;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using DFDS.CapabilityService.WebApi.Application;
-using DFDS.CapabilityService.WebApi.Domain.EventHandlers;
+using DFDS.CapabilityService.WebApi.Application.EventHandlers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
+using DFDS.CapabilityService.WebApi.Domain.Factories;
+using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Enablers.CorrelationId;
 using DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming;
@@ -48,6 +50,14 @@ namespace DFDS.CapabilityService.WebApi
             services
                 .AddPrometheusHealthCheck()
                 .AddNpgSql(connectionString, tags: new[] {"backing services", "postgres"});
+
+            services.AddTransient<ICapabilityFactory>(ServiceProvider => new CapabilityWithNoDuplicateNameFactory(
+                    inner: new CapabilityFactory(), 
+                    capabilityRepository: ServiceProvider.GetRequiredService<ICapabilityRepository>()
+                )
+            );
+            
+            
         }
 
         private void ConfigureApplicationServices(IServiceCollection services, string connectionString)
