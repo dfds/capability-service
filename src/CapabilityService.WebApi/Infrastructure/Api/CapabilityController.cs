@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api

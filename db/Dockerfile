@@ -13,9 +13,8 @@ ENV PGPORT 5432
 
 WORKDIR /db
 
-COPY . .
+COPY . ./
 
 RUN chmod +x init.sh
-RUN chmod +x seed/Capability.csv
 
 ENTRYPOINT [ "./init.sh" ]
