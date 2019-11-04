@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Run the Postgres database migrations as well as seeding the database
+# Run the Postgres database migrations as well as seeding the database.
 
 readonly GREEN="\\033[32m"
 readonly RESET="\\033[0m"
@@ -157,13 +157,13 @@ seed_database() {
         echo "Importing seed data..."
 
         base_path=$(dirname $(readlink -f "$0"))
-
+		
         while read name; do
             table_name=$(echo $name | cut -f 1 -d '.')
             file="$base_path/seed/$name"
-
+			
             echo -e "Seeding ${GREEN}${table_name}${RESET} with ${GREEN}${file}${RESET}"
-            ${PSQL} -1 -c "\\copy \"${table_name}\" FROM '$file' WITH DELIMITER ',' CSV HEADER;"
+            ${PSQL} -1 -c "\\copy \"${table_name}\" FROM '${file}' WITH DELIMITER ',' CSV HEADER;"
         done < ${ORDER_FILE}
     fi
 }
