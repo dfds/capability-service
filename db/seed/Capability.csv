@@ -1,5 +1,5 @@
-Id,Name,Description,RootId
-0d03e3ad-2118-46b7-970e-0ca87b59a202,Capability A,Default description,capability a-0d03e3ad
-F7388B32-A5DF-4E73-B41A-BD033C7662CB,Old capability,Some description,
-629c8960-e7c0-4fd5-b08b-9ad1907e0c86,NewCapWithEmptyContext,desc,newcapwithemptyconte-629c8960
-58B5A0D7-C441-4D44-A042-6DC7ECEFE88C,capabilitywithdataincontext,Full Capability,capabilitywithdatain-58b5a0d7
+Id,Name,Description,RootId,Deleted
+0d03e3ad-2118-46b7-970e-0ca87b59a202,Capability A,Default description,capability a-0d03e3ad,
+F7388B32-A5DF-4E73-B41A-BD033C7662CB,Old capability,Some description,,
+629c8960-e7c0-4fd5-b08b-9ad1907e0c86,NewCapWithEmptyContext,desc,newcapwithemptyconte-629c8960,
+58B5A0D7-C441-4D44-A042-6DC7ECEFE88C,capabilitywithdataincontext,Full Capability,capabilitywithdatain-58b5a0d7,
