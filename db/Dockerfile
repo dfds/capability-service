@@ -13,7 +13,7 @@ ENV PGPORT 5432
 
 WORKDIR /db
 
-COPY . ./
+COPY . .
 
 RUN chmod +x init.sh
 
