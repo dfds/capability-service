@@ -16,6 +16,5 @@ WORKDIR /db
 COPY . .
 
 RUN chmod +x init.sh
-RUN chmod +x seed/Capability.csv
 
 ENTRYPOINT [ "./init.sh" ]
