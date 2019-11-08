@@ -2,6 +2,7 @@ version: '3.4'
 
 services:
   capability-service.webapi:
+    hostname: capability-service
     build:
       context: .
       dockerfile: src/CapabilityService.WebApi/Dockerfile
