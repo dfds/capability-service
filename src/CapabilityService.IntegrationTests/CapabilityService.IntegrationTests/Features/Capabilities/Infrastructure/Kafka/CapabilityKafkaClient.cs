@@ -7,7 +7,7 @@ namespace CapabilityService.IntegrationTests.Features.Capabilities.Infrastructur
 {
     public class CapabilityKafkaClient
     {
-        public List<dynamic> GetUntilEventName(
+        public List<dynamic> GetUntil(
             Func<dynamic, bool> weAreDone, 
             TimeSpan timeOutForNewEvents
         )

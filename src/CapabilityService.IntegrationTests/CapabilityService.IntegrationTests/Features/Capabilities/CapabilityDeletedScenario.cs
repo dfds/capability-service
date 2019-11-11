@@ -44,13 +44,13 @@ namespace CapabilityService.IntegrationTests.Features.Capabilities
         private void And_a_event_will_be_published()
         {
             var capabilityKafkaClient = new CapabilityKafkaClient();
-          var events =  capabilityKafkaClient.GetUntilEventName(
-                WefoundTheEventWeWant, 
+          var events =  capabilityKafkaClient.GetUntil(
+                WeFoundTheEventWeWant, 
                 TimeSpan.FromSeconds(20)
             );
         }
 
-        public bool WefoundTheEventWeWant(dynamic @event)
+        public bool WeFoundTheEventWeWant(dynamic @event)
         {
             if(@event == null) {return false;}
             
