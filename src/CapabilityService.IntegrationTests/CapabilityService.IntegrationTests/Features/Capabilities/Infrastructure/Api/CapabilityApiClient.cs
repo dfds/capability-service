@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using CapabilityService.IntegrationTests.Features.Capabilities.Infrastructure.Api.Model;
+using CapabilityService.IntegrationTests.Features.Shared;
 using Newtonsoft.Json;
 
 namespace CapabilityService.IntegrationTests.Features.Capabilities.Infrastructure.Api
@@ -11,11 +12,9 @@ namespace CapabilityService.IntegrationTests.Features.Capabilities.Infrastructur
     {
         public static class Capabilities
         {
-            private const string CapabilitiesUrl = "http://localhost:50900/api/v1/capabilities";
-
             public static async Task<CapabilityDto> GetAsync(Guid capabilityId)
             {
-                var uri = new Uri(CapabilitiesUrl + "/" + capabilityId);
+                var uri = new Uri(Urls.CapabilitiesUrl + "/" + capabilityId);
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
 
                 var responseMessage = await SendRequest(httpRequestMessage);
@@ -26,7 +25,7 @@ namespace CapabilityService.IntegrationTests.Features.Capabilities.Infrastructur
 
             public static async Task<ItemsEnvelope<CapabilityDto>> GetAsync()
             {
-                var uri = new Uri(CapabilitiesUrl);
+                var uri = new Uri(Urls.CapabilitiesUrl);
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri);
 
                 var responseMessage = await SendRequest(httpRequestMessage);
@@ -43,7 +42,7 @@ namespace CapabilityService.IntegrationTests.Features.Capabilities.Infrastructur
                 };
 
 
-                var uri = new Uri(CapabilitiesUrl);
+                var uri = new Uri(Urls.CapabilitiesUrl);
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, uri);
 
                 httpRequestMessage.Content = new StringContent(
@@ -60,7 +59,7 @@ namespace CapabilityService.IntegrationTests.Features.Capabilities.Infrastructur
 
             public static async Task DeleteAsync(Guid capabilityId)
             {
-                var uri = new Uri(CapabilitiesUrl + "/" + capabilityId);
+                var uri = new Uri(Urls.CapabilitiesUrl + "/" + capabilityId);
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Delete, uri);
 
                 await SendRequest(httpRequestMessage);
