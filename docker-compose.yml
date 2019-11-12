@@ -9,7 +9,8 @@ services:
     ports:
       - "50900:5000"
     depends_on:
-      - database
+      - db-migration
+      - kafka
     environment:
       - "CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING=User ID=postgres;Password=p;Host=database;Port=5432;Database=capabilitydb;"
       - "CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092"
