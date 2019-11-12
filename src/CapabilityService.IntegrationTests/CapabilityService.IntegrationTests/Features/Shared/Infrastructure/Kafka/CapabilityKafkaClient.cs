@@ -21,7 +21,7 @@ namespace CapabilityService.IntegrationTests.Features.Capabilities.Infrastructur
             var consumerConfig = new ConsumerConfig
             {
                 GroupId = "test-consumer-group-" + Guid.NewGuid(),
-                BootstrapServers = "localhost:9092",
+                BootstrapServers = "kafka:9092",
                 AutoOffsetReset = AutoOffsetReset.Earliest,
             };
             
