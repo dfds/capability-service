@@ -54,7 +54,7 @@ namespace CapabilityService.IntegrationTests.Features.Topics
 
 		private void And_a_event_will_be_published()
 		{
-			var capabilityKafkaClient = new CapabilityKafkaClient();
+			var capabilityKafkaClient = new TopicKafkaClient();
 			capabilityKafkaClient.GetUntil(
 				WeFoundTheEventWeWant, 
 				TimeSpan.FromSeconds(20)
