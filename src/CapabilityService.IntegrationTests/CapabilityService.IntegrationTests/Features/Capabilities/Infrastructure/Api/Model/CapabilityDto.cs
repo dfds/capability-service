@@ -8,5 +8,7 @@ namespace CapabilityService.IntegrationTests.Features.Capabilities.Infrastructur
         public string Name { get; set; }
         public string Description { get; set; }
         public string RootId { get; set; }
+        
+        public TopicDto[] Topics { get; set; }
     }
 }

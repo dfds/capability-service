@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using CapabilityService.IntegrationTests.Features.Capabilities.Infrastructure.Api;
 using CapabilityService.IntegrationTests.Features.Capabilities.Infrastructure.Api.Model;
@@ -11,6 +12,8 @@ namespace CapabilityService.IntegrationTests.Features.Topics
 	public class CreateTopicScenario
 	{
 		private CapabilityDto _capabilityDto;
+		private string _topicName;
+
 		[Fact]
 		public async Task CreateTopicRecipe()
 		{
@@ -31,18 +34,22 @@ namespace CapabilityService.IntegrationTests.Features.Topics
 
 		private async Task When_a_topic_is_created()
 		{
-			var name = "Integration-test-create-topic" + Guid.NewGuid().ToString().Substring(0, 8);
+			_topicName = "Integration-test-create-topic" + Guid.NewGuid().ToString().Substring(0, 8);
 
 			await TopicApiClient.CreateTopic(
 				_capabilityDto.Id,
-				name,
+				_topicName,
 				"A topic created to prove we can create a topic"
 			);
 		}
 
 		private async Task Then_the_topic_will_be_listed()
 		{
-			throw new System.NotImplementedException();
+			var currentCapability= 	await CapabilityApiClient.Capabilities.GetAsync(_capabilityDto.Id);
+			Assert.Equal(
+				_topicName,
+				currentCapability.Topics.Single().Name
+			);
 		}
 
 		private void And_a_event_will_be_published()
