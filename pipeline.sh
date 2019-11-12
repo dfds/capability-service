@@ -29,24 +29,26 @@ run_tests() {
 
     MSYS_NO_PATHCONV=1 dotnet test \
         --logger:"trx;LogFileName=testresults.trx" \
-        CapabilityService.Tests/CapabilityService.Tests.csproj \
+        src/CapabilityService.Tests/CapabilityService.Tests.csproj \
         /p:CollectCoverage=true \
         /p:CoverletOutputFormat=cobertura \
         '/p:Include="[CapabilityService.WebApi]*"'
 
-    mv ./CapabilityService.Tests/coverage.cobertura.xml "${BUILD_SOURCES_DIRECTORY}/output/"
-    mv ./CapabilityService.Tests/TestResults/testresults.trx "${BUILD_SOURCES_DIRECTORY}/output/"
+    mv ./src/CapabilityService.Tests/coverage.cobertura.xml "${BUILD_SOURCES_DIRECTORY}/output/"
+    mv ./src/CapabilityService.Tests/TestResults/testresults.trx "${BUILD_SOURCES_DIRECTORY}/output/"
 }
 
 publish_binaries() {
     echo "Publishing binaries..."
-    dotnet publish -c Release -o ${BUILD_SOURCES_DIRECTORY}/output/app CapabilityService.WebApi/CapabilityService.WebApi.csproj
+    dotnet publish -c Release -o ${BUILD_SOURCES_DIRECTORY}/output/app src/CapabilityService.WebApi/CapabilityService.WebApi.csproj
 }
 
 build_container_image() {
     echo "Building container images..."
-    
+    cd ./src/CapabilityService.WebApi
     docker build -t ${IMAGE_NAME} .
+
+    cd ../..
     docker build -t ${DB_IMAGE_NAME} ./db
 }
 
@@ -85,13 +87,15 @@ push_dbmigration_container_image() {
 
 clean_output_folder
 
-cd ./src
+
 
 restore_dependencies
 run_tests
+
+
 publish_binaries
 
-cd ..
+
 
 build_container_image
 
