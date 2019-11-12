@@ -47,7 +47,6 @@ namespace CapabilityService.IntegrationTests.Features.Topics
 
 		private void And_a_event_will_be_published()
 		{
-			throw new System.NotImplementedException();
 			var capabilityKafkaClient = new CapabilityKafkaClient();
 			capabilityKafkaClient.GetUntil(
 				WeFoundTheEventWeWant, 
