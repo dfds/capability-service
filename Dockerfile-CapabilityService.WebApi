@@ -5,7 +5,10 @@ FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build-env
 WORKDIR /build
 
 #Copy files to container file system.
-COPY . .
+COPY ./src ./src
+
+#Set workdir to current project folder
+WORKDIR /build/src/CapabilityService.WebApi
 
 #Restore csproj packages.
 RUN dotnet restore
