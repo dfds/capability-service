@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build-env
 WORKDIR /build
 
 #Copy files to container file system.
-COPY . .
+COPY ./src ./src
 
 #Set workdir to current project folder
 WORKDIR /build/src/CapabilityService.WebApi
@@ -20,17 +20,17 @@ RUN dotnet publish -c Release -o /build/out
 FROM mcr.microsoft.com/dotnet/core/aspnet:2.2 AS runtime
 WORKDIR /app
 
-#Copy binaries from publish container to final container
-COPY --from=build-env /build/out .
-
 # SSL
-ENV CAPABILITY_SERVICE_KAFKA_SSL_CA_LOCATION=/app/cert.pem
-
 RUN curl -o /tmp/rds-combined-ca-bundle.pem https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem \
     && mv /tmp/rds-combined-ca-bundle.pem /usr/local/share/ca-certificates/rds-combined-ca-bundle.crt \
     && update-ca-certificates
 
+ENV CAPABILITY_SERVICE_KAFKA_SSL_CA_LOCATION=/app/cert.pem
+
 RUN curl -sS -o /app/cert.pem https://curl.haxx.se/ca/cacert.pem
+
+#Copy binaries from publish container to final container
+COPY --from=build-env /build/out .
 
 #Run dotnet executable
 ENTRYPOINT ["dotnet", "CapabilityService.WebApi.dll"]
