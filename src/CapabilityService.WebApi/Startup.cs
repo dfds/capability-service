@@ -1,4 +1,4 @@
-using DFDS.CapabilityService.WebApi.Application;
+﻿using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Application.EventHandlers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Factories;
@@ -57,11 +57,15 @@ namespace DFDS.CapabilityService.WebApi
                     capabilityRepository: ServiceProvider.GetRequiredService<ICapabilityRepository>()
                 )
             );
-            
-            
 
-            services.AddAuthentication(options => { })
-                    .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
+            services.AddAuthentication(options =>
+            {
+	            options.DefaultChallengeScheme = "AzureADBearer";
+            })
+            .AddAzureADBearer(options =>
+            {
+	            Configuration.Bind("AzureAd", options);
+            });
         }
 
         private void ConfigureApplicationServices(IServiceCollection services, string connectionString)
