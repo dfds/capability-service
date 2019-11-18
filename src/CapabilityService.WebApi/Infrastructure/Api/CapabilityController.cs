@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/capabilities")]
     public class CapabilityController : ControllerBase
