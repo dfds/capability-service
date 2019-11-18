@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
-    [Authorize]
     [ApiController]
     [Route("api/v1/capabilities")]
     public class CapabilityController : ControllerBase
@@ -114,9 +113,8 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
                 });
             }
         }
-        
-        
-        [HttpDelete("{id}")]
+
+		[HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCapability(string id)
         {
             var capabilityId = Guid.Empty;
@@ -158,7 +156,8 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
             return Ok();
         }
 
-        [HttpDelete("{id}/members/{memberEmail}")]
+        [Authorize]
+		[HttpDelete("{id}/members/{memberEmail}")]
         public async Task<IActionResult> RemoveMemberFromCapability([FromRoute] string id, [FromRoute] string memberEmail)
         {
             var capabilityId = Guid.Empty;

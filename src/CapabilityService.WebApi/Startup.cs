@@ -20,6 +20,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Prometheus;
 using System.Reflection;
+using Microsoft.AspNetCore.Authorization;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace DFDS.CapabilityService.WebApi
@@ -57,18 +58,23 @@ namespace DFDS.CapabilityService.WebApi
                     capabilityRepository: ServiceProvider.GetRequiredService<ICapabilityRepository>()
                 )
             );
-
-            services.AddAuthentication(options =>
-            {
-	            options.DefaultChallengeScheme = "AzureADBearer";
-            })
-            .AddAzureADBearer(options =>
-            {
-	            Configuration.Bind("AzureAd", options);
-            });
+			
+			ConfigureAuth(services);
         }
 
-        private void ConfigureApplicationServices(IServiceCollection services, string connectionString)
+        protected virtual void ConfigureAuth(IServiceCollection services)
+		{
+			//services.AddAuthentication(options =>
+			//{
+			//	options.DefaultChallengeScheme = "AzureADBearer";
+			//})
+			//.AddAzureADBearer(options =>
+			//{
+			//	Configuration.Bind("AzureAd", options);
+			//});
+		}
+
+		private void ConfigureApplicationServices(IServiceCollection services, string connectionString)
         {
             services
                 .AddEntityFrameworkNpgsql()
@@ -149,6 +155,7 @@ namespace DFDS.CapabilityService.WebApi
             app.UseMvc();
             
             app.UsePrometheusHealthCheck();
+            app.UseAuthentication();
         }
     }
 }
