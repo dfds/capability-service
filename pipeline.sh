@@ -45,10 +45,8 @@ publish_binaries() {
 
 build_container_image() {
     echo "Building container images..."
-    cd ./src/CapabilityService.WebApi
-    docker build -t ${IMAGE_NAME} .
+    docker build -f Dockerfile-CapabilityService.WebApi -t ${IMAGE_NAME} .
 
-    cd ../..
     docker build -t ${DB_IMAGE_NAME} ./db
 }
 
