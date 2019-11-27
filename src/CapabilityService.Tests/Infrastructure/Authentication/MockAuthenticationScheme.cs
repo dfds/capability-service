@@ -6,7 +6,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Authentication
 {
 	public class MockAuthenticationSchemeOptions : AuthenticationSchemeOptions
 	{
-		public const string SchemeName = "MockAuth";
+		public const string SchemeName = "AzureADBearer";
 
 		public virtual ClaimsIdentity Identity { get; } = new ClaimsIdentity(new[]
 		{
