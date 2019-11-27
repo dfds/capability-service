@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
-    [Authorize]
-    [ApiController]
+	[Authorize(AuthenticationSchemes = "AzureADBearer")]
+	[ApiController]
     [Route("api/v1/topics")]
     public class TopicController : ControllerBase
     {

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
-	[Authorize]
+	[Authorize(AuthenticationSchemes = "AzureADBearer")]
 	[ApiController]
     [Route("api/v1/capabilities")]
     public class CapabilityController : ControllerBase

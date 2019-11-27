@@ -38,8 +38,8 @@ namespace DFDS.CapabilityService.WebApi
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
-        {
-            services
+		{
+			services
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
@@ -61,14 +61,15 @@ namespace DFDS.CapabilityService.WebApi
                     capabilityRepository: ServiceProvider.GetRequiredService<ICapabilityRepository>()
                 )
             );
-			
-			ConfigureAuth(services);
-        }
+
+            ConfigureAuth(services);
+		}
 
         protected virtual void ConfigureAuth(IServiceCollection services)
 		{
 			services.AddAuthentication(options =>
 			{
+				options.DefaultAuthenticateScheme = "AzureADBearer";
 				options.DefaultChallengeScheme = "AzureADBearer";
 			})
 			.AddAzureADBearer(options =>
@@ -168,10 +169,11 @@ namespace DFDS.CapabilityService.WebApi
 
             app.UseHttpMetrics();
 
-            app.UseMvc();
+            app.UseAuthentication();
+
+			app.UseMvc();
             
             app.UsePrometheusHealthCheck();
-            app.UseAuthentication();
 		}
     }
 }
