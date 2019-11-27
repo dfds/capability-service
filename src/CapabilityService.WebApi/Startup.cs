@@ -20,6 +20,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Prometheus;
 using System.Reflection;
+using DFDS.CapabilityService.WebApi.Application.Authentication;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
@@ -64,14 +67,27 @@ namespace DFDS.CapabilityService.WebApi
 
         protected virtual void ConfigureAuth(IServiceCollection services)
 		{
-			//services.AddAuthentication(options =>
-			//{
-			//	options.DefaultChallengeScheme = "AzureADBearer";
-			//})
-			//.AddAzureADBearer(options =>
-			//{
-			//	Configuration.Bind("AzureAd", options);
-			//});
+			services.AddAuthentication(options =>
+			{
+				options.DefaultChallengeScheme = "AzureADBearer";
+			})
+			.AddAzureADBearer(options =>
+			{
+				Configuration.Bind("AzureAd", options);
+			});
+
+			services.Configure<JwtBearerOptions>(AzureADDefaults.JwtBearerAuthenticationScheme, options =>
+			{
+				// This is an Azure AD v2.0 Web API
+				options.Authority += "/v2.0";
+
+				// The valid audiences are both the Client ID (options.Audience) and api://{ClientID}
+				options.TokenValidationParameters.ValidAudiences = new string[] { options.Audience, $"api://{options.Audience}" };
+
+				// Instead of using the default validation (validating against a single tenant, as we do in line of business apps),
+				// we inject our own multitenant validation logic (which even accepts both V1 and V2 tokens)
+				options.TokenValidationParameters.IssuerValidator = AadIssuerValidator.ValidateAadIssuer;
+			});
 		}
 
 		private void ConfigureApplicationServices(IServiceCollection services, string connectionString)
@@ -156,6 +172,6 @@ namespace DFDS.CapabilityService.WebApi
             
             app.UsePrometheusHealthCheck();
             app.UseAuthentication();
-        }
+		}
     }
 }
