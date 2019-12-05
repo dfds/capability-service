@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Application;
@@ -223,11 +223,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 	                exception.Message
                 });
             }
-            catch (TopicAlreadyExistException)
+            catch (TopicAlreadyExistException exception)
             {
                 return Conflict(new
                 {
-                    Message = $"A topic with name \"{input.Name}\" already exist."
+	                exception.Message
                 });
             }
 

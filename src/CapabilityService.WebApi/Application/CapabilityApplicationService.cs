@@ -100,7 +100,7 @@ namespace DFDS.CapabilityService.WebApi.Application
             var existingTopicsWithSameName = await _topicRepository.FindBy(topicName);
             if (existingTopicsWithSameName.Any())
             {
-                throw new TopicAlreadyExistException($"A topic with the name \"{topicName}\" already exist.");
+                throw new TopicAlreadyExistException(topicName);
             }
 
             var topic = capability.AddTopic(topicName, topicDescription, isTopicPrivate);
