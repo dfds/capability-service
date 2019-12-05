@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
                 .Include(x => x.Memberships)
                 .Include(x => x.Contexts)
                 .SingleOrDefaultAsync(x => x.Id == id);
+            
+            if (capability == null)
+            {
+	            throw new CapabilityDoesNotExistException();
+            }
+            
             return capability;
         }
     }

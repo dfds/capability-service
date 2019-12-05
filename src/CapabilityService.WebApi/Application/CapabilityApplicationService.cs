@@ -59,22 +59,12 @@ namespace DFDS.CapabilityService.WebApi.Application
         {
             var capability = await _capabilityRepository.Get(capabilityId);
 
-            if (capability == null)
-            {
-                throw new CapabilityDoesNotExistException();
-            }
-
             capability.StartMembershipFor(memberEmail);
         }
 
         public async Task LeaveCapability(Guid capabilityId, string memberEmail)
         {
             var capability = await _capabilityRepository.Get(capabilityId);
-
-            if (capability == null)
-            {
-                throw new CapabilityDoesNotExistException();
-            }
 
             capability.StopMembershipFor(memberEmail);
         }
@@ -83,11 +73,6 @@ namespace DFDS.CapabilityService.WebApi.Application
         {
             var capability = await _capabilityRepository.Get(capabilityId);
 
-            if (capability == null)
-            {
-                throw new CapabilityDoesNotExistException();
-            }
-
             capability.AddContext(contextName);
         }
 
@@ -95,11 +80,7 @@ namespace DFDS.CapabilityService.WebApi.Application
             string awsRoleEmail)
         {
             var capability = await _capabilityRepository.Get(capabilityId);
-            if (capability == null)
-            {
-                throw new CapabilityDoesNotExistException();
-            }
-
+        
             var context = capability.Contexts.FirstOrDefault(c => c.Id == contextId);
             if (context == null)
             {
@@ -115,10 +96,6 @@ namespace DFDS.CapabilityService.WebApi.Application
         public async Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
         {
             var capability = await _capabilityRepository.Get(capabilityId);
-            if (capability == null)
-            {
-                throw new CapabilityDoesNotExistException();
-            }
 
             var existingTopicsWithSameName = await _topicRepository.FindBy(topicName);
             if (existingTopicsWithSameName.Any())
