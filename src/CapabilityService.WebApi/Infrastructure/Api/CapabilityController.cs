@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Application;
@@ -70,11 +70,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
                     Message = tve.Message
                 });
             }
-            catch (CapabilityWithSameNameExistException)
+            catch (CapabilityWithSameNameExistException exception)
             {
                 return Conflict(new
                 {
-                    Message = $"A capability with the name:'{input.Name}' already exits, please give your capability a other name."
+	                exception.Message
                 });
             }
             
