@@ -174,11 +174,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 	                exception.Message
                 });
             }
-            catch (NotMemberOfCapabilityException)
+            catch (NotMemberOfCapabilityException exception)
             {
                 return NotFound(new
                 {
-                    Message = $"Capability with id {id} does not have member \"{memberEmail}\"."
+	                exception.Message
                 });
             }
 

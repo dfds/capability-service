@@ -335,12 +335,13 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
         {
             using (var builder = new HttpClientBuilder())
             {
+	            var dummyCapabilityId = Guid.NewGuid();
+	            var dummyMemberEmail = "bar";
+
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new ErroneousCapabilityApplicationService(new NotMemberOfCapabilityException()))
+                    .WithService<ICapabilityApplicationService>(new ErroneousCapabilityApplicationService(new NotMemberOfCapabilityException(dummyCapabilityId,dummyMemberEmail)))
                     .Build();
 
-                var dummyCapabilityId = "foo";
-                var dummyMemberEmail = "bar";
 
                 var response = await client.DeleteAsync($@"api/v1/capabilities/{dummyCapabilityId}/members/{dummyMemberEmail}");
 
