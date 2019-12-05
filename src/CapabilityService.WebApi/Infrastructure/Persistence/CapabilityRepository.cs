@@ -45,7 +45,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             
             if (capability == null)
             {
-	            throw new CapabilityDoesNotExistException();
+	            throw new CapabilityDoesNotExistException(id);
             }
             
             return capability;

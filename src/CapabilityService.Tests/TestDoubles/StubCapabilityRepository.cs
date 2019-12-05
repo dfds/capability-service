@@ -33,7 +33,7 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
             
             if (capability == null)
             {
-	            throw new CapabilityDoesNotExistException();
+	            throw new CapabilityDoesNotExistException(id);
             }
             
             return Task.FromResult(capability);

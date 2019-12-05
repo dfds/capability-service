@@ -101,10 +101,10 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
                 return Ok(
                     value: dto
                 );
-            } catch (CapabilityDoesNotExistException) {
+            } catch (CapabilityDoesNotExistException exception) {
                 return NotFound(new
                 {
-                    Message = $"Capability with id {id} could not be found."
+	                exception.Message
                 });                
             } catch (CapabilityValidationException tve) {
                 return BadRequest(new
@@ -167,11 +167,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
             {
                 await _capabilityApplicationService.LeaveCapability(capabilityId, memberEmail);
             }
-            catch (CapabilityDoesNotExistException)
+            catch (CapabilityDoesNotExistException exception)
             {
                 return NotFound(new
                 {
-                    Message = $"Capability with id {id} could not be found."
+	                exception.Message
                 });
             }
             catch (NotMemberOfCapabilityException)
@@ -195,11 +195,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
             {
                 await _capabilityApplicationService.AddContext(capabilityId, input.Name);
             }
-            catch (CapabilityDoesNotExistException)
+            catch (CapabilityDoesNotExistException exception)
             {
                 return NotFound(new
                 {
-                    Message = $"Capability with id {id} could not be found."
+	                exception.Message
                 });
             }
 
@@ -216,11 +216,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
             {
                 await _capabilityApplicationService.AddTopic(capabilityId, input.Name, input.Description, input.IsPrivate);
             }
-            catch (CapabilityDoesNotExistException)
+            catch (CapabilityDoesNotExistException exception)
             {
                 return NotFound(new
                 {
-                    Message = $"Capability with id {id} could not be found."
+	                exception.Message
                 });
             }
             catch (TopicAlreadyExistException)

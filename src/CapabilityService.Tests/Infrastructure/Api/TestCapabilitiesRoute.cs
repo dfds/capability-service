@@ -353,11 +353,12 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
         {
             using (var builder = new HttpClientBuilder())
             {
+	            var dummyCapabilityId = Guid.NewGuid();
+
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new ErroneousCapabilityApplicationService(new CapabilityDoesNotExistException()))
+                    .WithService<ICapabilityApplicationService>(new ErroneousCapabilityApplicationService(new CapabilityDoesNotExistException(dummyCapabilityId)))
                     .Build();
 
-                var dummyCapabilityId = "foo";
                 var dummyMemberEmail = "bar";
 
                 var response = await client.DeleteAsync($@"api/v1/capabilities/{dummyCapabilityId}/members/{dummyMemberEmail}");
@@ -371,11 +372,12 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
         {
             using (var builder = new HttpClientBuilder())
             {
+	            var nonExistingCapabilityId = Guid.NewGuid();
+
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new ErroneousCapabilityApplicationService(new CapabilityDoesNotExistException()))
+                    .WithService<ICapabilityApplicationService>(new ErroneousCapabilityApplicationService(new CapabilityDoesNotExistException(nonExistingCapabilityId)))
                     .Build();
 
-                var nonExistingCapabilityId = "foo";
                 var dummyInput = "{}";
                 var response = await client.PostAsync($"api/v1/capabilities/{nonExistingCapabilityId}/members", new JsonContent(dummyInput));
 
@@ -408,12 +410,14 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
         {
             using (var builder = new HttpClientBuilder())
             {
+	            var nonExistingCapabilityId = Guid.NewGuid();
+	            
                 var client = builder
                     .WithService<ICapabilityApplicationService>(
-                        new ErroneousCapabilityApplicationService(new CapabilityDoesNotExistException()))
+                        new ErroneousCapabilityApplicationService(new CapabilityDoesNotExistException(nonExistingCapabilityId)))
                     .Build();
 
-                var nonExistingCapabilityId = "foo";
+                
                 var dummyInput = "{}";
                 var response = await client.PutAsync($"api/v1/capabilities/{nonExistingCapabilityId}", new JsonContent(dummyInput));
 
