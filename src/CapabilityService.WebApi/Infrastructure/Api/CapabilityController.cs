@@ -146,11 +146,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
             {
                 await _capabilityApplicationService.JoinCapability(capabilityId, input.Email);
             }
-            catch (CapabilityDoesNotExistException)
+            catch (CapabilityDoesNotExistException exception)
             {
                 return NotFound(new
                 {
-                    Message = $"Capability with id {id} could not be found."
+	                exception.Message
                 });
             }
 
