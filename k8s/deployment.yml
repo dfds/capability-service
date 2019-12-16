@@ -3,7 +3,8 @@ kind: Deployment
 metadata:
   name: capability-service
   namespace: $(kubernetes-namespace)
-  labels: project: selfservice
+  labels:
+    project: selfservice
     department: devex
     app: capability-service
     component: capability-service
