@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Application;
+using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 
 namespace DFDS.CapabilityService.Tests.TestDoubles
@@ -38,6 +39,11 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
         public Task<Capability> GetCapability(Guid id)
         {
             var capability = _stubCapabilities.FirstOrDefault();
+
+            if (capability == null)
+            {
+	            throw new CapabilityDoesNotExistException(id);
+            }
             return Task.FromResult(capability);
         }
 
