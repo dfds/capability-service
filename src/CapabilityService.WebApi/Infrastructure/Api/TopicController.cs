@@ -5,11 +5,13 @@ using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
-    [ApiController]
+	[Authorize(AuthenticationSchemes = "AzureADBearer")]
+	[ApiController]
     [Route("api/v1/topics")]
     public class TopicController : ControllerBase
     {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using DFDS.CapabilityService.Tests.TestDoubles;
 using DFDS.CapabilityService.WebApi;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -40,8 +41,9 @@ namespace DFDS.CapabilityService.Tests.Builders
 
         private IWebHostBuilder CreateWebHostBuilder()
         {
+			//TODO: Create test start that inherits from webapi startup
             return new WebHostBuilder()
-                .UseStartup<Startup>()
+                .UseStartup<StubStartUp>()
                 .ConfigureTestServices(services =>
                 {
                     _serviceDescriptors

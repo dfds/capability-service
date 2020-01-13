@@ -1,4 +1,4 @@
-using DFDS.CapabilityService.WebApi.Application;
+﻿using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Application.EventHandlers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Factories;
@@ -20,6 +20,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Prometheus;
 using System.Reflection;
+using DFDS.CapabilityService.WebApi.Application.Authentication;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace DFDS.CapabilityService.WebApi
@@ -34,8 +38,8 @@ namespace DFDS.CapabilityService.WebApi
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
-        {
-            services
+		{
+			services
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
@@ -57,14 +61,37 @@ namespace DFDS.CapabilityService.WebApi
                     capabilityRepository: ServiceProvider.GetRequiredService<ICapabilityRepository>()
                 )
             );
-            
-            
 
-            services.AddAuthentication(options => { })
-                    .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
-        }
+            ConfigureAuth(services);
+		}
 
-        private void ConfigureApplicationServices(IServiceCollection services, string connectionString)
+        protected virtual void ConfigureAuth(IServiceCollection services)
+		{
+			services.AddAuthentication(options =>
+			{
+				options.DefaultAuthenticateScheme = "AzureADBearer";
+				options.DefaultChallengeScheme = "AzureADBearer";
+			})
+			.AddAzureADBearer(options =>
+			{
+				Configuration.Bind("AzureAd", options);
+			});
+
+			services.Configure<JwtBearerOptions>(AzureADDefaults.JwtBearerAuthenticationScheme, options =>
+			{
+				// This is an Azure AD v2.0 Web API
+				options.Authority += "/v2.0";
+
+				// The valid audiences are both the Client ID (options.Audience) and api://{ClientID}
+				options.TokenValidationParameters.ValidAudiences = new string[] { options.Audience, $"api://{options.Audience}" };
+
+				// Instead of using the default validation (validating against a single tenant, as we do in line of business apps),
+				// we inject our own multitenant validation logic (which even accepts both V1 and V2 tokens)
+				options.TokenValidationParameters.IssuerValidator = AadIssuerValidator.ValidateAadIssuer;
+			});
+		}
+
+		private void ConfigureApplicationServices(IServiceCollection services, string connectionString)
         {
             services
                 .AddEntityFrameworkNpgsql()
@@ -142,9 +169,11 @@ namespace DFDS.CapabilityService.WebApi
 
             app.UseHttpMetrics();
 
-            app.UseMvc();
+            app.UseAuthentication();
+
+			app.UseMvc();
             
             app.UsePrometheusHealthCheck();
-        }
+		}
     }
 }
