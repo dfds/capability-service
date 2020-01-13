@@ -26,7 +26,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Factories
 
             var capabilitiesWithSameName = existingCapabilities.Where(c => c.Name == name);
             
-            if(capabilitiesWithSameName.Any()) { throw  new CapabilityWithSameNameExistException();}
+            if(capabilitiesWithSameName.Any()) { throw  new CapabilityWithSameNameExistException(name);}
 
             return await _inner.Create(name, description);
         }

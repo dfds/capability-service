@@ -61,7 +61,7 @@ namespace DFDS.CapabilityService.WebApi.Application
 
             if (isTopicNameTakenByAnotherTopic)
             {
-                throw new TopicAlreadyExistException($"A topic with the name \"{name}\" already exist.");
+                throw new TopicAlreadyExistException(name);
             }
 
             topic.Name = name;

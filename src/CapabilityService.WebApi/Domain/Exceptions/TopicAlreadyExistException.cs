@@ -4,7 +4,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Exceptions
 {
     public class TopicAlreadyExistException : Exception
     {
-        public TopicAlreadyExistException(string message) : base(message)
+        public TopicAlreadyExistException(string name) : base($"A topic with name \"{name}\" already exist.")
         {
             
         }

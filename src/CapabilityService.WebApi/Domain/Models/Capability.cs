@@ -95,7 +95,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 
             if (membership == null)
             {
-                throw new NotMemberOfCapabilityException();
+                throw new NotMemberOfCapabilityException(Id,memberEmail);
             }
 
             _memberships.Remove(membership);
