@@ -45,8 +45,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			{
 				var capability = await _capabilityApplicationService.GetCapability(capabilityId);
 
-				var topics = await _capabilityApplicationService.GetTopicsForCapability(capabilityId);
-				dto = CapabilityDetails.Create(capability, topics);
+				dto = CapabilityDetails.Create(capability);
 			}
 			catch (Exception exception)
 			{

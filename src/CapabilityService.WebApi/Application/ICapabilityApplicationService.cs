@@ -17,7 +17,5 @@ namespace DFDS.CapabilityService.WebApi.Application
         Task AddContext(Guid capabilityId, string contextName);
         Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail);
 
-        Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId);
-        Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate);
     }
 }

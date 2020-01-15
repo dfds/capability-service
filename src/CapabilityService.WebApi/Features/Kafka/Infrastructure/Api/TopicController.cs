@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Topic = DFDS.CapabilityService.WebApi.Domain.Models.Topic;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
@@ -16,15 +16,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
     public class TopicController : ControllerBase
     {
         private readonly ITopicRepository _topicRepository;
-        private readonly ICapabilityApplicationService _capabilityApplicationService;
 
         public TopicController(
-	        ITopicRepository topicRepository, 
-	        ICapabilityApplicationService capabilityApplicationService
+	        ITopicRepository topicRepository
 	    )
         {
             _topicRepository = topicRepository;
-            _capabilityApplicationService = capabilityApplicationService;
         }
 
         [HttpGet("{id}/topics")]
@@ -56,11 +53,19 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 	        if (capabilityId == Guid.Empty) return BadRequest(new {Message = $"the capability id: {id} is malformed"});
 	        try
 	        {
-		        await _capabilityApplicationService.AddTopic(
-			        capabilityId, 
+
+		        var topic = new Topic(
+			        Guid.Empty, 
 			        input.Name, 
-			        input.Description,
-			        true
+			        input.Description, 
+			        true, 
+			        capabilityId, 
+			        null
+			    );
+	
+		        
+		        await _topicRepository.Add(
+			        topic
 			    );
 	        }
 	        catch (Exception exception)
