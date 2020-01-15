@@ -177,26 +177,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			return Ok();
 		}
 
-		[HttpPost("{id}/topics")]
-		public async Task<IActionResult> AddTopicToCapability(string id, [FromBody] TopicInput input)
-		{
-			var capabilityId = Guid.Empty;
-			Guid.TryParse(id, out capabilityId);
-
-			try
-			{
-				await _capabilityApplicationService.AddTopic(capabilityId, input.Name, input.Description,
-					input.IsPrivate);
-			}
-			catch (Exception exception)
-			{
-				return ExceptionToStatusCode(exception);
-			}
-
-
-			return Ok();
-		}
-
 		public ActionResult ExceptionToStatusCode(Exception exception)
 		{
 			switch (exception)
