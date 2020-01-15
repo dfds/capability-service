@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
@@ -6,6 +7,7 @@ using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MessageContract = DFDS.CapabilityService.WebApi.Domain.Models.MessageContract;
 using Topic = DFDS.CapabilityService.WebApi.Domain.Models.Topic;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
@@ -60,7 +62,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			        input.Description, 
 			        true, 
 			        capabilityId, 
-			        null
+			        new List<MessageContract>()
 			    );
 	
 		        
