@@ -571,24 +571,7 @@ definitions:
   topic:
     type: object
     properties:
-      id:
-        type: string
       name:
         type: string
       description:
-        type: string
-      isPrivate:
-        type: boolean
-      messageContracts:
-        type: array
-        items:
-          $ref: '#/definitions/messageContract'
-  messageContract:
-    type: object
-    properties:
-      type:
-        type: string
-      description:
-        type: string
-      content:
         type: string
