@@ -49,7 +49,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 			catch (Exception exception)
 			{
-				return ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
+				if (actionResult == null) throw;
+				return actionResult;
 			}
 
 
@@ -69,7 +71,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 			catch (Exception exception)
 			{
-				return ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
+				if (actionResult == null) throw;
+				return actionResult;
 			}
 
 			return CreatedAtAction(
@@ -97,7 +101,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 			catch (Exception exception)
 			{
-				return ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
+				if (actionResult == null) throw;
+				return actionResult;
 			}
 		}
 
@@ -114,7 +120,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 			catch (Exception exception)
 			{
-				return ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
+				if (actionResult == null) throw;
+				return actionResult;
 			}
 
 
@@ -133,7 +141,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 			catch (Exception exception)
 			{
-				return ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
+				if (actionResult == null) throw;
+				return actionResult;
 			}
 
 			return Ok();
@@ -152,7 +162,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 			catch (Exception exception)
 			{
-				return ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
+				if (actionResult == null) throw;
+				return actionResult;
 			}
 
 			return Ok();
@@ -170,27 +182,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 			catch (Exception exception)
 			{
-				return ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
+				if (actionResult == null) throw;
+				return actionResult;
 			}
 
 			return Ok();
-		}
-
-		public ActionResult ExceptionToStatusCode(Exception exception)
-		{
-			switch (exception)
-			{
-				case CapabilityDoesNotExistException _:
-				case NotMemberOfCapabilityException _:
-					return NotFound(new {exception.Message});
-				case CapabilityValidationException _:
-					return BadRequest(new {exception.Message});
-				case CapabilityWithSameNameExistException _:
-				case TopicAlreadyExistException _:
-					return Conflict(new {exception.Message});
-				default:
-					throw exception;
-			}
 		}
 	}
 }

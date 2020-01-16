@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
@@ -10,8 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Topic = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models.Topic;
 using ITopicRepository = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories.ITopicRepository;
-using TopicAlreadyExistException =
-	DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions.TopicAlreadyExistException;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
@@ -85,30 +82,13 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 			catch (Exception exception)
 			{
-				var actionResult = ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
 				if (actionResult == null) throw;
 				return actionResult;
 			}
 
 
 			return Ok();
-		}
-
-		public ActionResult ExceptionToStatusCode(Exception exception)
-		{
-			switch (exception)
-			{
-				case CapabilityDoesNotExistException _:
-				case NotMemberOfCapabilityException _:
-					return NotFound(new {exception.Message});
-				case CapabilityValidationException _:
-					return BadRequest(new {exception.Message});
-				case CapabilityWithSameNameExistException _:
-				case TopicAlreadyExistException _:
-					return Conflict(new {exception.Message});
-				default:
-					return null;
-			}
 		}
 	}
 }
