@@ -19,7 +19,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 		{
 			var existingTopics = await _topicRepository.GetAllAsync();
 			
-			if(existingTopics.Any(t => t.Name == topic.Name)){ throw new TopicAlreadyExistException(topic.Name);}
+			if(existingTopics.Any(t => t.Name.Equals(topic.Name))){ throw new TopicAlreadyExistException(topic.Name);}
 
 			if(dryRun) return;
 			
