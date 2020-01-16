@@ -21,9 +21,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Prometheus;
 using System.Reflection;
 using DFDS.CapabilityService.WebApi.Application.Authentication;
+using DFDS.CapabilityService.WebApi.Features.Kafka;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Events;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace DFDS.CapabilityService.WebApi
@@ -48,6 +49,7 @@ namespace DFDS.CapabilityService.WebApi
             var connectionString = Configuration["CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING"];
 
             ConfigureApplicationServices(services, connectionString);
+            services.AddKafka(connectionString);
             services.AddKafkaStreaming();
             ConfigureDomainEvents(services);
             services.AddMetrics();
@@ -140,16 +142,17 @@ namespace DFDS.CapabilityService.WebApi
             var capabilitiesTopicsTopicName = Configuration["CAPABILITY_SERVICE_KAFKA_TOPIC_TOPICS"];
 
             eventRegistry
-                .Register<CapabilityCreated>("capability_created", capabilitiesTopicName)
-                .Register<CapabilityUpdated>("capability_updated", capabilitiesTopicName)
-                .Register<CapabilityDeleted>("capability_deleted", capabilitiesTopicName)
-                .Register<MemberJoinedCapability>("member_joined_capability", capabilitiesTopicName)
-                .Register<MemberLeftCapability>("member_left_capability", capabilitiesTopicName)
-                .Register<ContextAddedToCapability>("context_added_to_capability", capabilitiesTopicName)
-                .Register<ContextUpdated>("context_updated", capabilitiesTopicName)
-                .Register<AWSContextAccountCreatedIntegrationEvent>("aws_context_account_created", capabilitiesTopicName)
-                .Register<TopicAdded>("topic_added", capabilitiesTopicsTopicName);
-
+	            .Register<CapabilityCreated>("capability_created", capabilitiesTopicName)
+	            .Register<CapabilityUpdated>("capability_updated", capabilitiesTopicName)
+	            .Register<CapabilityDeleted>("capability_deleted", capabilitiesTopicName)
+	            .Register<MemberJoinedCapability>("member_joined_capability", capabilitiesTopicName)
+	            .Register<MemberLeftCapability>("member_left_capability", capabilitiesTopicName)
+	            .Register<ContextAddedToCapability>("context_added_to_capability", capabilitiesTopicName)
+	            .Register<ContextUpdated>("context_updated", capabilitiesTopicName)
+	            .Register<AWSContextAccountCreatedIntegrationEvent>("aws_context_account_created",
+		            capabilitiesTopicName)
+	            .Register<TopicAdded>("topic_added", capabilitiesTopicsTopicName)
+	            .Register<TopicCreated>("topic_created", capabilitiesTopicsTopicName);
             var scanner = new DomainEventScanner(eventRegistry);
             scanner.EnsureNoUnregisteredDomainEventsIn(Assembly.GetExecutingAssembly());
         }

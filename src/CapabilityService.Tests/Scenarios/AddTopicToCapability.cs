@@ -1,16 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Capability = DFDS.CapabilityService.WebApi.Domain.Models.Capability;
+using ITopicRepository = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories.ITopicRepository;
 
 namespace DFDS.CapabilityService.Tests.Scenarios
 {
@@ -23,7 +23,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 		[Fact]
 		public async Task AddTopicToCapabilityRecipe()
 		{
-				  Given_a_service_collection_with_a_imMemoryDb();
+			Given_a_service_collection_with_a_imMemoryDb();
 			await And_a_capability();
 			await When_a_topic_is_added();
 			await Then_it_can_be_found_under_capability_topics();
@@ -50,7 +50,11 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 
 		private async Task When_a_topic_is_added()
 		{
-			_topicController = new TopicController(_serviceProvider.GetService<ITopicRepository>());
+			_topicController = new TopicController(
+				_serviceProvider.GetService<ITopicDomainService>(),
+				_serviceProvider.GetService<ITopicRepository>(),
+				_serviceProvider.GetService<ICapabilityRepository>()
+			);
 
 
 			await _topicController.AddTopicToCapability(
@@ -70,16 +74,6 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 
 
 			Assert.Single(topics);
-		}
-	}
-
-	public class ItemsEnvelope<T>
-	{
-		public T[] Items { get; }
-
-		public ItemsEnvelope(IEnumerable<T> items)
-		{
-			Items = items.ToArray();
 		}
 	}
 }

@@ -9,13 +9,15 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
         public string Description { get; set; }
         public Guid CapabilityId { get; set; }
 
-        public static Topic CreateFrom(Domain.Models.Topic topic)
+        public int Partitions { get; set; }
+        public static Topic CreateFrom(Features.Kafka.Domain.Models.Topic topic)
         {
             return new Topic
             {
-                Name = topic.Name,
+                Name = topic.Name.Name,
                 Description = topic.Description,
                 CapabilityId = topic.CapabilityId,
+                Partitions = topic.Partitions
             };
         }
     }
