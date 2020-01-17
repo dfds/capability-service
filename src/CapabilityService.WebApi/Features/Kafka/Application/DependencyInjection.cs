@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace DFDS.CapabilityService.WebApi.Features.Kafka
+namespace DFDS.CapabilityService.WebApi.Features.Kafka.Application
 {
 	public static class DependencyInjection
 	{

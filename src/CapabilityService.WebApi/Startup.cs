@@ -22,6 +22,7 @@ using Prometheus;
 using System.Reflection;
 using DFDS.CapabilityService.WebApi.Application.Authentication;
 using DFDS.CapabilityService.WebApi.Features.Kafka;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Application;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Events;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
