@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
@@ -29,20 +29,25 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 		}
 		public async Task AddAsync(Topic topic)
 		{
-			using (TransactionScope scope = new TransactionScope())
-			{
 				var daoTopic = EntityFramework.DAOs.Topic.CreateFrom(topic);
 				
 				await _kafkaDbContext.Topics.AddAsync(daoTopic);
 
 				await _kafkaDbContext.SaveChangesAsync();
+				try
+				{
+					await _outbox.QueueDomainEvents(topic);
 
-				await _outbox.QueueDomainEvents(topic);
+					await _CapabilityServiceDbContext.SaveChangesAsync();
+				}
+				catch
+				{
+					_kafkaDbContext.Topics.Remove(daoTopic);
 
-				await _CapabilityServiceDbContext.SaveChangesAsync();
-				
-				scope.Complete();
-			}
+					await _kafkaDbContext.SaveChangesAsync();
+
+					throw;
+				}
 		}
 
 		public async Task<IEnumerable<Topic>> GetAllAsync()
