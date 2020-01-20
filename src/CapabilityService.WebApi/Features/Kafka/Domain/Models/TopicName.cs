@@ -5,7 +5,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 {
 	public class TopicName : ValueObject
 	{
-		public TopicName(string name)
+		private TopicName(string name)
 		{
 			Name = name;
 		}
@@ -14,6 +14,19 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		protected override IEnumerable<object> GetEqualityComponents()
 		{
 			yield return Name;
+		}
+
+		public static TopicName FromString(string fullName)
+		{
+			return new TopicName(fullName);
+		}
+			
+		public static TopicName Create(
+			CapabilityName capabilityName, 
+			string topicName
+		)
+		{
+			return	new TopicName(capabilityName.Name + "." + topicName);
 		}
 	}
 }
