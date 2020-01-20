@@ -5,7 +5,7 @@ services:
     hostname: capability-service
     build:
       context: .
-      dockerfile: src/CapabilityService.WebApi/Dockerfile    
+      dockerfile: Dockerfile-CapabilityService.WebApi 
     networks:
       development:
         aliases:
