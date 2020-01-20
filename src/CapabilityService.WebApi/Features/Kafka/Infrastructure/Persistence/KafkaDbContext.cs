@@ -1,4 +1,4 @@
-using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistence.EntityFramework.DAOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistence
@@ -15,13 +15,8 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 		{
 			modelBuilder.Entity<Topic>(cfg =>
 			{
-				cfg.ToTable("Topic-new");
+				cfg.ToTable("KafkaTopic");
 				cfg.HasKey(t => t.Id);
-				cfg.OwnsOne(
-					t => t.Name,
-					topicName => topicName.Property(tn => tn.Name).HasColumnName("Name"));
-
-				cfg.Ignore(x => x.DomainEvents);
 			});
 		}
 	}

@@ -31,7 +31,9 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 		{
 			using (TransactionScope scope = new TransactionScope())
 			{
-				await _kafkaDbContext.Topics.AddAsync(topic);
+				var daoTopic = EntityFramework.DAOs.Topic.CreateFrom(topic);
+				
+				await _kafkaDbContext.Topics.AddAsync(daoTopic);
 
 				await _kafkaDbContext.SaveChangesAsync();
 
@@ -45,7 +47,19 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 
 		public async Task<IEnumerable<Topic>> GetAllAsync()
 		{
-			return await _kafkaDbContext.Topics.ToListAsync();
+			var daoTopics = await _kafkaDbContext.Topics.ToListAsync();
+
+			var topics = daoTopics.Select(t => Features.Kafka.Domain.Models.Topic.FromSimpleTypes(
+					t.Id.ToString(),
+					t.CapabilityId.ToString(),
+					t.Name,
+					t.Description,
+					t.Partitions
+				)
+			);
+
+
+			return topics;
 		}
 	}
 }
