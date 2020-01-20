@@ -30,5 +30,16 @@ namespace DFDS.CapabilityService.Tests.Features.Kafka.Domain.Models
 
 			Assert.Equal(255, topicName.Name.Length);
 		}
+		
+		
+		[Fact]
+		public void WillTruncateCapabilityNameAt150Chars()
+		{
+			var stingOf300As = new string(Enumerable.Repeat('A', 300).ToArray());
+
+			var topicName = TopicName.Create(new CapabilityName(stingOf300As), "name");
+
+			Assert.Equal(150, topicName.Name.LastIndexOf('.'));
+		}
 	}
 }

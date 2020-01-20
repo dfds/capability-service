@@ -30,9 +30,12 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		)
 		{
 			var cleanCapabilityName = CleanString(capabilityName.Name);
+			var max150charsCapabilityName = 150 < cleanCapabilityName.Length
+				? cleanCapabilityName.Substring(0, 150)
+				: cleanCapabilityName;
 			var cleanTopicName = CleanString(topicName);
 
-			var combinedString = cleanCapabilityName + "." + cleanTopicName;
+			var combinedString = max150charsCapabilityName + "." + cleanTopicName;
 			var max255CharString = 255 < combinedString.Length ? 
 				combinedString.Substring(0, 255) :
 				combinedString;
