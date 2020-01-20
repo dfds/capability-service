@@ -24,9 +24,9 @@ namespace DFDS.CapabilityService.Tests.Features.Kafka.Domain.Models
 		[Fact]
 		public void WillTruncateAt255Chars()
 		{
-			var stingOf300As = new string(Enumerable.Repeat('A', 300).ToArray());
+			var stringOf300As = new string(Enumerable.Repeat('A', 300).ToArray());
 
-			var topicName = TopicName.Create(new CapabilityName("cap"), stingOf300As);
+			var topicName = TopicName.Create(new CapabilityName("cap"), stringOf300As);
 
 			Assert.Equal(255, topicName.Name.Length);
 		}
@@ -35,9 +35,9 @@ namespace DFDS.CapabilityService.Tests.Features.Kafka.Domain.Models
 		[Fact]
 		public void WillTruncateCapabilityNameAt150Chars()
 		{
-			var stingOf300As = new string(Enumerable.Repeat('A', 300).ToArray());
+			var stringOf300As = new string(Enumerable.Repeat('A', 300).ToArray());
 
-			var topicName = TopicName.Create(new CapabilityName(stingOf300As), "name");
+			var topicName = TopicName.Create(new CapabilityName(stringOf300As), "name");
 
 			Assert.Equal(150, topicName.Name.LastIndexOf('.'));
 		}
