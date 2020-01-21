@@ -4,8 +4,9 @@ using System.Linq;
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
 {
     public class Topic
-    {
-        public string Name { get; set; }
+    {    
+	    public Guid Id { get; set; }
+	    public string Name { get; set; }
         public string Description { get; set; }
         public Guid CapabilityId { get; set; }
 
@@ -14,6 +15,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
         {
             return new Topic
             {
+	            Id = topic.Id.Id,
                 Name = topic.Name.Name,
                 Description = topic.Description,
                 CapabilityId = topic.CapabilityId,

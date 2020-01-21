@@ -12,7 +12,7 @@ using ITopicRepository = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Rep
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
-	[Authorize(AuthenticationSchemes = "AzureADBearer")]
+	//[Authorize(AuthenticationSchemes = "AzureADBearer")]
 	[ApiController]
 	[Route("api/v1/capabilities")]
 	public class TopicController : ControllerBase
@@ -79,6 +79,10 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					topic,
 					input.DryRun
 				);
+
+				var topicDto = DTOs.Topic.CreateFrom(topic);
+				return Ok(topicDto);
+
 			}
 			catch (Exception exception)
 			{
@@ -88,7 +92,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 
 
-			return Ok();
 		}
 	}
 }
