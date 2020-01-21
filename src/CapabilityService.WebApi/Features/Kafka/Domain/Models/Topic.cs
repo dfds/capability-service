@@ -32,7 +32,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			var topic = new Topic(
 				TopicId.Create(),
 				capabilityId: capabilityId,
-				name: new TopicName(capabilityName.Name + "-" + name),
+				name: TopicName.Create(capabilityName, name),
 				description: description,
 				partitions: partitions
 			);
@@ -60,7 +60,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			return new Topic(
 				TopicId.FromString(id),
 				Guid.Parse(capabilityId),
-				new TopicName(name),
+				TopicName.FromString(name),
 				description,
 				partitions
 			);
