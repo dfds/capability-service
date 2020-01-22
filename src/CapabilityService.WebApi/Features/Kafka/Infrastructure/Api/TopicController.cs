@@ -79,6 +79,10 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					topic,
 					input.DryRun
 				);
+
+				var topicDto = DTOs.Topic.CreateFrom(topic);
+				return Ok(topicDto);
+
 			}
 			catch (Exception exception)
 			{
@@ -88,7 +92,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 
 
-			return Ok();
 		}
 	}
 }
