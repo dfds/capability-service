@@ -12,7 +12,7 @@ using ITopicRepository = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Rep
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
-	//[Authorize(AuthenticationSchemes = "AzureADBearer")]
+	[Authorize(AuthenticationSchemes = "AzureADBearer")]
 	[ApiController]
 	[Route("api/v1/capabilities")]
 	public class TopicController : ControllerBase
