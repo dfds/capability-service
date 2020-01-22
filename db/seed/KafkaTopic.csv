@@ -1,0 +1,3 @@
+Id,Name,Description,CapabilityId,Partitions
+392e92d7-ab43-47e2-b7b7-0cdecea833d1,Capability-A.topic-01,The first topic,0d03e3ad-2118-46b7-970e-0ca87b59a202,3
+6e07d7ac-1a88-44b5-8c94-ef8d54db03d1,Capability-A.topic-02,The second topic,0d03e3ad-2118-46b7-970e-0ca87b59a202,12

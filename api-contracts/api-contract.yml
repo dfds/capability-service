@@ -27,7 +27,7 @@ paths:
       tags:
         - capability
       responses:
-        200:
+        '200':
           description: OK
           schema:
             $ref: '#/definitions/capability-list'
@@ -47,7 +47,7 @@ paths:
               description:
                 type: string
       responses:
-        201:
+        '201':
           description: Created
           headers:
             location:
@@ -55,11 +55,11 @@ paths:
               description: URI where the capability can be retrieved
           schema:
             $ref: '#/definitions/capability'
-        400:
+        '400':
           description: BadRequest
           schema:
             $ref: '#/definitions/errorObject'
-        409:
+        '409':
           description: Conflict with existing capabilities
           schema:
             $ref: '#/definitions/errorObject'
@@ -76,7 +76,7 @@ paths:
           type: string
           required: true
       responses:
-        200:
+        '200':
           description: OK
           schema:
             $ref: '#/definitions/capability-details'
@@ -100,15 +100,15 @@ paths:
               description:
                 type: string
       responses:
-        200:
+        '200':
           description: OK
           schema:
             $ref: '#/definitions/capability'
-        400:
+        '400':
           description: BadRequest
           schema:
             $ref: '#/definitions/errorObject'
-        404:
+        '404':
           description: Not found
     delete:
       summary: Deletes a capability 
@@ -120,9 +120,9 @@ paths:
           required: true
           type: string
       responses:
-        200:
+        '200':
           description: Ok
-        404:
+        '404':
           description: Not Found
   /capabilities/{capabilityId}/members:
     post:
@@ -143,9 +143,9 @@ paths:
               email:
                 type: string
       responses:
-        200:
+        '200':
           description: Ok
-        404:
+        '404':
           description: Not Found
           schema:
             $ref: '#/definitions/errorObject'
@@ -164,9 +164,9 @@ paths:
           type: string
           required: true
       responses:
-        200:
+        '200':
           description: Ok
-        404:
+        '404':
           description: Not Found
   /capabilities/{capabilityId}/contexts:
     post:
@@ -187,9 +187,9 @@ paths:
               name:
                 type: string
       responses:
-        200:
+        '200':
           description: Ok
-        404:
+        '404':
           description: Not Found
           schema:
             $ref: '#/definitions/errorObject'
@@ -216,9 +216,9 @@ paths:
               isPrivate:
                 type: boolean
       responses:
-        200:
+        '200':
           description: Ok
-        404:
+        '404':
           description: Not Found
           schema:
             $ref: '#/definitions/errorObject'
@@ -228,7 +228,7 @@ paths:
       tags:
         - topic
       responses:
-        200:
+        '200':
           description: Ok
           schema:
             type: object
@@ -248,11 +248,11 @@ paths:
           required: true
           type: string
       responses:
-        200:
+        '200':
           description: OK
           schema:
             $ref: '#/definitions/topic'
-        404:
+        '404':
           description: Not Found
     put:
       summary: Updates a single topic
@@ -276,13 +276,13 @@ paths:
               isPrivate:
                 type: boolean
       responses:
-        204:
+        '204':
           description: No Content
           # schema:
           #   $ref: '#/definitions/topic'
-        400:
+        '400':
           description: Bad Request
-        404:
+        '404':
           description: Not Found
   /topics/{topicId}/messageContracts:
     get:
@@ -295,11 +295,11 @@ paths:
           required: true
           type: string
       responses:
-        200:
+        '200':
           description: OK
           schema:
             $ref: '#/definitions/messageContract'
-        404:
+        '404':
           description: Not Found
   /topics/{topicId}/messageContracts/{type}:
     put:
@@ -326,9 +326,9 @@ paths:
               content:
                 type: string
       responses:
-        204:
+        '204':
           description: No Content
-        404:
+        '404':
           description: Not Found
     delete:
       summary: Deletes a message contracts from a topic
@@ -344,10 +344,157 @@ paths:
           required: true
           type: string
       responses:
-        200:
+        '200':
           description: OK
-        404:
+        '404':
           description: Not Found
+  /kafka/environments/:
+    get:
+      summary: List of all environment names
+      tags:
+        - kafka
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              type: string
+          examples:
+            example-1:
+              - enterprise
+              - test
+      operationId: get-kafka-environments
+      parameters: []
+  'kafka/{environmentName}/topics':
+    get:
+      summary: Returns a list of all topics in a given environment
+      responses:
+        '200':
+          description: Ok
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                capabilityId:
+                  type: string
+                partitions:
+                  type: integer
+      parameters:
+        - type: string
+          in: query
+          name: capabilityId
+          description: filters topics by capability id
+      description: ''
+      tags:
+        - kafka
+    post:
+      summary: ''
+      operationId: post-topics
+      responses:
+        '200':
+          description: OK
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              capabilityId:
+                type: string
+              partitions:
+                type: integer
+                default: 3
+                minimum: 1
+                maximum: 12
+      tags:
+        - kafka
+    parameters:
+      - type: string
+        name: environmentName
+        in: path
+        required: true
+  'kafka/{environmentName}/api-keys':
+    parameters:
+      - type: string
+        name: environmentName
+        in: path
+        required: true
+    get:
+      summary: ''
+      operationId: get-capabilities-capabilityId-kafka-api-keys
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                key:
+                  type: string
+                description:
+                  type: string
+      parameters:
+        - type: string
+          in: query
+          name: capabilityId
+          description: filters api keys by capability id
+      description: ''
+      tags:
+        - kafka
+    post:
+      summary: ''
+      operationId: postkafka-api-keys
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              key:
+                type: string
+              secret:
+                type: string
+      tags:
+        - kafka
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              capabilityId:
+                type: string
+              description:
+                type: string
+  '/kafka/{environmentName}/api-keys/{key}':
+    parameters:
+      - type: string
+        name: environmentName
+        in: path
+        required: true
+      - type: string
+        name: key
+        in: path
+        required: true
+    delete:
+      summary: ''
+      operationId: delete-kafka-environmentName-api-keys-key
+      responses:
+        '200':
+          description: OK
+      tags:
+        - kafka
 definitions:
   capability-list:
     type: object
@@ -424,24 +571,7 @@ definitions:
   topic:
     type: object
     properties:
-      id:
-        type: string
       name:
         type: string
       description:
-        type: string
-      isPrivate:
-        type: boolean
-      messageContracts:
-        type: array
-        items:
-          $ref: '#/definitions/messageContract'
-  messageContract:
-    type: object
-    properties:
-      type:
-        type: string
-      description:
-        type: string
-      content:
         type: string

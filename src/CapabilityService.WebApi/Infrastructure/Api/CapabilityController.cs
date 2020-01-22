@@ -45,12 +45,13 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			{
 				var capability = await _capabilityApplicationService.GetCapability(capabilityId);
 
-				var topics = await _capabilityApplicationService.GetTopicsForCapability(capabilityId);
-				dto = CapabilityDetails.Create(capability, topics);
+				dto = CapabilityDetails.Create(capability);
 			}
 			catch (Exception exception)
 			{
-				return ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
+				if (actionResult == null) throw;
+				return actionResult;
 			}
 
 
@@ -70,7 +71,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 			catch (Exception exception)
 			{
-				return ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
+				if (actionResult == null) throw;
+				return actionResult;
 			}
 
 			return CreatedAtAction(
@@ -98,7 +101,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 			catch (Exception exception)
 			{
-				return ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
+				if (actionResult == null) throw;
+				return actionResult;
 			}
 		}
 
@@ -115,7 +120,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 			catch (Exception exception)
 			{
-				return ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
+				if (actionResult == null) throw;
+				return actionResult;
 			}
 
 
@@ -134,7 +141,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 			catch (Exception exception)
 			{
-				return ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
+				if (actionResult == null) throw;
+				return actionResult;
 			}
 
 			return Ok();
@@ -153,7 +162,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 			catch (Exception exception)
 			{
-				return ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
+				if (actionResult == null) throw;
+				return actionResult;
 			}
 
 			return Ok();
@@ -171,47 +182,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			}
 			catch (Exception exception)
 			{
-				return ExceptionToStatusCode(exception);
+				var actionResult = ExceptionToStatusCode.Convert(exception);
+				if (actionResult == null) throw;
+				return actionResult;
 			}
 
 			return Ok();
-		}
-
-		[HttpPost("{id}/topics")]
-		public async Task<IActionResult> AddTopicToCapability(string id, [FromBody] TopicInput input)
-		{
-			var capabilityId = Guid.Empty;
-			Guid.TryParse(id, out capabilityId);
-
-			try
-			{
-				await _capabilityApplicationService.AddTopic(capabilityId, input.Name, input.Description,
-					input.IsPrivate);
-			}
-			catch (Exception exception)
-			{
-				return ExceptionToStatusCode(exception);
-			}
-
-
-			return Ok();
-		}
-
-		public ActionResult ExceptionToStatusCode(Exception exception)
-		{
-			switch (exception)
-			{
-				case CapabilityDoesNotExistException _:
-				case NotMemberOfCapabilityException _:
-					return NotFound(new {exception.Message});
-				case CapabilityValidationException _:
-					return BadRequest(new {exception.Message});
-				case CapabilityWithSameNameExistException _:
-				case TopicAlreadyExistException _:
-					return Conflict(new {exception.Message});
-				default:
-					throw exception;
-			}
 		}
 	}
 }
