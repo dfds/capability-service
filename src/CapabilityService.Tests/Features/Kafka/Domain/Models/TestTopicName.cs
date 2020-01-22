@@ -8,9 +8,11 @@ namespace DFDS.CapabilityService.Tests.Features.Kafka.Domain.Models
 	public class TestTopicName
 	{
 		[Theory]
+		[InlineData("FOO", "foo")]
+		[InlineData("øæå", "oeaeaa")]
 		[InlineData("aa_aa", "aa-aa")]
 		[InlineData("!\"#¤%&/()=1a,", "1a")]
-		[InlineData("1234567890 abcdefghijklmnopqrstuvwxyzæøå.ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ!", "1234567890-abcdefghijklmnopqrstuvwxyzæøå-ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ")]
+		[InlineData("1234567890 abcdefghijklmnopqrstuvwxyzæøå.ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ!", "1234567890-abcdefghijklmnopqrstuvwxyzaeoeaa-abcdefghijklmnopqrstuvwxyzaeoeaa")]
 		public void WillFormatName(string inputName, string expectedName)
 		{
 			var topicName = TopicName.Create(new CapabilityName("cap"), inputName);
