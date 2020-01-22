@@ -1,6 +1,7 @@
 using System;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Events;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
 
 namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 {
@@ -29,6 +30,17 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			int partitions
 		)
 		{
+			const int lowerAllowedPartitions = 1;
+			const int upperAllowedPartitions = 12;
+			if (partitions < lowerAllowedPartitions || upperAllowedPartitions < partitions)
+			{
+				throw new PartitionsCountNotAllowedException(
+					lowerAllowedPartitions,
+					upperAllowedPartitions,
+					partitions
+				);
+			}
+
 			var topic = new Topic(
 				TopicId.Create(),
 				capabilityId: capabilityId,
