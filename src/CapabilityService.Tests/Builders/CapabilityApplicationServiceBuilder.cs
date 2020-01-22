@@ -8,12 +8,10 @@ namespace DFDS.CapabilityService.Tests.Builders
     public class CapabilityApplicationServiceBuilder
     {
         private ICapabilityRepository _capabilityRepository;
-        private ITopicRepository _topicRepository;
         private ICapabilityFactory _capabilityFactory;
         public CapabilityApplicationServiceBuilder()
         {
             _capabilityRepository = Dummy.Of<ICapabilityRepository>();
-            _topicRepository = Dummy.Of<ITopicRepository>();
             _capabilityFactory = Dummy.Of<ICapabilityFactory>();
         }
 
@@ -23,11 +21,6 @@ namespace DFDS.CapabilityService.Tests.Builders
             return this;
         }
 
-        public CapabilityApplicationServiceBuilder WithTopicRepository(ITopicRepository topicRepository)
-        {
-            _topicRepository = topicRepository;
-            return this;
-        }
         
         public CapabilityApplicationServiceBuilder WithCapabilityFactory(ICapabilityFactory capabilityFactory)
         {
@@ -39,7 +32,6 @@ namespace DFDS.CapabilityService.Tests.Builders
         {
             return new CapabilityApplicationService(
                 capabilityRepository: _capabilityRepository,
-                topicRepository: _topicRepository,
                 capabilityFactory: _capabilityFactory
             );
         }

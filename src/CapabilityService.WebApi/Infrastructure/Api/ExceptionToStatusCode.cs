@@ -17,7 +17,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					return new BadRequestObjectResult(new {exception.Message});
 				case CapabilityWithSameNameExistException _:
 				case DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions.TopicAlreadyExistException _:
-				case DFDS.CapabilityService.WebApi.Domain.Exceptions.TopicAlreadyExistException _:
 					return new ConflictObjectResult(new {exception.Message});
 				default:
 					return null;

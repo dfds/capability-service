@@ -119,13 +119,6 @@ namespace DFDS.CapabilityService.WebApi
                 dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>()
             ));
 
-            services.AddTransient<ITopicRepository, TopicRepository>();
-            services.AddTransient<TopicApplicationService>();
-            services.AddTransient<ITopicApplicationService>(serviceProvider => new TopicTransactionalDecorator(
-                inner: serviceProvider.GetRequiredService<TopicApplicationService>(),
-                dbContext: serviceProvider.GetRequiredService<CapabilityServiceDbContext>()
-            ));
-
             services.AddTransient<IRepository<DomainEventEnvelope>,DomainEventEnvelopeRepository>();
         }
 
@@ -153,7 +146,6 @@ namespace DFDS.CapabilityService.WebApi
 	            .Register<ContextUpdated>("context_updated", capabilitiesTopicName)
 	            .Register<AWSContextAccountCreatedIntegrationEvent>("aws_context_account_created",
 		            capabilitiesTopicName)
-	            .Register<TopicAdded>("topic_added", capabilitiesTopicsTopicName)
 	            .Register<TopicCreated>("topic_created", capabilitiesTopicsTopicName);
             var scanner = new DomainEventScanner(eventRegistry);
             scanner.EnsureNoUnregisteredDomainEventsIn(Assembly.GetExecutingAssembly());
