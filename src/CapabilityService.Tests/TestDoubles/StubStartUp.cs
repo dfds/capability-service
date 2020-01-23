@@ -1,10 +1,7 @@
 ﻿using DFDS.CapabilityService.Tests.Infrastructure.Authentication;
 using DFDS.CapabilityService.WebApi;
-using DFDS.CapabilityService.WebApi.Domain.Models;
-using DFDS.CapabilityService.WebApi.Infrastructure.Api;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.EntityFrameworkCore.Scaffolding.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
