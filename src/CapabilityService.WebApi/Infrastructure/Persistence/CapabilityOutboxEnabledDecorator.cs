@@ -83,13 +83,5 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             await _inner.UpdateContext(capabilityId, contextId, awsAccountId, awsRoleArn, awsRoleEmail);
             await QueueDomainEvents();
         }
-
-        public Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId) => _inner.GetTopicsForCapability(capabilityId);
-
-        public async Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
-        {
-            await _inner.AddTopic(capabilityId, topicName, topicDescription, isTopicPrivate);
-            await QueueDomainEvents();
-        }
     }
 }

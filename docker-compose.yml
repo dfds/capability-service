@@ -1,11 +1,11 @@
-version: '3.4'
+version: '3.5'
 
 services:
   capability-service.webapi:
     hostname: capability-service
     build:
       context: .
-      dockerfile: src/CapabilityService.WebApi/Dockerfile    
+      dockerfile: Dockerfile-CapabilityService.WebApi 
     networks:
       development:
         aliases:
@@ -75,4 +75,4 @@ services:
 
 networks:
   development:
-    external: true
+    name: development

@@ -98,18 +98,5 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
                 transaction.Commit();
             }
         }
-
-        public Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId) => _inner.GetTopicsForCapability(capabilityId);
-
-        public async Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
-        {
-            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
-            {
-                await _inner.AddTopic(capabilityId, topicName, topicDescription, isTopicPrivate);
-
-                await _dbContext.SaveChangesAsync();
-                transaction.Commit();
-            }
-        }
     }
 }

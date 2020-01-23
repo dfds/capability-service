@@ -1,0 +1,17 @@
+###
+
+# List topics for a capability
+
+GET http://localhost:50900/api/v1/capabilities/0d03e3ad-2118-46b7-970e-0ca87b59a202/topics
+
+###
+
+# Add a topic
+POST http://localhost:50900/api/v1/capabilities/0d03e3ad-2118-46b7-970e-0ca87b59a202/topics HTTP/1.1
+content-type: application/json
+
+{
+    "name": "topic.{{$guid}}",
+    "description": "I won't tell",
+    "partitions": 3
+}

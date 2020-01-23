@@ -14,9 +14,8 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
         public Member[] Members { get; set; }
         public Context[] Contexts { get; set; }
 
-        public Topic[] Topics { get; set; }
 
-        public static CapabilityDetails Create(Domain.Models.Capability capability, IEnumerable<Domain.Models.Topic> topics)
+        public static CapabilityDetails Create(Domain.Models.Capability capability)
         {
             return new CapabilityDetails
             {
@@ -38,9 +37,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
                         AWSAccountId = context.AWSAccountId,
                         AWSRoleEmail = context.AWSRoleEmail
                     })
-                    .ToArray(),
-                Topics = topics
-                    .Select(Topic.CreateFrom)
                     .ToArray(),
             };
         }

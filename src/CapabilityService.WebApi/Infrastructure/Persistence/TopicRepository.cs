@@ -35,6 +35,8 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
         public async Task Add(Topic topic)
         {
             await _dbContext.Topics.AddAsync(topic);
+
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<Topic> Get(Guid id)
