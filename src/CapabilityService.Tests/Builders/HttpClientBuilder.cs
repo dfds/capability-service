@@ -47,7 +47,7 @@ namespace DFDS.CapabilityService.Tests.Builders
 		private IWebHostBuilder CreateWebHostBuilder()
 		{
 			var testWebHostBuilder = WebHost.CreateDefaultBuilder()
-				.UseStartup<StubStartUp>()
+				.UseStartup<AlwaysAllowAuthStartUp>()
 				.UseSetting(WebHostDefaults.ApplicationKey, typeof(Startup).Assembly.GetName().Name) // We need to look for controllers in the same assembly as the startup file
 				.ConfigureTestServices(services =>
 				{
