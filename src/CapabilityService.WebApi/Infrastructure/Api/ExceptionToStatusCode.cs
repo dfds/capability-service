@@ -7,7 +7,15 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
 	public static class ExceptionToStatusCode
 	{
-		public static ActionResult Convert(Exception exception)
+		public static bool CanConvert(Exception exception, out IActionResult actionResult)
+		{
+			var convertResult = Convert(exception);
+			actionResult = convertResult;
+
+			return convertResult != null;
+		}
+
+		private static ActionResult Convert(Exception exception)
 		{
 			switch (exception)
 			{
