@@ -4,9 +4,8 @@ name: $(Build.BuildId)
 trigger:
   branches:
     include:
-    - azure-pipelines-use-net-core-3.1
-    #- master
-    #- feature/capability
+    - master
+    - feature/capability
     
   paths:
     # Changes to these files does not trigger a new build / release
