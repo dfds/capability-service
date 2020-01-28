@@ -20,7 +20,7 @@ pr: none
 
 # Add ADO Variable groups to pipeline
 variables:
-  - group: AWS ECR-PUSH PROD
+  - group: 'AWS ECR-PUSH PROD'
 
 stages:
   # Continuous Integration steps
