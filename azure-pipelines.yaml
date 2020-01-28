@@ -18,6 +18,10 @@ trigger:
 # Disables triggering Pipeline run at creation of every Pull Request
 pr: none
 
+# Add ADO Variable groups to pipeline
+variables:
+  - group: AWS ECR-PUSH PROD
+
 stages:
   # Continuous Integration steps
   - stage: CI
