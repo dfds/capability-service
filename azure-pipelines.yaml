@@ -37,7 +37,8 @@ stages:
         displayName: 'Use .NET Core sdk 3.1'
         inputs:
           packageType: 'sdk'
-          version: '3.1'
+          version: "3.1.1"
+          installationPath: $(Agent.ToolsDirectory)/dotnet
 
       - bash: |
           set -eu -o pipefail
@@ -51,6 +52,9 @@ stages:
 
     - job: test
       displayName: 'Run test suite'
+      dependsOn: build
+      condition: success()
+
       steps:
       - task: PublishTestResults@2
         displayName: Publish Test Results
@@ -68,6 +72,9 @@ stages:
     
     - job: Publish
       displayName: 'Publish Kubernetes manifests'
+      dependsOn: test
+      condition: success()
+
       steps:
       - task: PublishBuildArtifacts@1
         displayName: "Publish Artifact: manifests"
