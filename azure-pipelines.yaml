@@ -53,7 +53,7 @@ stages:
     - job: test
       displayName: 'Run test suite'
       dependsOn: build
-      condition: success()
+      condition: succeeded('build')
 
       steps:
       - task: PublishTestResults@2
@@ -73,7 +73,7 @@ stages:
     - job: Publish
       displayName: 'Publish Kubernetes manifests'
       dependsOn: test
-      condition: success()
+      condition: succeeded('test')
 
       steps:
       - task: PublishBuildArtifacts@1
