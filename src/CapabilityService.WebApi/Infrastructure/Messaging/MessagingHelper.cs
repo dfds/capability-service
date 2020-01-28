@@ -1,7 +1,5 @@
-﻿using System;
-using System.Dynamic;
+﻿using System.Dynamic;
 using System.Reflection;
-using Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
