@@ -74,4 +74,3 @@ stages:
         inputs:
           PathtoPublish: k8s
           ArtifactName: manifests
-
