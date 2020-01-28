@@ -1,0 +1,73 @@
+name: $(Build.BuildId)
+
+# Triggers Pipeline only on Master
+trigger:
+  branches:
+    include:
+    - azure-pipelines-use-net-core-3.1
+    #- master
+    #- feature/capability
+    
+  paths:
+    # Changes to these files does not trigger a new build / release
+    exclude:
+    - README.md
+    - LICENSE
+    - azure-pipelines.yaml
+
+# Disables triggering Pipeline run at creation of every Pull Request
+pr: none
+
+stages:
+  # Continuous Integration steps
+  - stage: CI
+    displayName: 'Continuous Integration'
+    pool:
+      vmImage: 'ubuntu-latest'
+    
+    jobs:
+    - job: build
+      displayName: 'Build & Compile'    
+      steps:
+      - task: UseDotNet@2
+        displayName: 'Use .NET Core sdk 3.1'
+        inputs:
+          packageType: 'sdk'
+          version: '3.1'
+
+      - bash: |
+          set -eu -o pipefail
+          sudo pip install setuptools
+          sudo pip install awscli
+          chmod +x ./pipeline.sh
+          ./pipeline.sh $(Build.BuildId) $(System.DefaultWorkingDirectory)
+        displayName: Pipeline Bash Script
+        env:
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+
+    - job: test
+      displayName: 'Run test suite'
+      steps:
+      - task: PublishTestResults@2
+        displayName: Publish Test Results
+        inputs:
+          testRunner: VSTest
+          testResultsFiles: testresults.trx
+          searchFolder: '$(System.DefaultWorkingDirectory)/output'
+        condition: succeededOrFailed()
+
+      - task: PublishCodeCoverageResults@1
+        displayName: 'Publish code coverage'
+        inputs:
+          codeCoverageTool: Cobertura
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/output/coverage.cobertura.xml'
+    
+    - job: Publish
+      displayName: 'Publish Kubernetes manifests'
+      steps:
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact: manifests"
+        inputs:
+          PathtoPublish: k8s
+          ArtifactName: manifests
+
