@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.TestDoubles;
@@ -21,7 +24,10 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                     .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService())
                     .Build();
 
-                var response = await client.GetAsync("api/v1/adsync");
+                var request = new HttpRequestMessage(HttpMethod.Get, "api/v1/adsync");
+                var encodedCredentials = Convert.ToBase64String(Encoding.ASCII.GetBytes("user:thisisindeedapassword"));
+                request.Headers.Authorization = new AuthenticationHeaderValue("Basic", encodedCredentials);
+                var response = await client.SendAsync(request);
 
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             }
@@ -36,7 +42,10 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                     .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService())
                     .Build();
 
-                var response = await client.GetAsync("api/v1/adsync");
+                var request = new HttpRequestMessage(HttpMethod.Get, "api/v1/adsync");
+                var encodedCredentials = Convert.ToBase64String(Encoding.ASCII.GetBytes("user:thisisindeedapassword"));
+                request.Headers.Authorization = new AuthenticationHeaderValue("Basic", encodedCredentials);
+                var response = await client.SendAsync(request);
 
                 Assert.Equal(
                     expected: "{\"items\":[]}",
@@ -57,7 +66,10 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                     .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: stubCapabilities))
                     .Build();
 
-                var response = await client.GetAsync("api/v1/adsync");
+                var request = new HttpRequestMessage(HttpMethod.Get, "api/v1/adsync");
+                var encodedCredentials = Convert.ToBase64String(Encoding.ASCII.GetBytes("user:thisisindeedapassword"));
+                request.Headers.Authorization = new AuthenticationHeaderValue("Basic", encodedCredentials);
+                var response = await client.SendAsync(request);
                 var content = await response.Content.ReadAsStringAsync();
                 
                 Assert.Equal(
@@ -82,7 +94,10 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                     .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: stubCapabilities))
                     .Build();
 
-                var response = await client.GetAsync("api/v1/adsync");
+                var request = new HttpRequestMessage(HttpMethod.Get, "api/v1/adsync");
+                var encodedCredentials = Convert.ToBase64String(Encoding.ASCII.GetBytes("user:thisisindeedapassword"));
+                request.Headers.Authorization = new AuthenticationHeaderValue("Basic", encodedCredentials);
+                var response = await client.SendAsync(request);
                 var content = await response.Content.ReadAsStringAsync();
                 
                 Assert.Equal(
@@ -108,7 +123,10 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                     .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: stubCapabilities))
                     .Build();
 
-                var response = await client.GetAsync("api/v1/adsync");
+                var request = new HttpRequestMessage(HttpMethod.Get, "api/v1/adsync");
+                var encodedCredentials = Convert.ToBase64String(Encoding.ASCII.GetBytes("user:thisisindeedapassword"));
+                request.Headers.Authorization = new AuthenticationHeaderValue("Basic", encodedCredentials);
+                var response = await client.SendAsync(request);
                 var content = await response.Content.ReadAsStringAsync();
 
                 Assert.Equal(
