@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.TestDoubles;
@@ -7,7 +10,7 @@ using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using Xunit;
-
+using DFDS.CapabilityService.Tests.Infrastructure.Authentication;
 namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 {
     public class TestADSyncRoute
@@ -15,13 +18,16 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
         [Fact]
         public async Task get_all_capabilities_returns_expected_status_code()
         {
+
             using (var builder = new HttpClientBuilder())
             {
                 var client = builder
                     .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService())
                     .Build();
 
-                var response = await client.GetAsync("api/v1/adsync");
+                var request = new HttpRequestMessage(HttpMethod.Get, "api/v1/adsync");
+                request.Headers.Authorization = BasicAuthCredentials.BASIC_AUTHENTICATION_HEADER_VALUE;
+                var response = await client.SendAsync(request);
 
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             }
@@ -36,7 +42,9 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                     .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService())
                     .Build();
 
-                var response = await client.GetAsync("api/v1/adsync");
+                var request = new HttpRequestMessage(HttpMethod.Get, "api/v1/adsync");
+                request.Headers.Authorization = BasicAuthCredentials.BASIC_AUTHENTICATION_HEADER_VALUE;
+                var response = await client.SendAsync(request);
 
                 Assert.Equal(
                     expected: "{\"items\":[]}",
@@ -57,7 +65,9 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                     .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: stubCapabilities))
                     .Build();
 
-                var response = await client.GetAsync("api/v1/adsync");
+                var request = new HttpRequestMessage(HttpMethod.Get, "api/v1/adsync");
+                request.Headers.Authorization = BasicAuthCredentials.BASIC_AUTHENTICATION_HEADER_VALUE;
+                var response = await client.SendAsync(request);
                 var content = await response.Content.ReadAsStringAsync();
                 
                 Assert.Equal(
@@ -82,7 +92,9 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                     .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: stubCapabilities))
                     .Build();
 
-                var response = await client.GetAsync("api/v1/adsync");
+                var request = new HttpRequestMessage(HttpMethod.Get, "api/v1/adsync");
+                request.Headers.Authorization = BasicAuthCredentials.BASIC_AUTHENTICATION_HEADER_VALUE;
+                var response = await client.SendAsync(request);
                 var content = await response.Content.ReadAsStringAsync();
                 
                 Assert.Equal(
@@ -108,7 +120,9 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                     .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: stubCapabilities))
                     .Build();
 
-                var response = await client.GetAsync("api/v1/adsync");
+                var request = new HttpRequestMessage(HttpMethod.Get, "api/v1/adsync");
+                request.Headers.Authorization = BasicAuthCredentials.BASIC_AUTHENTICATION_HEADER_VALUE;
+                var response = await client.SendAsync(request);
                 var content = await response.Content.ReadAsStringAsync();
 
                 Assert.Equal(

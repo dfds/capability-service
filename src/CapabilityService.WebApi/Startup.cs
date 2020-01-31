@@ -22,6 +22,7 @@ using System.Reflection;
 using DFDS.CapabilityService.WebApi.Application.Authentication;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Application;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Events;
+using DFDS.CapabilityService.WebApi.Infrastructure.Api;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Hosting;
@@ -90,6 +91,8 @@ namespace DFDS.CapabilityService.WebApi
 				// we inject our own multitenant validation logic (which even accepts both V1 and V2 tokens)
 				options.TokenValidationParameters.IssuerValidator = AadIssuerValidator.ValidateAadIssuer;
 			});
+
+			services.Configure<AuthOptions>(Configuration);
 		}
 
 		private void ConfigureApplicationServices(IServiceCollection services, string connectionString)
