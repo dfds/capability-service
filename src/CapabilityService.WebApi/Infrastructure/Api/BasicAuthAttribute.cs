@@ -14,7 +14,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 		{
 		}
 
-		public bool IsAuthorized(string validUserName, string validPassword, string basicAuthHeader)
+		public bool IsAuthorized(string validBasicAuth,string basicAuthHeader)
 		{
 			if (String.IsNullOrEmpty(basicAuthHeader)) { return false; }
 
@@ -24,12 +24,8 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 
 			var decodedBasicAuth =
 				System.Text.Encoding.ASCII.GetString(Convert.FromBase64String(basicAuthHeaderWithoutBasic));
-
-			var usernameAndPasswordSplit = decodedBasicAuth.Split(':');
-			var userName = usernameAndPasswordSplit[0];
-			var password = usernameAndPasswordSplit[1];
-
-			return userName == validUserName && password == validPassword;
+			
+			return decodedBasicAuth == validBasicAuth;
 		}
 
 		public override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -41,8 +37,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			var authorizationHeaderValue = filterContext.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
 			var isAuthorized = IsAuthorized(
-				authOptions.CAPABILITY_SERVICE_BASIC_AUTH_USER,
-				authOptions.CAPABILITY_SERVICE_BASIC_AUTH_PASS,
+				authOptions.CAPABILITY_SERVICE_BASIC_AUTH_USER_AND_PASS,
 				authorizationHeaderValue
 			);
 
