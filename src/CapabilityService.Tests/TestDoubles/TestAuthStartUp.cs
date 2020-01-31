@@ -7,9 +7,9 @@ using Microsoft.Extensions.Options;
 
 namespace DFDS.CapabilityService.Tests.TestDoubles
 {
-	public class AlwaysAllowAuthStartUp : Startup
+	public class TestAuthStartUp : Startup
 	{
-		public AlwaysAllowAuthStartUp(IConfiguration configuration) : base(configuration)
+		public TestAuthStartUp(IConfiguration configuration) : base(configuration)
 		{
 		}
 
@@ -26,8 +26,8 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
 
 			var authOptions = Options.Create(new AuthOptions
 			{
-				CAPABILITY_SERVICE_BASIC_AUTH_PASS = "thisisindeedapassword",
-				CAPABILITY_SERVICE_BASIC_AUTH_USER = "user"
+				CAPABILITY_SERVICE_BASIC_AUTH_USER = BasicAuthCredentials.BASIC_AUTHENTICATION_USER,
+				CAPABILITY_SERVICE_BASIC_AUTH_PASS = BasicAuthCredentials.BASIC_AUTHENTICATION_PASSWORD
 			});
 			services.AddSingleton<IOptions<AuthOptions>>(authOptions);
 		}
