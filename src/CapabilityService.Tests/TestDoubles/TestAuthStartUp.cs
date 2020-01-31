@@ -26,8 +26,7 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
 
 			var authOptions = Options.Create(new AuthOptions
 			{
-				CAPABILITY_SERVICE_BASIC_AUTH_USER = BasicAuthCredentials.BASIC_AUTHENTICATION_USER,
-				CAPABILITY_SERVICE_BASIC_AUTH_PASS = BasicAuthCredentials.BASIC_AUTHENTICATION_PASSWORD
+				CAPABILITY_SERVICE_BASIC_AUTH_USER_AND_PASS = BasicAuthCredentials.BASIC_AUTHENTICATION_USER_AND_PASS
 			});
 			services.AddSingleton<IOptions<AuthOptions>>(authOptions);
 		}

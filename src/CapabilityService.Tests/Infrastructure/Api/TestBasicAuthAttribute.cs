@@ -10,14 +10,12 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 		{
 			// Arrange
 			var authHeader = "Basic dXNlcjp0aGlzaXNpbmRlZWRhcGFzc3dvcmQ=";
-			var validUserName = "user";
-			var validPassword = "thisisindeedapassword";
+			var validUserAndPassword = "user:thisisindeedapassword";
 			var basicAuthAttribute = new BasicAuthAttribute();
 			
 			// Act
 			var isAuthorized = basicAuthAttribute.IsAuthorized(
-				validUserName, 
-				validPassword, 
+				validUserAndPassword,
 				authHeader
 			);
 			
@@ -31,14 +29,12 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
 		{
 			// Arrange
 			string authHeader = null;
-			var validUserName = "user";
-			var validPassword = "thisisindeedapassword";
+			var validUserAndPassword = "user:thisisindeedapassword";
 			var basicAuthAttribute = new BasicAuthAttribute();
 			
 			// Act
 			var isAuthorized = basicAuthAttribute.IsAuthorized(
-				validUserName, 
-				validPassword, 
+				validUserAndPassword,
 				authHeader
 			);
 			
