@@ -12,25 +12,43 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 	{
 		public BasicAuthAttribute()
 		{
-			
 		}
-		
+
+		public bool IsAuthorized(string validUserName, string validPassword, string basicAuthHeader)
+		{
+			if (String.IsNullOrEmpty(basicAuthHeader)) { return false; }
+
+			var basicAuthHeaderWithoutBasic = basicAuthHeader
+				.Replace("Basic ", "")
+				.Replace("basic ", "");
+
+			var decodedBasicAuth =
+				System.Text.Encoding.ASCII.GetString(Convert.FromBase64String(basicAuthHeaderWithoutBasic));
+
+			var usernameAndPasswordSplit = decodedBasicAuth.Split(':');
+			var userName = usernameAndPasswordSplit[0];
+			var password = usernameAndPasswordSplit[1];
+
+			return userName == validUserName && password == validPassword;
+		}
+
 		public override void OnActionExecuting(ActionExecutingContext filterContext)
 		{
-			var svc = filterContext.HttpContext.RequestServices;
-			var req = filterContext.HttpContext.Request;
-			var auth = req.Headers["Authorization"];
-			var options = svc.GetService<IOptions<AuthOptions>>().Value;
+			var authOptions = filterContext.HttpContext.RequestServices
+				.GetService<IOptions<AuthOptions>>()
+				.Value;
 			
-			if (!String.IsNullOrEmpty(auth))
-			{
-				var cred = System.Text.Encoding.ASCII.GetString(Convert.FromBase64String(auth.First().Substring(6))).Split(':');
-				var user = new { Name = cred[0], Pass = cred[1] };
-				if (user.Name == options.CAPABILITY_SERVICE_BASIC_AUTH_USER && user.Pass == options.CAPABILITY_SERVICE_BASIC_AUTH_PASS) return;
-			}
+			var authorizationHeaderValue = filterContext.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+
+			var isAuthorized = IsAuthorized(
+				authOptions.CAPABILITY_SERVICE_BASIC_AUTH_USER,
+				authOptions.CAPABILITY_SERVICE_BASIC_AUTH_PASS,
+				authorizationHeaderValue
+			);
+
+			if (isAuthorized) { return; }
+
 			filterContext.Result = new UnauthorizedResult();
 		}
 	}
-	
-	
 }
