@@ -57,7 +57,8 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 			_topicController = new TopicController(
 				_serviceProvider.GetService<ITopicDomainService>(),
 				_serviceProvider.GetService<ITopicRepository>(),
-				_serviceProvider.GetService<ICapabilityRepository>()
+				_serviceProvider.GetService<ICapabilityRepository>(),
+				_serviceProvider.GetService<IServiceAccountService>()
 			);
 
 
@@ -71,7 +72,8 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 			_topicController = new TopicController(
 				_serviceProvider.GetService<ITopicDomainService>(),
 				_serviceProvider.GetService<ITopicRepository>(),
-				_serviceProvider.GetService<ICapabilityRepository>()
+				_serviceProvider.GetService<ICapabilityRepository>(),
+				_serviceProvider.GetService<IServiceAccountService>()
 			);
 
 

@@ -22,6 +22,7 @@ using System.Reflection;
 using DFDS.CapabilityService.WebApi.Application.Authentication;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Application;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Events;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -53,6 +54,8 @@ namespace DFDS.CapabilityService.WebApi
             services.AddKafkaStreaming();
             ConfigureDomainEvents(services);
             services.AddMetrics();
+
+            services.AddHttpClient<IServiceAccountService, ServiceAccountService>();
 
             services
                 .AddPrometheusHealthCheck()

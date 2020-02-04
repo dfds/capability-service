@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Topic = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models.Topic;
 using ITopicRepository = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories.ITopicRepository;
+using MessageContract = DFDS.CapabilityService.WebApi.Domain.Models.MessageContract;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
@@ -20,16 +21,19 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 		private readonly ITopicDomainService _topicDomainService;
 		private readonly ITopicRepository _topicRepository;
 		private readonly ICapabilityRepository _capabilityRepository;
+		private readonly IServiceAccountService _serviceAccountService;
 
 		public TopicController(
 			ITopicDomainService topicDomainService,
 			ITopicRepository topicRepository,
-			ICapabilityRepository capabilityRepository
+			ICapabilityRepository capabilityRepository,
+			IServiceAccountService serviceAccountService
 		)
 		{
 			_topicDomainService = topicDomainService;
 			_topicRepository = topicRepository;
 			_capabilityRepository = capabilityRepository;
+			_serviceAccountService = serviceAccountService;
 		}
 
 		[HttpGet("{id}/topics")]
@@ -79,6 +83,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					topic,
 					input.DryRun
 				);
+
+				if (!input.DryRun)
+				{
+					await _serviceAccountService.EnsureServiceAccountAvailability(capability, new Domain.Models.Topic(topic.Id.Id, topic.Name.Name, topic.Description, false, topic.CapabilityId, new MessageContract[]{}));
+				}
 
 				var topicDto = DTOs.Topic.CreateFrom(topic);
 				return Ok(topicDto);
