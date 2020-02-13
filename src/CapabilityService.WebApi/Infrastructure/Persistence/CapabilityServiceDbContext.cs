@@ -12,7 +12,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
         }
 
         public DbSet<Capability> Capabilities { get; set; }
-        public DbSet<Topic> Topics { get; set; }
         public DbSet<DomainEventEnvelope> DomainEvents { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -44,7 +43,9 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             modelBuilder.Entity<Membership>(cfg =>
             {
                 cfg.ToTable("Membership");
+
                 cfg.Property(e => e.Id).ValueGeneratedNever();
+
                 cfg.OwnsOne(x => x.Member)
                    .Property(x => x.Email)
                    .HasColumnName("MemberEmail");
@@ -54,21 +55,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             {
                 cfg.HasKey(x => x.EventId);
                 cfg.ToTable("DomainEvent");
-            });
-
-            modelBuilder.Entity<Topic>(cfg =>
-            {
-                cfg.ToTable("Topic");
-                cfg.Ignore(x => x.DomainEvents);
-                cfg.HasMany<MessageContract>(x => x.MessageContracts)
-                    .WithOne()
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            modelBuilder.Entity<MessageContract>(cfg =>
-            {
-                cfg.ToTable("MessageContract");
-                cfg.HasKey(x => x.Type);
             });
         }
     }

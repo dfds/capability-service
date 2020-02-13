@@ -11,12 +11,10 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
     public class StubCapabilityApplicationService : ICapabilityApplicationService
     {
         private readonly List<Capability> _stubCapabilities;
-        private readonly Topic[] _stubTopics;
 
-        public StubCapabilityApplicationService(Capability[] stubCapabilities = null, Topic[] stubTopics = null)
+        public StubCapabilityApplicationService(Capability[] stubCapabilities = null)
         {
             _stubCapabilities = stubCapabilities?.ToList() ?? new List<Capability>();
-            _stubTopics = stubTopics ?? new Topic[0];
         }
 
         public Task<Capability> CreateCapability(string name, string description)
@@ -74,16 +72,6 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
         {
             return Task.CompletedTask;
         }
-
-        public Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId)
-        {
-            return Task.FromResult(_stubTopics.AsEnumerable());
-        }
-
-        public Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     public class ErroneousCapabilityApplicationService : ICapabilityApplicationService
@@ -136,16 +124,6 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
         }
 
         public Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
-        {
-            throw _exceptionToThrow;
-        }
-
-        public Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId)
-        {
-            throw _exceptionToThrow;
-        }
-
-        public Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
         {
             throw _exceptionToThrow;
         }
