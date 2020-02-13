@@ -2,7 +2,6 @@
 using DFDS.CapabilityService.WebApi.Application.EventHandlers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Factories;
-using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Enablers.CorrelationId;
 using DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming;
@@ -21,12 +20,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Prometheus;
 using System.Reflection;
 using DFDS.CapabilityService.WebApi.Application.Authentication;
-using DFDS.CapabilityService.WebApi.Features.Kafka;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Application;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Events;
+using DFDS.CapabilityService.WebApi.Infrastructure.Api;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+using Microsoft.Extensions.Hosting;
 
 namespace DFDS.CapabilityService.WebApi
 {
@@ -42,7 +41,7 @@ namespace DFDS.CapabilityService.WebApi
         public void ConfigureServices(IServiceCollection services)
 		{
 			services
-                .AddMvc()
+                .AddMvc(option => option.EnableEndpointRouting = false)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
             services.AddCorrelationId();
@@ -92,6 +91,8 @@ namespace DFDS.CapabilityService.WebApi
 				// we inject our own multitenant validation logic (which even accepts both V1 and V2 tokens)
 				options.TokenValidationParameters.IssuerValidator = AadIssuerValidator.ValidateAadIssuer;
 			});
+
+			services.Configure<AuthOptions>(Configuration);
 		}
 
 		private void ConfigureApplicationServices(IServiceCollection services, string connectionString)
@@ -158,7 +159,8 @@ namespace DFDS.CapabilityService.WebApi
             scanner.EnsureNoUnregisteredDomainEventsIn(Assembly.GetExecutingAssembly());
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+      
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCorrelationId();
             

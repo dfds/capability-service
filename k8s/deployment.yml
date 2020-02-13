@@ -9,7 +9,12 @@ metadata:
     app: capability-service
     component: capability-service
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: capability-service
@@ -61,6 +66,11 @@ spec:
             secretKeyRef:
               name: capability-service-db
               key: connection-string
+        - name: CAPABILITY_SERVICE_BASIC_AUTH_USER_AND_PASS
+          valueFrom:
+            secretKeyRef:
+              name: capabilityservice-basic-authentication-credentials
+              key: auth
         - name: CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS
           value: $(KAFKA_BOOTSTRAP_SERVERS)
         - name: CAPABILITY_SERVICE_KAFKA_BROKER_VERSION_FALLBACK
@@ -82,21 +92,20 @@ spec:
         - name: CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY
           value: "build.selfservice.events.capabilities"
         - name: CAPABILITY_SERVICE_KAFKA_TOPIC_TOPICS
-          value: "build.selfservice.events.topics"          
+          value: "build.selfservice.events.topics"
         - name: DOTNET_USE_POLLING_FILE_WATCHER
           value: "true"
         livenessProbe:
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          timeoutSeconds: 5
-          httpGet:
-            port: web
-            path: /healthz
-        readinessProbe:
           initialDelaySeconds: 5
           periodSeconds: 60
           timeoutSeconds: 5
           httpGet:
             port: web
             path: /healthz
-          
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          httpGet:
+            port: web
+            path: /healthz

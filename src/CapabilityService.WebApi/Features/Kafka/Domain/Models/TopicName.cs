@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 
@@ -29,18 +30,19 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			string topicName
 		)
 		{
-			var cleanCapabilityName = CleanString(capabilityName.Name);
-			var max150charsCapabilityName = 150 < cleanCapabilityName.Length
-				? cleanCapabilityName.Substring(0, 150)
-				: cleanCapabilityName;
+			var cleanCapabilityNameInLowerCase =
+				CleanString(capabilityName.Name);
+
+			var max150CharsCapabilityName = 150 < cleanCapabilityNameInLowerCase.Length
+				? cleanCapabilityNameInLowerCase.Substring(0, 150)
+				: cleanCapabilityNameInLowerCase;
 			var cleanTopicName = CleanString(topicName);
 
-			var combinedString = max150charsCapabilityName + "." + cleanTopicName;
-			var max255CharString = 255 < combinedString.Length ? 
-				combinedString.Substring(0, 255) :
-				combinedString;
-			
-			return new TopicName(max255CharString);
+			var combinedString = max150CharsCapabilityName + "." + cleanTopicName;
+			var max255CharString = 255 < combinedString.Length ? combinedString.Substring(0, 255) : combinedString;
+			var max255CharStringInLowerCase = max255CharString.ToLower();
+
+			return new TopicName(max255CharStringInLowerCase);
 		}
 
 		private static string CleanString(string input)
@@ -48,7 +50,25 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			var inputLinted = input
 				.Replace(' ', '-')
 				.Replace('.', '-')
-				.Replace('_', '-');
+				.Replace('_', '-')
+				.Replace(
+					oldValue: "æ",
+					newValue: "ae",
+					ignoreCase: true,
+					culture: CultureInfo.InvariantCulture
+				)
+				.Replace(
+					oldValue: "ø",
+					newValue: "oe",
+					ignoreCase: true,
+					culture: CultureInfo.InvariantCulture
+				)
+				.Replace(
+					oldValue: "å",
+					newValue: "aa",
+					ignoreCase: true,
+					culture: CultureInfo.InvariantCulture
+				);
 
 			var chars = inputLinted
 				.Where(c =>

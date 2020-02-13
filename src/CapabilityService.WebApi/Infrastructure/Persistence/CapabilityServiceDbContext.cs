@@ -37,12 +37,14 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             modelBuilder.Entity<Context>(cfg =>
             {
                 cfg.ToTable("Context");
+                cfg.Property(e => e.Id).ValueGeneratedNever();
                 cfg.Property(x => x.Name).HasColumnName("Name");
             });
 
             modelBuilder.Entity<Membership>(cfg =>
             {
                 cfg.ToTable("Membership");
+                cfg.Property(e => e.Id).ValueGeneratedNever();
                 cfg.OwnsOne(x => x.Member)
                    .Property(x => x.Email)
                    .HasColumnName("MemberEmail");

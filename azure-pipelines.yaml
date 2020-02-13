@@ -1,0 +1,82 @@
+name: $(Build.BuildId)
+
+# Triggers Pipeline only on Master
+trigger:
+  branches:
+    include:
+    - master
+    - feature/capability
+    
+  paths:
+    # Changes to these files does not trigger a new build / release
+    exclude:
+    - README.md
+    - LICENSE
+    - azure-pipelines.yaml
+
+# Disables triggering Pipeline run at creation of every Pull Request
+pr: none
+
+# Add ADO Variable groups to pipeline
+variables:
+  - group: 'AWS ECR-PUSH PROD'
+
+stages:
+  # Continuous Integration steps
+  - stage: CI
+    displayName: 'Continuous Integration'
+    pool:
+      vmImage: 'ubuntu-latest'
+    
+    jobs:
+    - job: build
+      displayName: 'Build & Compile'    
+      steps:
+      - task: UseDotNet@2
+        displayName: 'Install .NET Core sdk'
+        inputs:
+          packageType: sdk
+          version: 3.1.100
+          installationPath: $(Agent.ToolsDirectory)/dotnet
+
+      - bash: |
+          set -eu -o pipefail
+          sudo pip install setuptools
+          sudo pip install awscli
+          chmod +x ./pipeline.sh
+          ./pipeline.sh $(Build.BuildId) $(System.DefaultWorkingDirectory)
+        displayName: Pipeline Bash Script
+        env:
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+
+    - job: test
+      displayName: 'Run test suite'
+      dependsOn: build
+      condition: succeeded('build')
+
+      steps:
+      - task: PublishTestResults@2
+        displayName: Publish Test Results
+        inputs:
+          testRunner: VSTest
+          testResultsFiles: testresults.trx
+          searchFolder: '$(System.DefaultWorkingDirectory)/output'
+        condition: succeededOrFailed()
+
+      - task: PublishCodeCoverageResults@1
+        displayName: 'Publish code coverage'
+        inputs:
+          codeCoverageTool: Cobertura
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/output/coverage.cobertura.xml'
+    
+    - job: Publish
+      displayName: 'Publish Kubernetes manifests'
+      dependsOn: test
+      condition: succeeded('test')
+
+      steps:
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact: manifests"
+        inputs:
+          PathtoPublish: k8s
+          ArtifactName: manifests
