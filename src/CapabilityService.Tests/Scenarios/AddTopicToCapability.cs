@@ -59,7 +59,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 
 			await _topicController.AddTopicToCapability(
 				_capability.Id.ToString(),
-				new TopicInput {Name = "the topic of the future", Description = "The way topics should be"});
+				new TopicInput {Name = "the topic of the future", Description = "The way topics should be", Partitions = 2});
 		}
 
 		private async Task Then_it_can_be_found_under_capability_topics()
