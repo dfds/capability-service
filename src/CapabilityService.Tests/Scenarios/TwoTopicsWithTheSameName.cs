@@ -63,7 +63,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 
 			await _topicController.AddTopicToCapability(
 				_capability.Id.ToString(),
-				new TopicInput {Name = "the topic of the future", Description = "The way topics should be"});
+				new TopicInput {Name = "the topic of the future", Description = "The way topics should be", Partitions = 2});
 		}
 
 		private async Task When_a_topic_is_added()
@@ -77,7 +77,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 
 			_secondTopicAddResponse = await _topicController.AddTopicToCapability(
 				_capability.Id.ToString(),
-				new TopicInput {Name = "the topic of the future", Description = "The way topics should be"});
+				new TopicInput {Name = "the topic of the future", Description = "The way topics should be", Partitions = 2});
 		}
 		
 		private void Then_a_conflict_response_is_returned()
