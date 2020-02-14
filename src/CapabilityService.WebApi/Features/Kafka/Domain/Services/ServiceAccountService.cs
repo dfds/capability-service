@@ -1,18 +1,18 @@
-using System.Net.Http;
-using System.Text;
+using System;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Models;
-using Newtonsoft.Json;
+using KafkaJanitor.RestClient;
+using KafkaJanitor.RestClient.Features.Access.Models;
 
 namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 {
 	public class ServiceAccountService : IServiceAccountService
 	{
-		private readonly HttpClient _httpClient;
+		private readonly IRestClient _kafkaJanitorClient;
 
-		public ServiceAccountService(HttpClient httpClient)
+		public ServiceAccountService(IRestClient kafkaJanitorClient)
 		{
-			_httpClient = httpClient;
+			_kafkaJanitorClient = kafkaJanitorClient;
 		}
 		
 		public async Task EnsureServiceAccountAvailability(Capability capability, Topic topic)
@@ -23,13 +23,8 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 				CapabilityId = capability.Id.ToString()
 			};
 			
-			var req = await _httpClient.PostAsync("http://localhost:5000/api/serviceaccount/request", new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json"));
+			await _kafkaJanitorClient.Access.RequestAsync(payload);
 		}
 	}
 	
-	public class ServiceAccountRequestInput
-	{
-		public string CapabilityName { get; set; }
-		public string CapabilityId { get; set; }
-	}
 }

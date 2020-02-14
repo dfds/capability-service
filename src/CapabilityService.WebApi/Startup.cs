@@ -24,6 +24,7 @@ using DFDS.CapabilityService.WebApi.Features.Kafka.Application;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Events;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api;
+using KafkaJanitor.RestClient;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Hosting;
@@ -55,7 +56,9 @@ namespace DFDS.CapabilityService.WebApi
             ConfigureDomainEvents(services);
             services.AddMetrics();
 
-            services.AddHttpClient<IServiceAccountService, ServiceAccountService>();
+            services.AddKafkaJanitorRestClient(Configuration);
+            services.AddTransient<IServiceAccountService, ServiceAccountService>();
+
 
             services
                 .AddPrometheusHealthCheck()
