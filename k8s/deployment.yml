@@ -95,6 +95,8 @@ spec:
           value: "build.selfservice.events.topics"
         - name: DOTNET_USE_POLLING_FILE_WATCHER
           value: "true"
+        - name: KAFKAJANITOR_API_ENDPOINT
+          value: "http://kafka-janitor"
         livenessProbe:
           initialDelaySeconds: 5
           periodSeconds: 60
