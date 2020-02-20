@@ -57,7 +57,6 @@ namespace DFDS.CapabilityService.WebApi
             services.AddMetrics();
 
             services.AddKafkaJanitorRestClient(Configuration);
-            services.AddTransient<IServiceAccountService, ServiceAccountService>();
 
 
             services
