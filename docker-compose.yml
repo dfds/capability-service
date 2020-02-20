@@ -12,7 +12,6 @@ services:
           - capability-service
     ports:
       - "50900:50900"
-      - "8080:8080"
     depends_on:
       - db-migration
       - kafka

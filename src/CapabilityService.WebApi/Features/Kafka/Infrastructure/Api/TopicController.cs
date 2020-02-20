@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClients;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,16 +21,18 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 		private readonly ITopicDomainService _topicDomainService;
 		private readonly ITopicRepository _topicRepository;
 		private readonly ICapabilityRepository _capabilityRepository;
-
+		private readonly IKafkaJanitorRestClient _kafkaJanitorRestClient;
 		public TopicController(
 			ITopicDomainService topicDomainService,
 			ITopicRepository topicRepository,
-			ICapabilityRepository capabilityRepository
+			ICapabilityRepository capabilityRepository, 
+			IKafkaJanitorRestClient kafkaJanitorRestClient
 		)
 		{
 			_topicDomainService = topicDomainService;
 			_topicRepository = topicRepository;
 			_capabilityRepository = capabilityRepository;
+			_kafkaJanitorRestClient = kafkaJanitorRestClient;
 		}
 
 		[HttpGet("{id}/topics")]
@@ -81,6 +84,10 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					input.DryRun
 				);
 
+				if (input.DryRun) { return Ok(DTOs.Topic.CreateFrom(topic)); }
+
+				await _kafkaJanitorRestClient.CreateTopic(topic, capability);
+				
 				var topicDto = DTOs.Topic.CreateFrom(topic);
 				actionResult = Ok(topicDto);
 			}

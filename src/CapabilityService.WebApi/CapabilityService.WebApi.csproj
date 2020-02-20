@@ -19,6 +19,7 @@
     <PackageReference Include="Confluent.Kafka" Version="1.1.0" />
     <PackageReference Include="CorrelationId" Version="2.1.0" />
     <PackageReference Include="Hashids.net" Version="1.2.2" />
+    <PackageReference Include="KafkaJanitor.RestClient" Version="0.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
