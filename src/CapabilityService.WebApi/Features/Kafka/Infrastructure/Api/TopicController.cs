@@ -70,6 +70,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 				_capabilityRepository.Get(capabilityId);
 			var capabilityName = new CapabilityName(capability.Name);
 
+			IActionResult actionResult;
 			try
 			{
 				var topic = Topic.Create(
@@ -90,14 +91,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 
 				await _kafkaJanitorRestClient.CreateTopic(topic, capability);
 				
-				return Ok(DTOs.Topic.CreateFrom(topic));
+				var topicDto = DTOs.Topic.CreateFrom(topic);
+				actionResult = Ok(topicDto);
 			}
-			catch (Exception exception)
-			{
-				var actionResult = ExceptionToStatusCode.Convert(exception);
-				if (actionResult == null) throw;
-				return actionResult;
-			}
+			catch (Exception exception) when (ExceptionToStatusCode.CanConvert(exception, out actionResult)) { }
+
+			return actionResult;
 		}
 	}
 }

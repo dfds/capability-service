@@ -160,10 +160,9 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
             using (var builder = new HttpClientBuilder())
             {
                 var stubCapability = new CapabilityBuilder().Build();
-                var stubTopic = new TopicBuilder().Build();
 
                 var client = builder
-                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: new[] {stubCapability}, stubTopics: new[] {stubTopic}))
+                    .WithService<ICapabilityApplicationService>(new StubCapabilityApplicationService(stubCapabilities: new[] {stubCapability}))
                     .Build();
 
                 var response = await client.GetAsync($"api/v1/capabilities/{stubCapability.Id}");

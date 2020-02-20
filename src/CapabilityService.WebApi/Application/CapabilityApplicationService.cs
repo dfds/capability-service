@@ -12,16 +12,13 @@ namespace DFDS.CapabilityService.WebApi.Application
     public class CapabilityApplicationService : ICapabilityApplicationService
     {
         private readonly ICapabilityRepository _capabilityRepository;
-        private readonly ITopicRepository _topicRepository;
         private readonly ICapabilityFactory _capabilityFactory;
         public CapabilityApplicationService(
             ICapabilityRepository capabilityRepository,
-            ITopicRepository topicRepository, 
             ICapabilityFactory capabilityFactory
         )
         {
             _capabilityRepository = capabilityRepository;
-            _topicRepository = topicRepository;
             _capabilityFactory = capabilityFactory;
         }
 
@@ -36,7 +33,7 @@ namespace DFDS.CapabilityService.WebApi.Application
 
         public async Task<Capability> UpdateCapability(Guid id, string newName, string newDescription)
         {
-            _capabilityFactory.Create(newName, newDescription);
+            await _capabilityFactory.Create(newName, newDescription);
 
 
             var capability = await _capabilityRepository.Get(id);
@@ -88,23 +85,6 @@ namespace DFDS.CapabilityService.WebApi.Application
             }
 
             capability.UpdateContext(context.Id, awsAccountId, awsRoleArn, awsRoleEmail);
-        }
-
-        public async Task<IEnumerable<Topic>> GetTopicsForCapability(Guid capabilityId) =>
-            await _topicRepository.GetByCapability(capabilityId);
-
-        public async Task AddTopic(Guid capabilityId, string topicName, string topicDescription, bool isTopicPrivate)
-        {
-            var capability = await _capabilityRepository.Get(capabilityId);
-
-            var existingTopicsWithSameName = await _topicRepository.FindBy(topicName);
-            if (existingTopicsWithSameName.Any())
-            {
-                throw new TopicAlreadyExistException(topicName);
-            }
-
-            var topic = capability.AddTopic(topicName, topicDescription, isTopicPrivate);
-            await _topicRepository.Add(topic);
         }
     }
 }

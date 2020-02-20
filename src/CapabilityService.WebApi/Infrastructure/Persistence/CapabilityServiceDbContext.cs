@@ -37,6 +37,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             modelBuilder.Entity<Context>(cfg =>
             {
                 cfg.ToTable("Context");
+                cfg.Property(e => e.Id).ValueGeneratedNever();
                 cfg.Property(x => x.Name).HasColumnName("Name");
             });
 
@@ -56,7 +57,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
                 cfg.HasKey(x => x.EventId);
                 cfg.ToTable("DomainEvent");
             });
-
+            
             modelBuilder.Entity<Topic>(cfg =>
             {
                 cfg.ToTable("Topic");

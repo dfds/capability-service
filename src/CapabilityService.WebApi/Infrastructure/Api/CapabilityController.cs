@@ -11,10 +11,10 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
 	[Authorize(AuthenticationSchemes = "AzureADBearer")]
 	[ApiController]
-    [Route("api/v1/capabilities")]
-    public class CapabilityController : ControllerBase
-    {
-        private readonly ICapabilityApplicationService _capabilityApplicationService;
+	[Route("api/v1/capabilities")]
+	public class CapabilityController : ControllerBase
+	{
+		private readonly ICapabilityApplicationService _capabilityApplicationService;
 
 		public CapabilityController(ICapabilityApplicationService capabilityApplicationService)
 		{
@@ -40,47 +40,39 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			var capabilityId = Guid.Empty;
 			Guid.TryParse(id, out capabilityId);
 
-			CapabilityDetails dto;
+			IActionResult actionResult;
 			try
 			{
 				var capability = await _capabilityApplicationService.GetCapability(capabilityId);
 
-				dto = CapabilityDetails.Create(capability);
+				var dto = CapabilityDetails.Create(capability);
+				actionResult = Ok(dto);
 			}
-			catch (Exception exception)
-			{
-				var actionResult = ExceptionToStatusCode.Convert(exception);
-				if (actionResult == null) throw;
-				return actionResult;
-			}
+			catch (Exception exception) when (ExceptionToStatusCode.CanConvert(exception, out actionResult)) { }
 
 
-			return Ok(dto);
+			return actionResult;
 		}
 
 		[HttpPost("")]
 		public async Task<IActionResult> CreateCapability(CapabilityInput input)
 		{
-			Domain.Models.Capability capability;
-			Capability dto;
+			IActionResult actionResult;
 			try
 			{
-				capability = await _capabilityApplicationService.CreateCapability(input.Name, input.Description);
+				var capability = await _capabilityApplicationService.CreateCapability(input.Name, input.Description);
 
-				dto = Capability.Create(capability);
-			}
-			catch (Exception exception)
-			{
-				var actionResult = ExceptionToStatusCode.Convert(exception);
-				if (actionResult == null) throw;
-				return actionResult;
-			}
+				var dto = Capability.Create(capability);
 
-			return CreatedAtAction(
-				actionName: nameof(GetCapability),
-				routeValues: new {id = capability.Id},
-				value: dto
-			);
+				actionResult = CreatedAtAction(
+					actionName: nameof(GetCapability),
+					routeValues: new {id = capability.Id},
+					value: dto
+				);
+			}
+			catch (Exception exception) when (ExceptionToStatusCode.CanConvert(exception, out actionResult)) { }
+
+			return actionResult;
 		}
 
 		[HttpPut("{id}")]
@@ -89,22 +81,21 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			var capabilityId = Guid.Empty;
 			Guid.TryParse(id, out capabilityId);
 
+
+			IActionResult actionResult;
 			try
 			{
 				var capability =
 					await _capabilityApplicationService.UpdateCapability(capabilityId, input.Name, input.Description);
 				var dto = Capability.Create(capability);
 
-				return Ok(
+				actionResult = Ok(
 					value: dto
 				);
 			}
-			catch (Exception exception)
-			{
-				var actionResult = ExceptionToStatusCode.Convert(exception);
-				if (actionResult == null) throw;
-				return actionResult;
-			}
+			catch (Exception exception) when (ExceptionToStatusCode.CanConvert(exception, out actionResult)) { }
+
+			return actionResult;
 		}
 
 
@@ -114,19 +105,15 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			var capabilityId = Guid.Empty;
 			Guid.TryParse(id, out capabilityId);
 
+			IActionResult actionResult;
 			try
 			{
 				await _capabilityApplicationService.DeleteCapability(capabilityId);
+				actionResult = Ok();
 			}
-			catch (Exception exception)
-			{
-				var actionResult = ExceptionToStatusCode.Convert(exception);
-				if (actionResult == null) throw;
-				return actionResult;
-			}
+			catch (Exception exception) when (ExceptionToStatusCode.CanConvert(exception, out actionResult)) { }
 
-
-			return Ok();
+			return actionResult;
 		}
 
 		[HttpPost("{id}/members")]
@@ -135,18 +122,15 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			var capabilityId = Guid.Empty;
 			Guid.TryParse(id, out capabilityId);
 
+			IActionResult actionResult;
 			try
 			{
 				await _capabilityApplicationService.JoinCapability(capabilityId, input.Email);
+				actionResult = Ok();
 			}
-			catch (Exception exception)
-			{
-				var actionResult = ExceptionToStatusCode.Convert(exception);
-				if (actionResult == null) throw;
-				return actionResult;
-			}
+			catch (Exception exception) when (ExceptionToStatusCode.CanConvert(exception, out actionResult)) { }
 
-			return Ok();
+			return actionResult;
 		}
 
 		[HttpDelete("{id}/members/{memberEmail}")]
@@ -156,18 +140,15 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			var capabilityId = Guid.Empty;
 			Guid.TryParse(id, out capabilityId);
 
+			IActionResult actionResult;
 			try
 			{
 				await _capabilityApplicationService.LeaveCapability(capabilityId, memberEmail);
+				actionResult = Ok();
 			}
-			catch (Exception exception)
-			{
-				var actionResult = ExceptionToStatusCode.Convert(exception);
-				if (actionResult == null) throw;
-				return actionResult;
-			}
+			catch (Exception exception) when (ExceptionToStatusCode.CanConvert(exception, out actionResult)) { }
 
-			return Ok();
+			return actionResult;
 		}
 
 		[HttpPost("{id}/contexts")]
@@ -176,18 +157,16 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			var capabilityId = Guid.Empty;
 			Guid.TryParse(id, out capabilityId);
 
+			IActionResult actionResult;
 			try
 			{
 				await _capabilityApplicationService.AddContext(capabilityId, input.Name);
-			}
-			catch (Exception exception)
-			{
-				var actionResult = ExceptionToStatusCode.Convert(exception);
-				if (actionResult == null) throw;
-				return actionResult;
-			}
 
-			return Ok();
+				actionResult = Ok();
+			}
+			catch (Exception exception) when (ExceptionToStatusCode.CanConvert(exception, out actionResult)) { }
+
+			return actionResult;
 		}
 	}
 }
