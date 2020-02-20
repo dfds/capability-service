@@ -6,13 +6,10 @@ using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClients;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
-using KafkaJanitor.RestClient;
-using KafkaJanitor.RestClient.Features.Access.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Topic = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models.Topic;
 using ITopicRepository = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories.ITopicRepository;
-using MessageContract = DFDS.CapabilityService.WebApi.Domain.Models.MessageContract;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
