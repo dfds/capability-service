@@ -1,12 +1,13 @@
 using System;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
+using DFDS.CapabilityService.Tests.TestDoubles;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClients;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
-using KafkaJanitor.RestClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -41,6 +42,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 			_serviceProvider = serviceProviderBuilder
 				.WithServicesFromStartup()
 				.WithInMemoryDb()
+				.OverwriteService(typeof(IKafkaJanitorRestClient), new StubKafkaJanitorRestClient())
 				.Build();
 		}
 
@@ -59,8 +61,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 				_serviceProvider.GetService<ITopicDomainService>(),
 				_serviceProvider.GetService<ITopicRepository>(),
 				_serviceProvider.GetService<ICapabilityRepository>(),
-				_serviceProvider.GetService<IServiceAccountService>(),
-				_serviceProvider.GetService<IRestClient>()
+				_serviceProvider.GetService<IKafkaJanitorRestClient>()
 			);
 
 
@@ -75,8 +76,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 				_serviceProvider.GetService<ITopicDomainService>(),
 				_serviceProvider.GetService<ITopicRepository>(),
 				_serviceProvider.GetService<ICapabilityRepository>(),
-				_serviceProvider.GetService<IServiceAccountService>(),
-				_serviceProvider.GetService<IRestClient>()
+				_serviceProvider.GetService<IKafkaJanitorRestClient>()
 			);
 
 
