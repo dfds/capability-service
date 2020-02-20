@@ -14,6 +14,13 @@ namespace DFDS.CapabilityService.Tests.Builders
 	{
 		readonly IServiceCollection _serviceCollection = new ServiceCollection();
 
+		public ServiceProviderBuilder OverwriteService(Type serviceType, object serviceInstance)
+		{
+			RemoveFromServiceCollection(serviceType);
+
+			_serviceCollection.AddSingleton(serviceType, serviceInstance);
+			return this;
+		}
 
 		public ServiceProviderBuilder WithServicesFromStartup()
 		{
@@ -66,7 +73,7 @@ namespace DFDS.CapabilityService.Tests.Builders
 					options.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
 				});
 		}
-		
+
 		private void RemoveFromServiceCollection(Type dbContextOptionsType)
 		{
 			var dbContextOptionsToRemove = _serviceCollection.FirstOrDefault(descriptor =>
