@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClients;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
 using KafkaJanitor.RestClient;
+using KafkaJanitor.RestClient.Features.Access.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Topic = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models.Topic;
@@ -22,22 +24,18 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 		private readonly ITopicDomainService _topicDomainService;
 		private readonly ITopicRepository _topicRepository;
 		private readonly ICapabilityRepository _capabilityRepository;
-		private readonly IServiceAccountService _serviceAccountService;
-		private readonly IRestClient _kafkaJanitorClient;
-
+		private readonly IKafkaJanitorRestClient _kafkaJanitorRestClient;
 		public TopicController(
 			ITopicDomainService topicDomainService,
 			ITopicRepository topicRepository,
-			ICapabilityRepository capabilityRepository,
-			IServiceAccountService serviceAccountService,
-			IRestClient kafkaJanitorClient
+			ICapabilityRepository capabilityRepository, 
+			IKafkaJanitorRestClient kafkaJanitorRestClient
 		)
 		{
 			_topicDomainService = topicDomainService;
 			_topicRepository = topicRepository;
 			_capabilityRepository = capabilityRepository;
-			_serviceAccountService = serviceAccountService;
-			_kafkaJanitorClient = kafkaJanitorClient;
+			_kafkaJanitorRestClient = kafkaJanitorRestClient;
 		}
 
 		[HttpGet("{id}/topics")]
@@ -88,20 +86,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					input.DryRun
 				);
 
-				if (!input.DryRun)
-				{
-					await _kafkaJanitorClient.Topics.CreateAsync(new KafkaJanitor.RestClient.Features.Topics.Models.Topic
-					{
-						Name = topic.Name.Name,
-						Description = topic.Description,
-						Partitions = topic.Partitions
-					});
-					await _serviceAccountService.EnsureServiceAccountAvailability(capability, new Domain.Models.Topic(topic.Id.Id, topic.Name.Name, topic.Description, false, topic.CapabilityId, new MessageContract[]{}));
-				}
+				if (input.DryRun) { return Ok(DTOs.Topic.CreateFrom(topic)); }
 
-				var topicDto = DTOs.Topic.CreateFrom(topic);
-				return Ok(topicDto);
-
+				await _kafkaJanitorRestClient.CreateTopic(topic, capability);
+				
+				return Ok(DTOs.Topic.CreateFrom(topic));
 			}
 			catch (Exception exception)
 			{
@@ -109,8 +98,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 				if (actionResult == null) throw;
 				return actionResult;
 			}
-
-
 		}
 	}
 }
