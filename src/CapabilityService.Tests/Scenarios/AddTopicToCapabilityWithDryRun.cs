@@ -8,6 +8,7 @@ using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClients;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
+using KafkaJanitor.RestClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -38,7 +39,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 			_serviceProvider = serviceProviderBuilder
 				.WithServicesFromStartup()
 				.WithInMemoryDb()
-				.OverwriteService(typeof(IKafkaJanitorRestClient), new StubKafkaJanitorRestClient())
+				.OverwriteService(typeof(IRestClient), new StubKafkaRestClient())
 				.Build();
 		}
 
