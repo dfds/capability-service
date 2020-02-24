@@ -22,10 +22,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 		private readonly ITopicRepository _topicRepository;
 		private readonly ICapabilityRepository _capabilityRepository;
 		private readonly IKafkaJanitorRestClient _kafkaJanitorRestClient;
+
 		public TopicController(
 			ITopicDomainService topicDomainService,
 			ITopicRepository topicRepository,
-			ICapabilityRepository capabilityRepository, 
+			ICapabilityRepository capabilityRepository,
 			IKafkaJanitorRestClient kafkaJanitorRestClient
 		)
 		{
@@ -80,14 +81,22 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 
 
 				await _topicDomainService.CreateTopic(
-					topic,
-					input.DryRun
+					topic: topic,
+					dryRun: true
 				);
 
 				if (input.DryRun) { return Ok(DTOs.Topic.CreateFrom(topic)); }
 
-				await _kafkaJanitorRestClient.CreateTopic(topic, capability);
-				
+				TaskFactoryExtensions.StartActionWithConsoleExceptions(async () =>
+				{
+					await _kafkaJanitorRestClient.CreateTopic(topic, capability);
+
+					await _topicDomainService.CreateTopic(
+						topic: topic,
+						dryRun:input.DryRun
+					);
+				});
+
 				var topicDto = DTOs.Topic.CreateFrom(topic);
 				actionResult = Ok(topicDto);
 			}

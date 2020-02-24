@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.TestDoubles;
@@ -64,21 +66,48 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 
 			await _topicController.AddTopicToCapability(
 				_capability.Id.ToString(),
-				new TopicInput {Name = "the topic of the future", Description = "The way topics should be", Partitions = 2});
+				new TopicInput
+				{
+					Name = "the topic of the future", Description = "The way topics should be", Partitions = 2
+				}
+			);
 		}
 
 		private async Task Then_it_can_be_found_under_capability_topics()
 		{
-			var actionResult = await _topicController.GetAll(_capability.Id.ToString());
-			var okResult = actionResult as OkObjectResult;
+			var topics = await DoUntilResultOr5Sec(async () =>
+			{
+				var actionResult = await _topicController
+					.GetAll(_capability.Id.ToString());
 
-			var topics = (Topic[])okResult.Value
-				.GetType()
-				.GetProperty("Items")
-				.GetValue(okResult.Value);
+				var okResult = actionResult as OkObjectResult;
+
+				var topics = (Topic[])okResult.Value
+					.GetType()
+					.GetProperty("Items")
+					.GetValue(okResult.Value);
+
+				return topics.Any() ? topics : null;
+			});
 
 
 			Assert.Single(topics);
+		}
+
+		public async Task<TResult> DoUntilResultOr5Sec<TResult>(Func<Task<TResult>> function)
+		{
+			var endTime = DateTime.Now.AddSeconds(5);
+			dynamic result = null;
+			do
+			{
+				result = await function();
+				if (result == null)
+				{
+					Thread.Sleep(1000);
+				}
+			} while (result == null && DateTime.Now < endTime);
+
+			return result;
 		}
 	}
 }
