@@ -3,27 +3,33 @@ using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 {
 	public class TopicDomainService : ITopicDomainService
 	{
-		private readonly ITopicRepository _topicRepository;
+		private readonly IServiceScopeFactory _serviceScopeFactory;
 
-		public TopicDomainService(ITopicRepository topicRepository)
+
+		public TopicDomainService(IServiceScopeFactory serviceScopeFactory)
 		{
-			_topicRepository = topicRepository;
+			_serviceScopeFactory = serviceScopeFactory;
 		}
 
 		public async Task CreateTopic(Topic topic, bool dryRun)
 		{
-			var existingTopics = await _topicRepository.GetAllAsync();
+			using (var scope = _serviceScopeFactory.CreateScope())
+			{
+				var topicRepository = scope.ServiceProvider.GetRequiredService<ITopicRepository>();
+				var existingTopics = await topicRepository.GetAllAsync();
 			
-			if(existingTopics.Any(t => t.Name.Equals(topic.Name))){ throw new TopicAlreadyExistException(topic.Name);}
+				if(existingTopics.Any(t => t.Name.Equals(topic.Name))){ throw new TopicAlreadyExistException(topic.Name);}
 
-			if(dryRun) return;
+				if(dryRun) return;
 			
-			await _topicRepository.AddAsync(topic);
+				await topicRepository.AddAsync(topic);
+			}
 		}
 	}
 }

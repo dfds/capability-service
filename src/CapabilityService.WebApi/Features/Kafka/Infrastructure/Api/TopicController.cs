@@ -23,21 +23,18 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 		private readonly ITopicRepository _topicRepository;
 		private readonly ICapabilityRepository _capabilityRepository;
 		private readonly IKafkaJanitorRestClient _kafkaJanitorRestClient;
-		private readonly IServiceScopeFactory _serviceScopeFactory;
 
 		public TopicController(
 			ITopicDomainService topicDomainService,
 			ITopicRepository topicRepository,
 			ICapabilityRepository capabilityRepository,
-			IKafkaJanitorRestClient kafkaJanitorRestClient,
-			IServiceScopeFactory serviceScopeFactory
+			IKafkaJanitorRestClient kafkaJanitorRestClient
 		)
 		{
 			_topicDomainService = topicDomainService;
 			_topicRepository = topicRepository;
 			_capabilityRepository = capabilityRepository;
 			_kafkaJanitorRestClient = kafkaJanitorRestClient;
-			_serviceScopeFactory = serviceScopeFactory;
 		}
 
 		[HttpGet("{id}/topics")]
@@ -93,17 +90,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 
 				TaskFactoryExtensions.StartActionWithConsoleExceptions(async () =>
 				{
+					await _kafkaJanitorRestClient.CreateTopic(topic, capability);
 
-					using (var scope = _serviceScopeFactory.CreateScope())
-					{
-						await _kafkaJanitorRestClient.CreateTopic(topic, capability);
-
-						var topicDomainService = scope.ServiceProvider.GetRequiredService<ITopicDomainService>();
-						await topicDomainService.CreateTopic(
-							topic: topic,
-							dryRun:input.DryRun
+					await _topicDomainService.CreateTopic(
+						topic: topic,
+						dryRun:input.DryRun
 						);
-					}
 				});
 
 				var topicDto = DTOs.Topic.CreateFrom(topic);
