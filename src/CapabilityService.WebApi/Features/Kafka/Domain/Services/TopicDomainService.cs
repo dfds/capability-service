@@ -3,14 +3,12 @@ using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 {
 	public class TopicDomainService : ITopicDomainService
 	{
 		private readonly ITopicRepository _topicRepository;
-
 
 		public TopicDomainService(ITopicRepository topicRepository)
 		{

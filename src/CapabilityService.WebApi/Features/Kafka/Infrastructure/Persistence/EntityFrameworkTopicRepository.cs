@@ -66,7 +66,6 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 					)
 				);
 
-
 				return topics;
 			}
 		}
