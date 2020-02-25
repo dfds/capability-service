@@ -8,6 +8,7 @@ using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClients;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Topic = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models.Topic;
 using ITopicRepository = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories.ITopicRepository;
 
@@ -22,18 +23,21 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 		private readonly ITopicRepository _topicRepository;
 		private readonly ICapabilityRepository _capabilityRepository;
 		private readonly IKafkaJanitorRestClient _kafkaJanitorRestClient;
+		private readonly IServiceScopeFactory _serviceScopeFactory;
 
 		public TopicController(
 			ITopicDomainService topicDomainService,
 			ITopicRepository topicRepository,
 			ICapabilityRepository capabilityRepository,
-			IKafkaJanitorRestClient kafkaJanitorRestClient
+			IKafkaJanitorRestClient kafkaJanitorRestClient,
+			IServiceScopeFactory serviceScopeFactory
 		)
 		{
 			_topicDomainService = topicDomainService;
 			_topicRepository = topicRepository;
 			_capabilityRepository = capabilityRepository;
 			_kafkaJanitorRestClient = kafkaJanitorRestClient;
+			_serviceScopeFactory = serviceScopeFactory;
 		}
 
 		[HttpGet("{id}/topics")]
@@ -89,12 +93,17 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 
 				TaskFactoryExtensions.StartActionWithConsoleExceptions(async () =>
 				{
-					await _kafkaJanitorRestClient.CreateTopic(topic, capability);
 
-					await _topicDomainService.CreateTopic(
-						topic: topic,
-						dryRun:input.DryRun
-					);
+					using (var scope = _serviceScopeFactory.CreateScope())
+					{
+						await _kafkaJanitorRestClient.CreateTopic(topic, capability);
+
+						var topicDomainService = scope.ServiceProvider.GetRequiredService<ITopicDomainService>();
+						await topicDomainService.CreateTopic(
+							topic: topic,
+							dryRun:input.DryRun
+						);
+					}
 				});
 
 				var topicDto = DTOs.Topic.CreateFrom(topic);
