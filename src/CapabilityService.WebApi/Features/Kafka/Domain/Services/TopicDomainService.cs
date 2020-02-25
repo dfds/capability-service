@@ -9,27 +9,23 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 {
 	public class TopicDomainService : ITopicDomainService
 	{
-		private readonly IServiceScopeFactory _serviceScopeFactory;
+		private readonly ITopicRepository _topicRepository;
 
 
-		public TopicDomainService(IServiceScopeFactory serviceScopeFactory)
+		public TopicDomainService(ITopicRepository topicRepository)
 		{
-			_serviceScopeFactory = serviceScopeFactory;
+			_topicRepository = topicRepository;
 		}
 
 		public async Task CreateTopic(Topic topic, bool dryRun)
 		{
-			using (var scope = _serviceScopeFactory.CreateScope())
-			{
-				var topicRepository = scope.ServiceProvider.GetRequiredService<ITopicRepository>();
-				var existingTopics = await topicRepository.GetAllAsync();
+			var existingTopics = await _topicRepository.GetAllAsync();
 			
-				if(existingTopics.Any(t => t.Name.Equals(topic.Name))){ throw new TopicAlreadyExistException(topic.Name);}
+			if(existingTopics.Any(t => t.Name.Equals(topic.Name))){ throw new TopicAlreadyExistException(topic.Name);}
 
-				if(dryRun) return;
+			if(dryRun) return;
 			
-				await topicRepository.AddAsync(topic);
-			}
+			await _topicRepository.AddAsync(topic);
 		}
 	}
 }
