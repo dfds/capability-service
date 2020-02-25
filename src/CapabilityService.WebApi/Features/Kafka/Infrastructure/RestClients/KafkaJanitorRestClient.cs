@@ -29,7 +29,8 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClient
 				new ServiceAccountRequestInput
 				{
 					CapabilityName = capability.Name, 
-					CapabilityId = capability.Id.ToString()
+					CapabilityId = capability.Id.ToString(),
+					CapabilityRootId = capability.RootId
 				}
 			);
 		}
