@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.TestDoubles;
@@ -10,6 +11,7 @@ using DFDS.CapabilityService.WebApi.Infrastructure.Api;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
 using KafkaJanitor.RestClient;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Capability = DFDS.CapabilityService.WebApi.Domain.Models.Capability;
@@ -69,8 +71,26 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 			await _topicController.AddTopicToCapability(
 				_capability.Id.ToString(),
 				new TopicInput {Name = "the topic of the future", Description = "The way topics should be", Partitions = 2});
-		}
+			
+			var topics = await DoUntilResultOr5Sec(async () =>
+			{
+				var actionResult = await _topicController
+					.GetAll(_capability.Id.ToString());
 
+				var okResult = actionResult as OkObjectResult;
+
+				var topics = (Topic[])okResult.Value
+					.GetType()
+					.GetProperty("Items")
+					.GetValue(okResult.Value);
+
+				return topics.Any() ? topics : null;
+			});
+
+
+			Assert.Single(topics);
+		}
+		
 		private async Task When_a_topic_is_added()
 		{
 			_topicController = new TopicController(
@@ -89,6 +109,22 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 		private void Then_a_conflict_response_is_returned()
 		{
 			Assert.IsType<ConflictObjectResult>(_secondTopicAddResponse);
+		}
+		
+		public async Task<TResult> DoUntilResultOr5Sec<TResult>(Func<Task<TResult>> function)
+		{
+			var endTime = DateTime.Now.AddSeconds(5);
+			dynamic result = null;
+			do
+			{
+				result = await function();
+				if (result == null)
+				{
+					Thread.Sleep(1000);
+				}
+			} while (result == null && DateTime.Now < endTime);
+
+			return result;
 		}
 
 	}
