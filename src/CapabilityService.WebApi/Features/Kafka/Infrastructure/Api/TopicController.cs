@@ -94,7 +94,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					await _topicDomainService.CreateTopic(
 						topic: topic,
 						dryRun:input.DryRun
-					);
+						);
 				});
 
 				var topicDto = DTOs.Topic.CreateFrom(topic);
