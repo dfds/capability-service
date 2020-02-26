@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,67 +6,68 @@ using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using DFDS.CapabilityService.WebApi.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistence
 {
 	public class EntityFrameworkTopicRepository : ITopicRepository
 	{
-		private readonly IServiceScopeFactory _serviceScopeFactory;
+		private readonly ICapabilityServiceDbContextFactory _capabilityServiceDbContextFactory;
+		private readonly IKafkaDbContextFactory _kafkaDbContextFactory;
+		private readonly Outbox _outbox;
 
-		public EntityFrameworkTopicRepository(IServiceScopeFactory serviceScopeFactory)
+
+		public EntityFrameworkTopicRepository(
+			IKafkaDbContextFactory kafkaDbContextFactory,
+			ICapabilityServiceDbContextFactory capabilityServiceDbContextFactory,
+			Outbox outbox)
 		{
-			_serviceScopeFactory = serviceScopeFactory;
+			_capabilityServiceDbContextFactory = capabilityServiceDbContextFactory;
+			_kafkaDbContextFactory = kafkaDbContextFactory;
+			_outbox = outbox;
 		}
 		public async Task AddAsync(Topic topic)
 		{
-			using (var scope = _serviceScopeFactory.CreateScope())
+			var kafkaDbContext = new KafkaDbContext(_kafkaDbContextFactory.Create().Options);
+			var capabilityServiceDbContext = new CapabilityServiceDbContext(_capabilityServiceDbContextFactory.Create().Options);
+			var daoTopic = EntityFramework.DAOs.Topic.CreateFrom(topic);
+		
+			await kafkaDbContext.Topics.AddAsync(daoTopic);
+
+			await kafkaDbContext.SaveChangesAsync();
+			try
 			{
-				var kafkaDbContext = scope.ServiceProvider.GetRequiredService<KafkaDbContext>();
-				var capabilityServiceDbContext = scope.ServiceProvider.GetRequiredService<CapabilityServiceDbContext>();
-				var outbox = scope.ServiceProvider.GetRequiredService<Outbox>();
-				
-				var daoTopic = EntityFramework.DAOs.Topic.CreateFrom(topic);
-			
-				await kafkaDbContext.Topics.AddAsync(daoTopic);
+				await _outbox.QueueDomainEvents(topic);
+
+				await capabilityServiceDbContext.SaveChangesAsync();
+			}
+			catch
+			{
+				kafkaDbContext.Topics.Remove(daoTopic);
 
 				await kafkaDbContext.SaveChangesAsync();
-				try
-				{
-					await outbox.QueueDomainEvents(topic);
 
-					await capabilityServiceDbContext.SaveChangesAsync();
-				}
-				catch
-				{
-					kafkaDbContext.Topics.Remove(daoTopic);
-
-					await kafkaDbContext.SaveChangesAsync();
-
-					throw;
-				}
+				throw;
 			}
+			
 		}
 
 		public async Task<IEnumerable<Topic>> GetAllAsync()
 		{
-			using (var scope = _serviceScopeFactory.CreateScope())
-			{
-				var kafkaDbContext = scope.ServiceProvider.GetRequiredService<KafkaDbContext>();
+			var kafkaDbContext = new KafkaDbContext(_kafkaDbContextFactory.Create().Options);
 
-				var daoTopics = await kafkaDbContext.Topics.ToListAsync();
+			var daoTopics = await kafkaDbContext.Topics.ToListAsync();
 
-				var topics = daoTopics.Select(t => Features.Kafka.Domain.Models.Topic.FromSimpleTypes(
-						t.Id.ToString(),
-						t.CapabilityId.ToString(),
-						t.Name,
-						t.Description,
-						t.Partitions
-					)
-				);
+			var topics = daoTopics.Select(t => Features.Kafka.Domain.Models.Topic.FromSimpleTypes(
+					t.Id.ToString(),
+					t.CapabilityId.ToString(),
+					t.Name,
+					t.Description,
+					t.Partitions
+				)
+			);
 
-				return topics;
-			}
+			return topics;
+		
 		}
 	}
 }

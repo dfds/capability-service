@@ -15,13 +15,19 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Application
 			services.TryAddTransient<ITopicRepository, EntityFrameworkTopicRepository>();
 			services.TryAddTransient<ITopicDomainService, TopicDomainService>();
 			services.TryAddTransient<IKafkaJanitorRestClient, KafkaJanitorRestClient>();
+			services.AddSingleton<IKafkaDbContextFactory>(new KafkaDbContextFactory(dataBaseConnectionString));
 			
 			services
 				.AddEntityFrameworkNpgsql()
 				.AddDbContext<KafkaDbContext>((serviceProvider, options) =>
 				{
-					options.UseNpgsql(dataBaseConnectionString);
+					ConfigureDbOptions(options, dataBaseConnectionString);
 				});
+		}
+
+		public static void ConfigureDbOptions(DbContextOptionsBuilder optionsBuilder, string databaseConnectionString)
+		{
+			optionsBuilder.UseNpgsql(databaseConnectionString);
 		}
 	}
 }
