@@ -19,6 +19,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
         {
 	        var dbContext = new CapabilityServiceDbContext(_capabilityServiceDbContextFactory.Create().Options);
 	        await dbContext.DomainEvents.AddRangeAsync(domainEvents);
+	        await dbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<DomainEventEnvelope>> GetAll()
