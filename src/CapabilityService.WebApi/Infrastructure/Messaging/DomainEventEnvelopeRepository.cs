@@ -8,21 +8,24 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 {
     public class DomainEventEnvelopeRepository: IRepository<DomainEventEnvelope>
     {
-        private readonly CapabilityServiceDbContext _dbContext;
+        private readonly ICapabilityServiceDbContextFactory _capabilityServiceDbContextFactory;
 
-        public DomainEventEnvelopeRepository(CapabilityServiceDbContext dbContext)
+        public DomainEventEnvelopeRepository(ICapabilityServiceDbContextFactory capabilityServiceDbContextFactory)
         {
-            _dbContext = dbContext;
+	        _capabilityServiceDbContextFactory = capabilityServiceDbContextFactory;
         }
 
         public async Task Add(IEnumerable<DomainEventEnvelope> domainEvents)
         {
-            await _dbContext.DomainEvents.AddRangeAsync(domainEvents);
+	        var dbContext = new CapabilityServiceDbContext(_capabilityServiceDbContextFactory.Create().Options);
+	        await dbContext.DomainEvents.AddRangeAsync(domainEvents);
+	        await dbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<DomainEventEnvelope>> GetAll()
         {
-            return await _dbContext.DomainEvents.ToListAsync();
+	        var dbContext = new CapabilityServiceDbContext(_capabilityServiceDbContextFactory.Create().Options);
+	        return await dbContext.DomainEvents.ToListAsync();
         }
     }
 }

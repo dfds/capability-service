@@ -101,7 +101,9 @@ namespace DFDS.CapabilityService.WebApi
 		}
 
 		private void ConfigureApplicationServices(IServiceCollection services, string connectionString)
-        {
+		{
+			services.AddSingleton<ICapabilityServiceDbContextFactory>(new CapabilityServiceDbContextFactory(connectionString));
+	        
             services
                 .AddEntityFrameworkNpgsql()
                 .AddDbContext<CapabilityServiceDbContext>((serviceProvider, options) =>
