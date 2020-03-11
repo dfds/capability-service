@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
 using KafkaJanitor.RestClient;
 using KafkaJanitor.RestClient.Features.Access.Models;
 using Topic = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models.Topic;
@@ -25,12 +26,15 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClient
 				Partitions = topic.Partitions
 			});
 
+			var topicPrefix = TopicName.Create(new CapabilityName(capability.Name), "");
+
 			await _kafkaJanitorClient.Access.RequestAsync(
 				new ServiceAccountRequestInput
 				{
 					CapabilityName = capability.Name, 
 					CapabilityId = capability.Id.ToString(),
-					CapabilityRootId = capability.RootId
+					CapabilityRootId = capability.RootId,
+					TopicPrefix = topicPrefix.Name
 				}
 			);
 		}
