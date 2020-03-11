@@ -2,9 +2,33 @@ version: '3.5'
 
 services:
   capability-service.webapi:
+    hostname: capability-service
+    build:
+      context: .
+      dockerfile: Dockerfile-CapabilityService.WebApi 
+    networks:
+      development:
+        aliases:
+          - capability-service
+    ports:
+      - "50900:50900"
+    depends_on:
+      - db-migration
+      - kafka
     environment:
+      - "CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING=User ID=postgres;Password=p;Host=database;Port=5432;Database=capabilitydb;"
+      - "CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS=kafka:9092"
+      - "CAPABILITY_SERVICE_KAFKA_GROUP_ID=capability-service-consumer"
+      - "CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY=build.selfservice.events.capabilities"
+      - "CAPABILITY_SERVICE_KAFKA_TOPIC_TOPICS=build.selfservice.events.topics"
+      - "CAPABILITY_SERVICE_KAFKA_ENABLE_AUTO_COMMIT=false"
+      - "ASPNETCORE_URLS=http://+:50900"
       - ASPNETCORE_ENVIRONMENT=Development
       - CAPABILITY_SERVICE_BASIC_AUTH_USER_AND_PASS=user:thisisindeedapassword
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+ kafka:
+    environment:
+      - "ADVERTISED_HOST=kafka"
