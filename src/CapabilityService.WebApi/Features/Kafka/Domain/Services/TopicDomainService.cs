@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
@@ -24,6 +25,11 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 			if(dryRun) return;
 			
 			await _topicRepository.AddAsync(topic);
+		}
+
+		public async Task<IEnumerable<Topic>> GetAllTopics()
+		{
+			return await _topicRepository.GetAllAsync();
 		}
 	}
 }

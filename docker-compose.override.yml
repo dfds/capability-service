@@ -25,10 +25,8 @@ services:
       - "ASPNETCORE_URLS=http://+:50900"
       - ASPNETCORE_ENVIRONMENT=Development
       - CAPABILITY_SERVICE_BASIC_AUTH_USER_AND_PASS=user:thisisindeedapassword
-    volumes:
-      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - KAFKAJANITOR_API_ENDPOINT=http://kafka-janitor:5000
 
- kafka:
+  kafka:
     environment:
       - "ADVERTISED_HOST=kafka"

@@ -10,6 +10,8 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public Guid CapabilityId { get; set; }
+		public DateTime Created { get; set; }
+		public DateTime LastModified { get; set; }
 
 		public int Partitions { get; set; }
 		
@@ -21,7 +23,9 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 				Name = topic.Name.Name,
 				Description = topic.Description,
 				CapabilityId = topic.CapabilityId,
-				Partitions = topic.Partitions
+				Partitions = topic.Partitions,
+				Created = topic.Created,
+				LastModified = topic.LastModified
 			};
 		}
 	}
