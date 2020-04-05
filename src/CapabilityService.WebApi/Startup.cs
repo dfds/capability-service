@@ -23,6 +23,7 @@ using DFDS.CapabilityService.WebApi.Application.Authentication;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Application;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Events;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Metrics;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api;
 using KafkaJanitor.RestClient;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
@@ -57,7 +58,8 @@ namespace DFDS.CapabilityService.WebApi
             services.AddMetrics();
 
             services.AddKafkaJanitorRestClient(Configuration);
-
+            
+            services.AddTopicMetrics();
 
             services
                 .AddPrometheusHealthCheck()
