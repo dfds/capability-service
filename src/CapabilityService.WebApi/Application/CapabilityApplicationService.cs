@@ -33,11 +33,23 @@ namespace DFDS.CapabilityService.WebApi.Application
 
         public async Task<Capability> UpdateCapability(Guid id, string newName, string newDescription)
         {
-            await _capabilityFactory.Create(newName, newDescription);
+	        var capability = await _capabilityRepository.Get(id);
 
+	        //
+	        // There is a slight issue here, where if you only want to update the description, running
+	        // the _capabilityFactory.Create tool will cause an Exception, because the Capability name already exists.
+	        // This is indeed true, but is fine in this case, since the name that already exists is the current Capability!
+	        // If you can think of a more neat solution than this 'if oldName == newName', feel free to change it.
+	        //
+	        if (capability.Name == newName)
+	        {
+		        capability.UpdateInfoFields(capability.Name, newDescription);
+		        return capability;
+	        }
+	        
+	        await _capabilityFactory.Create(newName, newDescription);
 
-            var capability = await _capabilityRepository.Get(id);
-            capability.UpdateInfoFields(newName, newDescription);
+	        capability.UpdateInfoFields(newName, newDescription);
 
             return capability;
         }
