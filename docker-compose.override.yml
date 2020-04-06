@@ -26,6 +26,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - CAPABILITY_SERVICE_BASIC_AUTH_USER_AND_PASS=user:thisisindeedapassword
       - KAFKAJANITOR_API_ENDPOINT=http://kafka-janitor:5000
+#      - CAPABILITY_SERVICE_FEATURES_TOPIC_METRICS_EVERY_X_SECONDS=5
 
   kafka:
     environment:
