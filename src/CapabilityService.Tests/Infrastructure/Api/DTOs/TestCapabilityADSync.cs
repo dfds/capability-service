@@ -14,7 +14,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
         {
             // Arrange
             var capabilityId = Guid.NewGuid();
-            var capabilityName = new CapabilityName("foo");
+            var capabilityName = new CapabilityName("Foo");
             var capabilityRootId = rootId;
             var capabilityDescription = "bar";
             var awsAccountId = "2222222222222";
@@ -50,7 +50,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
         {
             // Arrange
             var capabilityId = Guid.NewGuid();
-            var capabilityName = new CapabilityName("foo");
+            var capabilityName = new CapabilityName("Foo");
             var capabilityRootId = "foo-1234556"; // We decide between version with rootId
             var capabilityDescription = "bar";
             var awsAccountId = "2222222222222";

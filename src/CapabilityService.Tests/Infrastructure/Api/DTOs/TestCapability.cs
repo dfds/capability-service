@@ -12,7 +12,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
         {
             // Arrange
             var capabilityId = Guid.NewGuid();
-            var capabilityName = new CapabilityName("foo");
+            var capabilityName = new CapabilityName("Foo");
             var capabilityRootId = "foo-1234556";
             var capabilityDescription = "bar";
             var domainMembership = new Membership(Guid.NewGuid(), new Member("fu@baa.com"));

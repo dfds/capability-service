@@ -71,7 +71,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var content = await response.Content.ReadAsStringAsync();
                 
                 Assert.Equal(
-                    expected: $"{{\"items\":[{{\"identifier\":\"foo\",\"members\":[],\"isV1\":true,\"awsAccountId\":null,\"awsRoleArn\":null}}]}}",
+                    expected: $"{{\"items\":[{{\"identifier\":\"Foo\",\"members\":[],\"isV1\":true,\"awsAccountId\":null,\"awsRoleArn\":null}}]}}",
                     actual: content);
             }
         }
@@ -126,7 +126,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api
                 var content = await response.Content.ReadAsStringAsync();
 
                 Assert.Equal(
-                    expected: $"{{\"items\":[{{\"identifier\":\"foo\",\"members\":[],\"isV1\":true,\"awsAccountId\":null,\"awsRoleArn\":null}},{{\"identifier\":\"foo-582a4\",\"members\":[],\"isV1\":false,\"awsAccountId\":\"{populatedContext.AWSAccountId}\",\"awsRoleArn\":\"{populatedContext.AWSRoleArn}\"}}]}}",
+                    expected: $"{{\"items\":[{{\"identifier\":\"Foo\",\"members\":[],\"isV1\":true,\"awsAccountId\":null,\"awsRoleArn\":null}},{{\"identifier\":\"foo-582a4\",\"members\":[],\"isV1\":false,\"awsAccountId\":\"{populatedContext.AWSAccountId}\",\"awsRoleArn\":\"{populatedContext.AWSRoleArn}\"}}]}}",
                     actual: content
                 );
             }
