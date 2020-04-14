@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Events;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
@@ -23,8 +22,8 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			Name = name;
 			Description = description;
 			Partitions = partitions;
-			Created = created;
-			LastModified = lastModified;
+			Created = created.ToUniversalTime();
+			LastModified = lastModified.ToUniversalTime();
 		}
 
 		public static Topic Create(
@@ -52,7 +51,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 				name: TopicName.Create(capabilityName, name),
 				description: description,
 				partitions: partitions,
-				created: DateTime.Now,
+				created: DateTime.UtcNow,
 				lastModified: DateTime.UtcNow
 			);
 
@@ -67,8 +66,8 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		public string Description { get; private set; }
 		public Guid CapabilityId { get; private set; }
 		public int Partitions { get; private set; }
-		public DateTime Created { get; set; }
-		public DateTime LastModified { get; set; }
+		public DateTime Created { get; private set; }
+		public DateTime LastModified { get; private set; }
 
 		public static Topic FromSimpleTypes(
 			string id,
