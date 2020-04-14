@@ -14,7 +14,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
         {
             // Arrange
             var capabilityId = Guid.NewGuid();
-            var capabilityName = "foo";
+            var capabilityName = new CapabilityName("foo");
             var capabilityRootId = rootId;
             var capabilityDescription = "bar";
             var awsAccountId = "2222222222222";
@@ -35,7 +35,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
             var capabilityDto = WebApi.Infrastructure.Api.DTOs.CapabilityADSync.Create(domainCapability);
             
             // Assert
-            Assert.Equal(capabilityName, capabilityDto.Identifier);
+            Assert.Equal(capabilityName.Name, capabilityDto.Identifier);
             Assert.True(capabilityDto.IsV1);
             Assert.Null(capabilityDto.AWSRoleArn);
             Assert.Null(capabilityDto.AWSAccountId);
@@ -50,7 +50,7 @@ namespace DFDS.CapabilityService.Tests.Infrastructure.Api.DTOs
         {
             // Arrange
             var capabilityId = Guid.NewGuid();
-            var capabilityName = "foo";
+            var capabilityName = new CapabilityName("foo");
             var capabilityRootId = "foo-1234556"; // We decide between version with rootId
             var capabilityDescription = "bar";
             var awsAccountId = "2222222222222";
