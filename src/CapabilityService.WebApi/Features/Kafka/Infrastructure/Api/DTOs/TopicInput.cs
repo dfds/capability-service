@@ -7,6 +7,7 @@
 		
 		public int Partitions { get; set; }
 		
+		public int RetentionPeriodInDays { get; set; }
 		public bool DryRun { get; set; }
 	}
 }
