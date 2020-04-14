@@ -13,8 +13,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 		private readonly List<Context> _contexts = new List<Context>();
 
 
-		public string Name => _name.Name;
-		private CapabilityName _name;
+		public string Name { get; private set; }
 		public string Description { get; private set; }
 		public string RootId { get; private set; }
 		public IEnumerable<Member> Members => _memberships.Select(x => x.Member).Distinct(new MemberEqualityComparer());
@@ -32,7 +31,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 		)
 		{
 			Id = id;
-			_name = name;
+			Name = name.Name;
 			RootId = rootId;
 			Description = description;
 			_memberships.AddRange(memberships);
@@ -61,7 +60,7 @@ namespace DFDS.CapabilityService.WebApi.Domain.Models
 
 		public void UpdateInfoFields(CapabilityName newName, string newDescription)
 		{
-			_name = newName;
+			Name = newName.Name;
 			Description = newDescription;
 
 			RaiseEvent(new CapabilityUpdated(
