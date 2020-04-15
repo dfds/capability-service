@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistence.EntityFramework.DAOs
 {
@@ -14,6 +15,8 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 		public DateTime LastModified { get; set; }
 
 		public int Partitions { get; set; }
+		public Dictionary<string, object> Configurations { get; set; }
+
 		
 		public static Topic CreateFrom(Features.Kafka.Domain.Models.Topic topic)
 		{
@@ -25,7 +28,8 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 				CapabilityId = topic.CapabilityId,
 				Partitions = topic.Partitions,
 				Created = topic.Created,
-				LastModified = topic.LastModified
+				LastModified = topic.LastModified,
+				Configurations = topic.Configurations
 			};
 		}
 	}
