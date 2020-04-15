@@ -23,7 +23,8 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClient
 			{
 				Name = topic.Name.Name, 
 				Description = topic.Description, 
-				Partitions = topic.Partitions
+				Partitions = topic.Partitions,
+				Configurations = topic.Configurations
 			});
 
 			var topicPrefix = TopicName.Create(new CapabilityName(capability.Name), "");
