@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
-	public class JsonObjectTools
+	public static class JsonObjectTools
 	{
 		public static object GetValueFromJsonElement(JsonElement val)
 		{
