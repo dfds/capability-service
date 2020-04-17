@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
@@ -11,6 +12,8 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
         public Guid CapabilityId { get; set; }
 
         public int Partitions { get; set; }
+        public Dictionary<string, object> Configurations { get; set; }
+
         public static Topic CreateFrom(Features.Kafka.Domain.Models.Topic topic)
         {
             return new Topic
@@ -19,7 +22,8 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
                 Name = topic.Name.Name,
                 Description = topic.Description,
                 CapabilityId = topic.CapabilityId,
-                Partitions = topic.Partitions
+                Partitions = topic.Partitions,
+                Configurations = topic.Configurations
             };
         }
     }

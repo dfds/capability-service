@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
@@ -71,14 +73,24 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			IActionResult actionResult;
 			try
 			{
+				var configurations = new Dictionary<string, object>();
+				if (input.Configurations != null)
+				{
+					foreach (var (key, value) in input.Configurations)
+					{
+						var jsonElement = (JsonElement)value;
+						configurations[key] = JsonObjectTools.GetValueFromJsonElement(jsonElement);
+					}
+				}
+				
 				var topic = Topic.Create(
 					capabilityId,
 					capabilityName,
 					input.Name,
 					input.Description,
-					input.Partitions
+					input.Partitions,
+					configurations
 				);
-
 
 				await _topicDomainService.CreateTopic(
 					topic: topic,
