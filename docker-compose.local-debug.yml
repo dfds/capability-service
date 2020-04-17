@@ -1,0 +1,9 @@
+version: '3.5'
+
+services:
+  database:
+    ports:
+      - 38001:5432
+  kafka:
+    ports:
+      - 9092:9092

@@ -33,11 +33,13 @@ namespace DFDS.CapabilityService.WebApi.Application
 
         public async Task<Capability> UpdateCapability(Guid id, string newName, string newDescription)
         {
-            await _capabilityFactory.Create(newName, newDescription);
+	        var capability = await _capabilityRepository.Get(id);
 
-
-            var capability = await _capabilityRepository.Get(id);
-            capability.UpdateInfoFields(newName, newDescription);
+	        var name = string.IsNullOrWhiteSpace(newName)
+		        ? new CapabilityName(capability.Name)
+		        : new CapabilityName(newName);
+	        
+	        capability.UpdateInfoFields(name, newDescription);
 
             return capability;
         }
