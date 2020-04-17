@@ -62,7 +62,10 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 					t.CapabilityId.ToString(),
 					t.Name,
 					t.Description,
-					t.Partitions
+					t.Partitions,
+					t.Created,
+					t.LastModified,
+					t.Configurations
 				)
 			);
 
