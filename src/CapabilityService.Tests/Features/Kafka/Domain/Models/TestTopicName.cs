@@ -12,7 +12,7 @@ namespace DFDS.CapabilityService.Tests.Features.Kafka.Domain.Models
 		[InlineData("øæå", "oeaeaa")]
 		[InlineData("aa_aa", "aa-aa")]
 		[InlineData("!\"#¤%&/()=1a,", "1a")]
-		[InlineData("1234567890 abcdefghijklmnopqrstuvwxyzæøå.ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ!", "1234567890-abcdefghijklmnopqrstuvwxyzaeoeaa-")]
+		[InlineData("1234567890 abcdefghijklmnopqrstuvwxyzæø", "1234567890-abcdefghijklmnopqrstuvwxyzaeoe")]
 		public void WillFormatName(string inputName, string expectedName)
 		{
 			var topicName = TopicName.Create("cap-x59a1j", inputName);
@@ -21,16 +21,6 @@ namespace DFDS.CapabilityService.Tests.Features.Kafka.Domain.Models
 
 
 			Assert.Equal(expectedName, resultName);
-		}
-
-		[Fact]
-		public void WillTruncateAt55Chars()
-		{
-			var stringOf300As = new string(Enumerable.Repeat('A', 300).ToArray());
-
-			var topicName = TopicName.Create("cap-x59a1j", stringOf300As);
-
-			Assert.Equal(55, topicName.Name.Length);
 		}
 	}
 }
