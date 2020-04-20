@@ -15,7 +15,7 @@ namespace DFDS.CapabilityService.Tests.Features.Kafka.Domain.Models
 		[InlineData("1234567890 abcdefghijklmnopqrstuvwxyzæøå.ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ!", "1234567890-abcdefghijklmnopqrstuvwxyzaeoeaa-abcdefghijklmnopqrstuvwxyzaeoeaa")]
 		public void WillFormatName(string inputName, string expectedName)
 		{
-			var topicName = TopicName.Create(new CapabilityName("Cap"), inputName);
+			var topicName = TopicName.Create("cap-x59a1j", inputName);
 
 			var resultName = topicName.Name.Substring(topicName.Name.LastIndexOf('.') + 1);
 
@@ -28,19 +28,9 @@ namespace DFDS.CapabilityService.Tests.Features.Kafka.Domain.Models
 		{
 			var stringOf300As = new string(Enumerable.Repeat('A', 300).ToArray());
 
-			var topicName = TopicName.Create(new CapabilityName("Cap"), stringOf300As);
+			var topicName = TopicName.Create("cap-x59a1j", stringOf300As);
 
 			Assert.Equal(255, topicName.Name.Length);
-		}
-		
-		
-		[Fact]
-		public void WillTruncateCapabilityNameAt150Chars()
-		{
-			var stringOf255As = "A" + new string(Enumerable.Repeat('a', 254).ToArray());
-			var topicName = TopicName.Create(new CapabilityName(stringOf255As), "name");
-
-			Assert.Equal(150, topicName.Name.LastIndexOf('.'));
 		}
 	}
 }

@@ -1,5 +1,7 @@
 # Todo list
 
+Make RootId a value object
+
 /src/CapabilityService.WebApi/Infrastructure/Messaging/Outbox.cs
 Rename variables to reflect types used
 

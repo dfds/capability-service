@@ -68,7 +68,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 
 			var capability = await
 				_capabilityRepository.Get(capabilityId);
-			var capabilityName = new CapabilityName(capability.Name);
 
 			IActionResult actionResult;
 			try
@@ -85,7 +84,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 				
 				var topic = Topic.Create(
 					capabilityId,
-					capabilityName,
+					capability.RootId,
 					input.Name,
 					input.Description,
 					input.Partitions,

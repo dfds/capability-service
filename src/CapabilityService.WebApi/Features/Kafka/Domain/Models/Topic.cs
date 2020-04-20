@@ -31,7 +31,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 
 		public static Topic Create(
 			Guid capabilityId,
-			CapabilityName capabilityName,
+			string capabilityRootId,
 			string name,
 			string description,
 			int partitions,
@@ -52,7 +52,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			var topic = new Topic(
 				TopicId.Create(),
 				capabilityId: capabilityId,
-				name: TopicName.Create(capabilityName, name),
+				name: TopicName.Create(capabilityRootId, name),
 				description: description,
 				partitions: partitions,
 				created: DateTime.UtcNow,

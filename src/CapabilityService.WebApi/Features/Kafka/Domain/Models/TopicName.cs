@@ -26,19 +26,14 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		}
 
 		public static TopicName Create(
-			CapabilityName capabilityName,
+			string capabilityRootId,
 			string topicName
 		)
 		{
-			var cleanCapabilityNameInLowerCase =
-				CleanString(capabilityName.Name);
-
-			var max150CharsCapabilityName = 150 < cleanCapabilityNameInLowerCase.Length
-				? cleanCapabilityNameInLowerCase.Substring(0, 150)
-				: cleanCapabilityNameInLowerCase;
+			var cleanCapabilityRootIdInLowerCase = CleanString(capabilityRootId);
 			var cleanTopicName = CleanString(topicName);
 
-			var combinedString = max150CharsCapabilityName + "." + cleanTopicName;
+			var combinedString = cleanCapabilityRootIdInLowerCase + "." + cleanTopicName;
 			var max255CharString = 255 < combinedString.Length ? combinedString.Substring(0, 255) : combinedString;
 			var max255CharStringInLowerCase = max255CharString.ToLower();
 
