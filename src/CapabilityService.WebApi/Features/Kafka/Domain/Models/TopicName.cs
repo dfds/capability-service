@@ -34,10 +34,10 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			var cleanTopicName = CleanString(topicName);
 
 			var combinedString = cleanCapabilityRootIdInLowerCase + "." + cleanTopicName;
-			var max255CharString = 255 < combinedString.Length ? combinedString.Substring(0, 255) : combinedString;
-			var max255CharStringInLowerCase = max255CharString.ToLower();
+			var max55CharString = 55 < combinedString.Length ? combinedString.Substring(0, 55) : combinedString;
+			var max55CharStringInLowerCase = max55CharString.ToLower();
 
-			return new TopicName(max255CharStringInLowerCase);
+			return new TopicName(max55CharStringInLowerCase);
 		}
 
 		private static string CleanString(string input)
