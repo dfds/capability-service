@@ -1,6 +1,7 @@
 using System;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
@@ -28,6 +29,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 				case DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions.TopicAlreadyExistException _:
 					return new ConflictObjectResult(new {exception.Message});
 				case PartitionsCountNotAllowedException _:
+				case TopicNameTooLongException _:
 					return new UnprocessableEntityObjectResult(new {exception.Message});
 				default:
 					return null;

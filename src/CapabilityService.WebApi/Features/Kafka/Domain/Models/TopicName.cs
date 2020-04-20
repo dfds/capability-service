@@ -14,6 +14,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		}
 
 		public string Name { get; }
+		private static int MAX_TOPIC_NAME_LENGTH = 55;
 
 		protected override IEnumerable<object> GetEqualityComponents()
 		{
@@ -34,10 +35,13 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			var cleanTopicName = CleanString(topicName);
 
 			var combinedString = cleanCapabilityRootIdInLowerCase + "." + cleanTopicName;
-			var max55CharString = 55 < combinedString.Length ? combinedString.Substring(0, 55) : combinedString;
-			var max55CharStringInLowerCase = max55CharString.ToLower();
+			if (combinedString.Length > MAX_TOPIC_NAME_LENGTH)
+			{
+				throw new TopicNameTooLongException(combinedString.ToLower(), MAX_TOPIC_NAME_LENGTH);
+			}
+			var charStringInLowerCase = combinedString.ToLower();
 
-			return new TopicName(max55CharStringInLowerCase);
+			return new TopicName(charStringInLowerCase);
 		}
 
 		private static string CleanString(string input)
@@ -73,6 +77,14 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 
 
 			return new String(chars.ToArray());
+		}
+	}
+	
+	public class TopicNameTooLongException : Exception
+	{
+		public TopicNameTooLongException(string topicName, int allowedLength) : base($"Topic name '{topicName}' is {topicName.Length - allowedLength} characters longer than the allowed {allowedLength} characters.")
+		{
+			
 		}
 	}
 }
