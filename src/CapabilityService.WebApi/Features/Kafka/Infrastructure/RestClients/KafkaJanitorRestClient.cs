@@ -27,15 +27,13 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClient
 				Configurations = topic.Configurations
 			});
 
-			var topicPrefix = TopicName.Create(capability.RootId, "");
-
 			await _kafkaJanitorClient.Access.RequestAsync(
 				new ServiceAccountRequestInput
 				{
 					CapabilityName = capability.Name, 
 					CapabilityId = capability.Id.ToString(),
 					CapabilityRootId = capability.RootId,
-					TopicPrefix = topicPrefix.Name
+					TopicPrefix = TopicName.CreatePrefix(capability.RootId)
 				}
 			);
 		}
