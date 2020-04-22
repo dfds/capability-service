@@ -34,6 +34,11 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			var cleanCapabilityRootIdInLowerCase = CleanString(capabilityRootId);
 			var cleanTopicName = CleanString(topicName);
 
+			if (cleanTopicName.Length < 1)
+			{
+				throw new TopicNameTooShortException();
+			}
+
 			var combinedString = cleanCapabilityRootIdInLowerCase + "." + cleanTopicName;
 			if (combinedString.Length > MAX_TOPIC_NAME_LENGTH)
 			{
@@ -79,10 +84,26 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			return new String(chars.ToArray());
 		}
 	}
+
+	public class TopicNameException : Exception
+	{
+		public TopicNameException(string message) : base(message)
+		{
+			
+		}
+	}
 	
-	public class TopicNameTooLongException : Exception
+	public class TopicNameTooLongException : TopicNameException
 	{
 		public TopicNameTooLongException(string topicName, int allowedLength) : base($"Topic name '{topicName}' is {topicName.Length - allowedLength} characters longer than the allowed {allowedLength} characters.")
+		{
+			
+		}
+	}
+
+	public class TopicNameTooShortException : TopicNameException
+	{
+		public TopicNameTooShortException() : base("Topic name is too short.")
 		{
 			
 		}
