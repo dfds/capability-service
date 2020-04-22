@@ -30,6 +30,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					return new ConflictObjectResult(new {exception.Message});
 				case PartitionsCountNotAllowedException _:
 				case TopicNameTooLongException _:
+				case TopicNameTooShortException _:
 					return new UnprocessableEntityObjectResult(new {exception.Message});
 				default:
 					return null;
