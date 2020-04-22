@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using DFDS.CapabilityService.WebApi.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
 
 namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 {
@@ -82,30 +83,6 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 
 
 			return new String(chars.ToArray());
-		}
-	}
-
-	public class TopicNameException : Exception
-	{
-		public TopicNameException(string message) : base(message)
-		{
-			
-		}
-	}
-	
-	public class TopicNameTooLongException : TopicNameException
-	{
-		public TopicNameTooLongException(string topicName, int allowedLength) : base($"Topic name '{topicName}' is {topicName.Length - allowedLength} characters longer than the allowed {allowedLength} characters.")
-		{
-			
-		}
-	}
-
-	public class TopicNameTooShortException : TopicNameException
-	{
-		public TopicNameTooShortException() : base("Topic name is too short.")
-		{
-			
 		}
 	}
 }
