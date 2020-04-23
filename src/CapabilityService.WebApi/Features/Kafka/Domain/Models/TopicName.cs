@@ -39,7 +39,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 				throw new TopicNameTooShortException();
 			}
 
-			var combinedString = CreatePrefix(capabilityRootId) + cleanTopicName;
+			var combinedString = CreatePrefix(capabilityRootId) + "." + cleanTopicName;
 			if (combinedString.Length > MAX_TOPIC_NAME_LENGTH)
 			{
 				throw new TopicNameTooLongException(combinedString.ToLower(), MAX_TOPIC_NAME_LENGTH);
@@ -51,7 +51,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 
 		public static string CreatePrefix(string capabilityRootId)
 		{
-			return $"{CleanString(capabilityRootId)}.";
+			return CleanString(capabilityRootId);
 		}
 
 		private static string CleanString(string input)
