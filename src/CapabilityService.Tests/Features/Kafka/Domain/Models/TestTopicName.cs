@@ -13,6 +13,9 @@ namespace DFDS.CapabilityService.Tests.Features.Kafka.Domain.Models
 		[InlineData("aa_aa", "aa-aa")]
 		[InlineData("!\"#¤%&/()=1a,", "1a")]
 		[InlineData("1234567890 abcdefghijklmnopqrstuvwxyzæø", "1234567890-abcdefghijklmnopqrstuvwxyzaeoe")]
+		[InlineData("我跟你讲l", "l")]
+		[InlineData("ありがとうx", "x")]
+		[InlineData("abcdeㅁㅊㅍ허-xㅛ히ㅐㄹ", "abcde-x")]
 		public void WillFormatName(string inputName, string expectedName)
 		{
 			var topicName = TopicName.Create("cap-x59a1j", inputName);

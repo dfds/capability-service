@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
 
@@ -79,14 +80,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 					culture: CultureInfo.InvariantCulture
 				);
 
-			var chars = inputLinted
-				.Where(c =>
-					Char.IsLetterOrDigit(c) ||
-					c == '-'
-				);
-
-
-			return new String(chars.ToArray());
+			return Regex.Replace(inputLinted, "[^a-zA-Z0-9-]", "");
 		}
 	}
 }
