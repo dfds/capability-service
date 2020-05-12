@@ -48,6 +48,10 @@ spec:
           name: web
         - containerPort: 8080
           name: metrics
+        - containerPort: 8126
+          hostPort: 8126
+          name: traceport
+          protocol: TCP
         resources:
           requests:
             memory: "300Mi"
@@ -92,6 +96,14 @@ spec:
           value: "true"
         - name: KAFKAJANITOR_API_ENDPOINT
           value: "http://kafka-janitor"
+        - name: DD_APM_NON_LOCAL_TRAFFIC
+          value: "true"
+        - name: DD_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: DD_TRACE_GLOBAL_TAGS
+          value: "selfservice:capability-service"
         livenessProbe:
           initialDelaySeconds: 5
           periodSeconds: 60
