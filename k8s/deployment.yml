@@ -98,6 +98,8 @@ spec:
               fieldPath: status.hostIP
         - name: DD_TRACE_GLOBAL_TAGS
           value: "selfservice:capability-service"
+        - name: DD_LOGS_INJECTION
+          value: true
         livenessProbe:
           initialDelaySeconds: 5
           periodSeconds: 60
