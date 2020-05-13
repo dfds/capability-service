@@ -19,14 +19,14 @@ using ITopicRepository = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Rep
 
 namespace DFDS.CapabilityService.Tests.Scenarios
 {
-	public class AddTopicToCapability
+	public class AddPublicTopicToCapability
 	{
 		private IServiceProvider _serviceProvider;
 		private Capability _capability;
 		private TopicController _topicController;
 
 		[Fact]
-		public async Task AddTopicToCapabilityRecipe()
+		public async Task AddPublicTopicToCapabilityRecipe()
 		{
 			Given_a_service_collection_with_a_imMemoryDb();
 			await And_a_capability();
@@ -68,7 +68,10 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 				_capability.Id.ToString(),
 				new TopicInput
 				{
-					Name = "the topic of the future", Description = "The way topics should be", Partitions = 2
+					Name = "the topic of the future", 
+					Description = "The way topics should be", 
+					Partitions = 2,
+					Availability = "public"
 				}
 			);
 		}
@@ -92,6 +95,10 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 
 
 			Assert.Single(topics);
+			Assert.StartsWith(
+				"pub.",
+				topics.Single().Name
+			);
 		}
 
 		public async Task<TResult> DoUntilResultOr5Sec<TResult>(Func<Task<TResult>> function)
