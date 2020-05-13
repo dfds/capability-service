@@ -27,10 +27,10 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 		[Fact]
 		public async Task TopicWithTooManyPartitionsRecipe()
 		{
-			Given_a_service_collection_with_a_imMemoryDb();
+			      Given_a_service_collection_with_a_imMemoryDb();
 			await And_a_capability();
 			await When_a_topic_with_too_many_partitions_is_added();
-			await Then_Unprocessable_status_obj_is_returned();
+				  Then_Unprocessable_status_obj_is_returned();
 		}
 
 		private void Given_a_service_collection_with_a_imMemoryDb()
@@ -73,7 +73,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 				});
 		}
 
-		private async Task Then_Unprocessable_status_obj_is_returned()
+		private void Then_Unprocessable_status_obj_is_returned()
 		{
 			var nobodyCares =
 				(Microsoft.AspNetCore.Mvc.UnprocessableEntityObjectResult)addTopicToCapabilityActionResult;
