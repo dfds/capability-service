@@ -19,7 +19,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 
 		public static TopicAvailability FromString(string availability)
 		{
-			var availabilityAsLowerCase = availability.ToLower();
+			var availabilityAsLowerCase = availability != null ? availability.ToLower() : "";
 
 			if (availabilityAsLowerCase.Equals("public")) { return new TopicAvailabilityPublic(); }
 
