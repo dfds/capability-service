@@ -15,6 +15,7 @@ namespace DFDS.CapabilityService.Tests.Features.Kafka.Domain.Models
 		[InlineData("private","ありがとうx", "x")]
 		[InlineData("private","abcdeㅁㅊㅍ허-xㅛ히ㅐㄹ", "abcde-x")]
 		[InlineData("public","aa_aa", "pub.aa-aa")]
+		[InlineData(null, "baa", "baa")]
 		public void WillFormatName(string availability, string inputName, string expectedName)
 		{
 			var topicAvailability = TopicAvailability.FromString(availability);
