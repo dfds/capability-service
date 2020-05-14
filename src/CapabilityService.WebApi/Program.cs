@@ -39,7 +39,7 @@ namespace DFDS.CapabilityService.WebApi
             }
             else
             {
-                logcfg.WriteTo.Console(new CompactJsonFormatter());
+                logcfg.WriteTo.Console(new JsonFormatter());
             }
 
             Log.Logger = logcfg.CreateLogger();
