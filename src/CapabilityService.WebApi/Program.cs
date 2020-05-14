@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Serilog;
 using Serilog.Events;
-using Serilog.Formatting.Compact;
+using Serilog.Formatting.Json.JsonFormatter;
 using Serilog.Sinks.SystemConsole.Themes;
 
 namespace DFDS.CapabilityService.WebApi
