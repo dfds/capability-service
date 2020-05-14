@@ -38,6 +38,27 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			Dictionary<string, object> configurations
 		)
 		{
+			return Create(
+				capabilityId,
+				capabilityRootId,
+				name,
+				description,
+				partitions,
+				"private",
+				configurations
+			);
+		}
+
+		public static Topic Create(
+			Guid capabilityId,
+			string capabilityRootId,
+			string name,
+			string description,
+			int partitions,
+			string availability,
+			Dictionary<string, object> configurations
+		)
+		{
 			const int lowerAllowedPartitions = 1;
 			const int upperAllowedPartitions = 12;
 			if (partitions < lowerAllowedPartitions || upperAllowedPartitions < partitions)
@@ -49,10 +70,17 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 				);
 			}
 
+			var topicAvailability = TopicAvailability.FromString(availability);
+			var topicName = TopicName.Create(
+				capabilityRootId, 
+				name, 
+				topicAvailability
+			);
+			
 			var topic = new Topic(
 				TopicId.Create(),
 				capabilityId: capabilityId,
-				name: TopicName.Create(capabilityRootId, name),
+				name: topicName,
 				description: description,
 				partitions: partitions,
 				created: DateTime.UtcNow,

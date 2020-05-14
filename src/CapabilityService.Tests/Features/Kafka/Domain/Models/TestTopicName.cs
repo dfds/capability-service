@@ -1,5 +1,3 @@
-using System.Linq;
-using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
 using Xunit;
 
@@ -8,19 +6,29 @@ namespace DFDS.CapabilityService.Tests.Features.Kafka.Domain.Models
 	public class TestTopicName
 	{
 		[Theory]
-		[InlineData("FOO", "foo")]
-		[InlineData("øæå", "oeaeaa")]
-		[InlineData("aa_aa", "aa-aa")]
-		[InlineData("!\"#¤%&/()=1a,", "1a")]
-		[InlineData("1234567890 abcdefghijklmnopqrstuvwxyzæø", "1234567890-abcdefghijklmnopqrstuvwxyzaeoe")]
-		[InlineData("我跟你讲l", "l")]
-		[InlineData("ありがとうx", "x")]
-		[InlineData("abcdeㅁㅊㅍ허-xㅛ히ㅐㄹ", "abcde-x")]
-		public void WillFormatName(string inputName, string expectedName)
+		[InlineData("private", "FOO", "foo")]
+		[InlineData("private","øæå", "oeaeaa")]
+		[InlineData("private","aa_aa", "aa-aa")]
+		[InlineData("private","!\"#¤%&/()=1a,", "1a")]
+		[InlineData("private","1234567890 abcdefghijklmnopqrstuvwxyzæø", "1234567890-abcdefghijklmnopqrstuvwxyzaeoe")]
+		[InlineData("private","我跟你讲l", "l")]
+		[InlineData("private","ありがとうx", "x")]
+		[InlineData("private","abcdeㅁㅊㅍ허-xㅛ히ㅐㄹ", "abcde-x")]
+		[InlineData("public","aa_aa", "pub.aa-aa")]
+		[InlineData(null, "baa", "baa")]
+		public void WillFormatName(string availability, string inputName, string expectedName)
 		{
-			var topicName = TopicName.Create("cap-x59a1j", inputName);
+			var topicAvailability = TopicAvailability.FromString(availability);
+			var capabilityRootId = "cap-x59a1j";
+			var topicName = TopicName.Create(
+				capabilityRootId, 
+				inputName, 
+				topicAvailability
+			);
 
-			var resultName = topicName.Name.Substring(topicName.Name.LastIndexOf('.') + 1);
+			var capabilityRootIdSection = capabilityRootId + ".";
+			var resultName = topicName.Name
+				.Remove(topicName.Name.IndexOf(capabilityRootIdSection),capabilityRootIdSection.Length);
 
 
 			Assert.Equal(expectedName, resultName);

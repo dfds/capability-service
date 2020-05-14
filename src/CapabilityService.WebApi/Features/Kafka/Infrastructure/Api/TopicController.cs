@@ -88,6 +88,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					input.Name,
 					input.Description,
 					input.Partitions,
+					input.Availability,
 					configurations
 				);
 

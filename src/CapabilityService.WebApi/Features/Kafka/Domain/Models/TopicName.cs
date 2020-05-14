@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
@@ -30,7 +29,8 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 
 		public static TopicName Create(
 			string capabilityRootId,
-			string topicName
+			string topicName,
+			TopicAvailability topicAvailability
 		)
 		{
 			var cleanTopicName = CleanString(topicName);
@@ -40,11 +40,14 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 				throw new TopicNameTooShortException();
 			}
 
-			var combinedString = CreatePrefix(capabilityRootId) + "." + cleanTopicName;
+			var topicAvailableSection = topicAvailability is TopicAvailabilityPublic ? "pub." : "";
+			
+			var combinedString = topicAvailableSection + CreatePrefix(capabilityRootId) + "." + cleanTopicName;
 			if (combinedString.Length > MAX_TOPIC_NAME_LENGTH)
 			{
 				throw new TopicNameTooLongException(combinedString.ToLower(), MAX_TOPIC_NAME_LENGTH);
 			}
+
 			var charStringInLowerCase = combinedString.ToLower();
 
 			return new TopicName(charStringInLowerCase);
