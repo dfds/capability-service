@@ -97,8 +97,10 @@ spec:
             fieldRef:
               fieldPath: status.hostIP
         - name: DD_TRACE_GLOBAL_TAGS
-          value: "selfservice:capability-service"
+          value: "Service:capability-service"
         - name: DD_LOGS_INJECTION
+          value: "true"
+        - name: DD_TRACE_ANALYTICS_ENABLED
           value: "true"
         livenessProbe:
           initialDelaySeconds: 5
