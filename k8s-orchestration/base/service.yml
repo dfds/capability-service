@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: capability-service
+  namespace: selfservice
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+  labels:
+    app: capability-service
+    project: selfservice
+    department: devex
+    component: capability-service
+    scrape-service-metrics: "true"
+spec:
+  ports:
+  - name: external
+    port: 80
+    targetPort: web
+  - name: metrics
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: capability-service
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: capability-service-db
+  namespace: selfservice
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+  labels:
+    app: capability-service-db
+    project: selfservice
+    department: devex
+    component: capability-service-db
+    scrape-service-metrics: "true"
+spec:
+  ports:
+  - name: db
+    port: 5432
+    targetPort: 5432
+  selector:
+    app: capability-service-db
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  namespace: selfservice
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+  labels:
+    app: kafka
+    project: selfservice
+    department: devex
+    component: kafka
+    scrape-service-metrics: "true"
+spec:
+  ports:
+  - name: kafka
+    port: 9092
+    targetPort: 9092
+  selector:
+    app: kafka

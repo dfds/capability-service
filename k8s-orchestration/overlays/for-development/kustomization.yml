@@ -1,0 +1,10 @@
+bases:
+- ../../base
+namespace: selfservice
+
+patchesStrategicMerge:
+- deployment-patch.yml
+
+resources:
+- deployment-kafka.yml
+- deployment-capability-service-db.yml

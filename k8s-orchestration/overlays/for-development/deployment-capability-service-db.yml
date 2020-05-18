@@ -1,0 +1,30 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: capability-service-db
+  name: capability-service-db
+  namespace: selfservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: capability-service-db
+  template:
+    metadata:
+      labels:
+        app: capability-service-db
+    spec:
+      hostname: capability-service-db
+      containers:
+      - image: postgres:latest
+        name: db
+        env:
+        - name:  POSTGRES_USER
+          value: postgres
+        - name:  POSTGRES_PASSWORD
+          value: p
+        ports:
+        - containerPort: 5432
