@@ -86,11 +86,3 @@ spec:
           httpGet:
             port: web
             path: /healthz
-      - name: debug
-        image: sequoiia/aws-playground:latest
-        imagePullPolicy: Always
-        command: ["sleep"]
-        args: ["10d"]
-        env:
-          - name: TZ
-            value: "Europe/Copenhagen"
