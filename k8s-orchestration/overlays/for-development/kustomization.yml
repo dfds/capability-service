@@ -1,11 +1,11 @@
 bases:
 - ../../base
-namespace: selfservice
 
 patchesStrategicMerge:
 - deployment-patch.yml
 
 resources:
+- namespace-development-resources.yml
 - deployment-kafka.yml
 - deployment-capability-service-db.yml
 - secrets.yml

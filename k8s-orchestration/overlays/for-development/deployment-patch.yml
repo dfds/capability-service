@@ -14,7 +14,7 @@ spec:
         - name:  PGDATABASE
           value: ts
         - name:  PGHOST
-          value: capability-service-db
+          value: capability-service-db.development-resources
         - name:  PGPORT
           value: "5432"
         - name:  PGUSER
@@ -29,3 +29,6 @@ spec:
       - name: capability-service
         image: ded/capability-service:latest
         imagePullPolicy: Never
+        env:
+          - name: CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS
+            value: kafka.development-resources
