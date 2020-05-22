@@ -9,6 +9,7 @@ spec:
       initContainers:
       - name: dbmigrations
         image: ded/capability-service/dbmigrations:latest
+        imagePullPolicy: Never
         env:
         - name:  PGDATABASE
           value: ts
@@ -24,3 +25,7 @@ spec:
           value: "1"
         - name: PGSSLMODE
           value: disable
+      containers:      
+      - name: capability-service
+        image: ded/capability-service:latest
+        imagePullPolicy: Never

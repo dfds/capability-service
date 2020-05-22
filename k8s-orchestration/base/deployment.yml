@@ -30,7 +30,6 @@ spec:
     spec:
       containers:      
       - name: capability-service
-        image: capability-service
         ports:
         - containerPort: 80
           name: web
