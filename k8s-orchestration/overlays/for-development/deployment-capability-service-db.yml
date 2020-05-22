@@ -17,7 +17,6 @@ spec:
       labels:
         app: capability-service-db
     spec:
-      hostname: capability-service-db
       containers:
       - image: postgres:latest
         name: db
