@@ -8,3 +8,4 @@ patchesStrategicMerge:
 resources:
 - deployment-kafka.yml
 - deployment-capability-service-db.yml
+- secrets.yml
