@@ -9,3 +9,5 @@ resources:
 - deployment-kafka.yml
 - deployment-capability-service-db.yml
 - secrets.yml
+- service-capability-service-db.yml
+- service-kafka.yml
