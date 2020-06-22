@@ -39,7 +39,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 		}
 
 		[HttpGet("{id}/topics")]
-		public async Task<IActionResult> GetAll(string id)
+		public async Task<IActionResult> GetAllByCapability(string id)
 		{
 			var topics = await _topicRepository.GetAllAsync();
 
@@ -50,6 +50,21 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 			{
 				Items = topics
 					.Where(t => t.CapabilityId == capabilityId)
+					.Select(DTOs.Topic.CreateFrom)
+					.ToArray()
+			};
+
+			return Ok(result);
+		}
+		
+		[HttpGet("/api/v1/topics")]
+		public async Task<IActionResult> GetAll()
+		{
+			var topics = await _topicRepository.GetAllAsync();
+
+			var result = new
+			{
+				Items = topics
 					.Select(DTOs.Topic.CreateFrom)
 					.ToArray()
 			};

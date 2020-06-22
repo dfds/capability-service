@@ -81,7 +81,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 			var topics = await DoUntilResultOr5Sec(async () =>
 			{
 				var actionResult = await _topicController
-					.GetAll(_capability.Id.ToString());
+					.GetAllByCapability(_capability.Id.ToString());
 
 				var okResult = actionResult as OkObjectResult;
 

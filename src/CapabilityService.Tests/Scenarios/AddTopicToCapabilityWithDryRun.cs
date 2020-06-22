@@ -74,7 +74,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 
 		private async Task Then_it_wont_be_found_under_capability_topics()
 		{
-			var actionResult = await _topicController.GetAll(_capability.Id.ToString());
+			var actionResult = await _topicController.GetAllByCapability(_capability.Id.ToString());
 			var okResult = actionResult as OkObjectResult;
 
 			var topics = (Topic[])okResult.Value
