@@ -70,6 +70,11 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 				);
 			}
 
+			if (description.Length > 1000)
+			{
+				throw new TopicDescriptionTooLongException();
+			}
+
 			var topicAvailability = TopicAvailability.FromString(availability);
 			var topicName = TopicName.Create(
 				capabilityRootId, 
