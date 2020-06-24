@@ -1,0 +1,19 @@
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  namespace: development-resources
+  labels:
+    app: kafka
+    project: selfservice
+    department: devex
+    component: kafka
+spec:
+  ports:
+  - name: kafka
+    port: 9092
+    targetPort: 9092
+  selector:
+    app: kafka

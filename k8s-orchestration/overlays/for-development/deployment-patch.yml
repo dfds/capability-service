@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: capability-service
+  namespace: selfservice
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: dbmigrations
+        image: ded/capability-service/dbmigrations:latest
+        imagePullPolicy: Never
+        env:
+        - name:  PGDATABASE
+          value: ts
+        - name:  PGHOST
+          value: capability-service-db.development-resources
+        - name:  PGPORT
+          value: "5432"
+        - name:  PGUSER
+          value: postgres
+        - name: PGPASSWORD
+          value: p
+        - name: LOCAL_DEVELOPMENT
+          value: "1"
+        - name: PGSSLMODE
+          value: disable
+      containers:      
+      - name: capability-service
+        image: ded/capability-service:latest
+        imagePullPolicy: Never
+        env:
+          - name: CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS
+            value: kafka.development-resources
