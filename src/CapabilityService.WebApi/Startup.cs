@@ -1,4 +1,6 @@
-﻿using DFDS.CapabilityService.WebApi.Application;
+﻿using System;
+using System.Collections;
+using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Application.EventHandlers;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Factories;
@@ -48,6 +50,32 @@ namespace DFDS.CapabilityService.WebApi
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
             services.AddCorrelationId();
+
+            services.Configure<ApiOptions>(Configuration.GetSection(ApiOptions.Position));
+
+            services.AddCors(options =>
+            {
+	            var apiOptions = new ApiOptions();
+	            Configuration.GetSection(ApiOptions.Position).Bind(apiOptions);
+	            var originHosts = new ArrayList(new[] {"https://build.dfds.cloud", "https://backstage.dfds.cloud" });
+
+	            options.AddDefaultPolicy(builder =>
+	            {
+		            if (apiOptions.Cors != null && apiOptions.Cors.Origin != null)
+		            {
+			            originHosts.Add(apiOptions.Cors.Origin);
+			            builder.WithOrigins(originHosts.ToArray(typeof(string)) as string[]);
+		            }
+		            else
+		            {
+			            builder.WithOrigins(originHosts.ToArray(typeof(string)) as string[]);
+		            }
+		            
+		            builder
+			            .AllowAnyHeader()
+			            .AllowAnyMethod();
+	            });
+            });
                 
             var connectionString = Configuration["CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING"];
 
@@ -174,6 +202,8 @@ namespace DFDS.CapabilityService.WebApi
             }
 
             app.UseHttpMetrics();
+
+            app.UseCors();
 
             app.UseAuthentication();
 
