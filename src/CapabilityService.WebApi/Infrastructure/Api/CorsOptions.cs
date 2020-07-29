@@ -1,8 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
+
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 {
 	public class CorsOptions
 	{
-		
-		public string Origin { get; set; }
+		public List<string> Origin { get; set; }
 	}
 }

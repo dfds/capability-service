@@ -63,7 +63,7 @@ namespace DFDS.CapabilityService.WebApi
 	            {
 		            if (apiOptions.Cors != null && apiOptions.Cors.Origin != null)
 		            {
-			            originHosts.Add(apiOptions.Cors.Origin);
+			            originHosts.AddRange(apiOptions.Cors.Origin);
 			            builder.WithOrigins(originHosts.ToArray(typeof(string)) as string[]);
 		            }
 		            else
