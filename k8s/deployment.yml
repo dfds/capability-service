@@ -40,7 +40,7 @@ spec:
         - name: PGPASSWORD
           valueFrom:
             secretKeyRef:
-              name: 
+              name: capability-service-db
               key: password
       containers:
       - name: capability-service
