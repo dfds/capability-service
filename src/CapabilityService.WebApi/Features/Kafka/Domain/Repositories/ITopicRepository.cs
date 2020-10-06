@@ -9,5 +9,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories
 		Task AddAsync(Topic topic);
 
 		Task<IEnumerable<Topic>> GetAllAsync();
+
+		Task DeleteAsync(Topic topic);
 	}
 }

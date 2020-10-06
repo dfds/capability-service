@@ -51,6 +51,15 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 			
 		}
 
+		public async Task DeleteAsync(Topic topic)
+		{
+			var kafkaDbContext = new KafkaDbContext(_kafkaDbContextFactory.Create().Options);
+			var daoTopic = EntityFramework.DAOs.Topic.CreateFrom(topic);
+
+			kafkaDbContext.Topics.Remove(daoTopic);
+			await kafkaDbContext.SaveChangesAsync();
+		}
+
 		public async Task<IEnumerable<Topic>> GetAllAsync()
 		{
 			var kafkaDbContext = new KafkaDbContext(_kafkaDbContextFactory.Create().Options);

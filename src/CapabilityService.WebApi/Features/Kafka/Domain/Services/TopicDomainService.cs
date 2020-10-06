@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,6 +26,20 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 			if(dryRun) return;
 			
 			await _topicRepository.AddAsync(topic);
+		}
+
+		public async Task DeleteTopic(string name)
+		{
+			var existingTopics = await _topicRepository.GetAllAsync();
+			try
+			{
+				var topic = existingTopics.First(t => t.Name.Name.Equals(name));
+				await _topicRepository.DeleteAsync(topic);
+			}
+			catch (InvalidOperationException)
+			{
+				throw new TopicDoesNotExistException(TopicName.FromString(name));
+			}
 		}
 
 		public async Task<IEnumerable<Topic>> GetAllTopics()
