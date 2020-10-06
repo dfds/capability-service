@@ -9,6 +9,7 @@ using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClients;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Topic = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models.Topic;
 using ITopicRepository = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories.ITopicRepository;
@@ -128,6 +129,25 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 				actionResult = Ok(topicDto);
 			}
 			catch (Exception exception) when (ExceptionToStatusCode.CanConvert(exception, out actionResult)) { }
+
+			return actionResult;
+		}
+
+		[HttpDelete("/api/v1/topics/{name}")]
+		public async Task<IActionResult> DeleteTopicByName(string name)
+		{
+			IActionResult actionResult = Ok();
+
+			try
+			{
+				await _topicDomainService.DeleteTopic(name);
+			}
+			catch (Exception exception)
+			{
+				Console.WriteLine(exception);
+
+				ExceptionToStatusCode.CanConvert(exception, out actionResult);
+			}
 
 			return actionResult;
 		}

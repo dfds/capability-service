@@ -2,6 +2,7 @@ using System;
 using DFDS.CapabilityService.WebApi.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
@@ -33,8 +34,15 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 				case TopicDescriptionTooLongException _:
 				case TopicNameTooShortException _:
 					return new UnprocessableEntityObjectResult(new {exception.Message});
+				case TopicDoesNotExistException _:
+					return new BadRequestObjectResult(new {exception.Message});
 				default:
-					return null;
+					var resp = new JsonResult(new
+					{
+						ErrorMessage = exception.Message
+					});
+					resp.StatusCode = StatusCodes.Status500InternalServerError;
+					return resp;
 			}
 		}
 	}
