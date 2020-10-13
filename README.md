@@ -103,3 +103,8 @@ The layers act in the following order:
     1. Commit the created transaction
 
 The effect of this is that no change to database will be made if any of the operations the CapabilityApplicationService or CapabilityOutboxEnabledDecorator fails. Meaning you will not get a inconsistent state where changes made to the capability object is persisted but not reflected in a persisted DomainEventEnvelop.
+
+
+## Deployment prerequisites
+
+If the scoped service account is missing for deployment, see https://wiki.dfds.cloud/en/teams/devex/selfservice/Kubernetes-selfservice-deployment-setup
