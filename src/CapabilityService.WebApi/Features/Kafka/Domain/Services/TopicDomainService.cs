@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories;

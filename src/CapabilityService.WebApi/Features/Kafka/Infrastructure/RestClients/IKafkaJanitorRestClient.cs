@@ -7,5 +7,6 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClient
 	public interface IKafkaJanitorRestClient
 	{
 		Task CreateTopic(Topic topic, Capability capability);
+		Task RequestCredentialGeneration(Capability capability);
 	}
 }

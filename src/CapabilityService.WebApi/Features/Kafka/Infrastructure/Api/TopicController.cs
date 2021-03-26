@@ -57,6 +57,22 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 
 			return Ok(result);
 		}
+
+		[HttpGet("{id}/request-credential-generation")]
+		public async Task<IActionResult> RequestCredentialGeneration(string id)
+		{
+			var capabilityId = Guid.Empty;
+			Guid.TryParse(id, out capabilityId);
+
+			if (capabilityId == Guid.Empty) return BadRequest(new {Message = $"the capability id: {id} is malformed"});
+
+			var capability = await
+				_capabilityRepository.Get(capabilityId);
+
+			await _kafkaJanitorRestClient.RequestCredentialGeneration(capability);
+
+			return Ok();
+		}
 		
 		[HttpGet("/api/v1/topics")]
 		public async Task<IActionResult> GetAll()

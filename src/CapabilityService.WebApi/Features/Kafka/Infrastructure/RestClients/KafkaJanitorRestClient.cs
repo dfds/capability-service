@@ -37,5 +37,18 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClient
 				}
 			);
 		}
+
+		public async Task RequestCredentialGeneration(Capability capability)
+		{
+			await _kafkaJanitorClient.Access.RequestAsync(
+				new ServiceAccountRequestInput
+				{
+					CapabilityName = capability.Name, 
+					CapabilityId = capability.Id.ToString(),
+					CapabilityRootId = capability.RootId,
+					TopicPrefix = TopicName.CreatePrefix(capability.RootId)
+				}
+			);
+		}
 	}
 }
