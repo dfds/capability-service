@@ -12,6 +12,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 		}
 
 		public DbSet<Topic> Topics { get; set; }
+		public DbSet<Cluster> Clusters { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -26,6 +27,12 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 						s => JsonConvert.DeserializeObject<Dictionary<string, object>>(s)
 					)
 					.HasMaxLength(4096);
+			});
+
+			modelBuilder.Entity<Cluster>(cfg =>
+			{
+				cfg.ToTable("KafkaCluster");
+				cfg.HasKey(c => c.Id);
 			});
 		}
 	}
