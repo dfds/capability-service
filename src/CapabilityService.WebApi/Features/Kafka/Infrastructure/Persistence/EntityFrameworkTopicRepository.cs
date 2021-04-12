@@ -69,6 +69,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 			var topics = daoTopics.Select(t => Features.Kafka.Domain.Models.Topic.FromSimpleTypes(
 					t.Id.ToString(),
 					t.CapabilityId.ToString(),
+					t.KafkaClusterId.ToString(),
 					t.Name,
 					t.Description,
 					t.Partitions,

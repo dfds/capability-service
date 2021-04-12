@@ -11,6 +11,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		private Topic(
 			TopicId id,
 			Guid capabilityId,
+			Guid kafkaClusterId,
 			TopicName name,
 			string description,
 			int partitions,
@@ -21,6 +22,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		{
 			Id = id;
 			CapabilityId = capabilityId;
+			KafkaClusterId = kafkaClusterId;
 			Name = name;
 			Description = description;
 			Partitions = partitions;
@@ -31,6 +33,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 
 		public static Topic Create(
 			Guid capabilityId,
+			Guid kafkaClusterId,
 			string capabilityRootId,
 			string name,
 			string description,
@@ -40,6 +43,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		{
 			return Create(
 				capabilityId,
+				kafkaClusterId,
 				capabilityRootId,
 				name,
 				description,
@@ -51,6 +55,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 
 		public static Topic Create(
 			Guid capabilityId,
+			Guid kafkaClusterId,
 			string capabilityRootId,
 			string name,
 			string description,
@@ -85,6 +90,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			var topic = new Topic(
 				TopicId.Create(),
 				capabilityId: capabilityId,
+				kafkaClusterId: kafkaClusterId,
 				name: topicName,
 				description: description,
 				partitions: partitions,
@@ -103,6 +109,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		public TopicName Name { get; private set; }
 		public string Description { get; private set; }
 		public Guid CapabilityId { get; private set; }
+		public Guid KafkaClusterId { get; private set; }
 		public int Partitions { get; private set; }
 		public DateTime Created { get; private set; }
 		public DateTime LastModified { get; private set; }
@@ -112,6 +119,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		public static Topic FromSimpleTypes(
 			string id,
 			string capabilityId,
+			string kafkaClusterId,
 			string name,
 			string description,
 			int partitions,
@@ -123,6 +131,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			return new Topic(
 				TopicId.FromString(id),
 				Guid.Parse(capabilityId),
+				Guid.Parse(kafkaClusterId),
 				TopicName.FromString(name),
 				description,
 				partitions,
