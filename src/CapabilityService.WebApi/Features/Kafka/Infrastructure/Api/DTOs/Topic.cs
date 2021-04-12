@@ -22,6 +22,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
                 Name = topic.Name.Name,
                 Description = topic.Description,
                 CapabilityId = topic.CapabilityId,
+                KafkaClusterId = topic.KafkaClusterId,
                 Partitions = topic.Partitions,
                 Configurations = topic.Configurations
             };
