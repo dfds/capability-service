@@ -28,12 +28,12 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 			await _topicRepository.AddAsync(topic);
 		}
 
-		public async Task DeleteTopic(string name)
+		public async Task DeleteTopic(string name, string clusterId)
 		{
 			var existingTopics = await _topicRepository.GetAllAsync();
 			try
 			{
-				var topic = existingTopics.First(t => t.Name.Name.Equals(name));
+				var topic = existingTopics.First(t => t.Name.Name.Equals(name) && t.KafkaClusterId.ToString().Equals(clusterId));
 				await _topicRepository.DeleteAsync(topic);
 			}
 			catch (InvalidOperationException)

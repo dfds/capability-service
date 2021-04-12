@@ -10,7 +10,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
 	    public string Name { get; set; }
         public string Description { get; set; }
         public Guid CapabilityId { get; set; }
-
+        public Guid KafkaClusterId { get; set; }
         public int Partitions { get; set; }
         public Dictionary<string, object> Configurations { get; set; }
 

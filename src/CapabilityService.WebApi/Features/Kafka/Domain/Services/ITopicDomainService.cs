@@ -9,6 +9,6 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 		Task CreateTopic(Topic topic, bool dryRun);
 		Task<IEnumerable<Topic>> GetAllTopics();
 
-		Task DeleteTopic(string name);
+		Task DeleteTopic(string name, string clusterId);
 	}
 }

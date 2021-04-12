@@ -100,6 +100,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 				
 				var topic = Topic.Create(
 					capabilityId,
+					Guid.Parse(input.KafkaClusterId),
 					capability.RootId,
 					input.Name,
 					input.Description,
@@ -134,13 +135,13 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 		}
 
 		[HttpDelete("/api/v1/topics/{name}")]
-		public async Task<IActionResult> DeleteTopicByName(string name)
+		public async Task<IActionResult> DeleteTopicByName(string name, [FromQuery(Name = "clusterId")] string clusterId)
 		{
 			IActionResult actionResult = Ok();
 
 			try
 			{
-				await _topicDomainService.DeleteTopic(name);
+				await _topicDomainService.DeleteTopic(name, clusterId);
 			}
 			catch (Exception exception)
 			{
