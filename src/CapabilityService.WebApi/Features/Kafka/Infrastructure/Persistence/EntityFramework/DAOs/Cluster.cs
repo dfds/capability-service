@@ -10,6 +10,6 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public bool Enabled { get; set; }
-		public Guid ClusterId { get; set; }
+		public string ClusterId { get; set; }
 	}
 }

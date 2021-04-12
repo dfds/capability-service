@@ -9,9 +9,9 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public bool Enabled { get; set; }
-		public Guid ClusterId { get; set; }
+		public string ClusterId { get; set; }
 
-		private Cluster(Guid id, Guid clusterId, string name, string description, bool enabled)
+		private Cluster(Guid id, string clusterId, string name, string description, bool enabled)
 		{
 			Id = id;
 			Name = name;
@@ -20,7 +20,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			Enabled = enabled;
 		}
 
-		public static Cluster Create(Guid clusterId, string name, string description, bool enabled)
+		public static Cluster Create(string clusterId, string name, string description, bool enabled)
 		{
 			// Potential spot to add logic for restrictions, e.g. max length of Description. See the Topic class for an example.
 			var cluster = new Cluster(Guid.NewGuid(), clusterId, name, description, enabled);
