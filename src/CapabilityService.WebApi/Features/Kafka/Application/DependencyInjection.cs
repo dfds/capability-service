@@ -13,6 +13,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Application
 		public static void AddKafka(this IServiceCollection services, string dataBaseConnectionString)
 		{
 			services.TryAddTransient<ITopicRepository, EntityFrameworkTopicRepository>();
+			services.TryAddTransient<IClusterRepository, EntityFrameworkClusterRepository>();
 			services.TryAddTransient<ITopicDomainService, TopicDomainService>();
 			services.TryAddTransient<IKafkaJanitorRestClient, KafkaJanitorRestClient>();
 			services.AddSingleton<IKafkaDbContextFactory>(new KafkaDbContextFactory(dataBaseConnectionString));

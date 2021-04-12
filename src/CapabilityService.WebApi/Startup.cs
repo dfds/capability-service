@@ -154,7 +154,8 @@ namespace DFDS.CapabilityService.WebApi
 	            .Register<ContextUpdated>("context_updated", capabilitiesTopicName)
 	            .Register<AWSContextAccountCreatedIntegrationEvent>("aws_context_account_created",
 		            capabilitiesTopicName)
-	            .Register<TopicCreated>("topic_created", capabilitiesTopicsTopicName);
+	            .Register<TopicCreated>("topic_created", capabilitiesTopicsTopicName)
+	            .Register<ClusterCreated>("cluster_created", capabilitiesTopicsTopicName);
             var scanner = new DomainEventScanner(eventRegistry);
             scanner.EnsureNoUnregisteredDomainEventsIn(Assembly.GetExecutingAssembly());
         }
