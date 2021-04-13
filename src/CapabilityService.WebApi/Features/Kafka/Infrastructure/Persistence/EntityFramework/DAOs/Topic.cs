@@ -27,6 +27,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 				Name = topic.Name.Name,
 				Description = topic.Description,
 				CapabilityId = topic.CapabilityId,
+				KafkaClusterId = topic.KafkaClusterId,
 				Partitions = topic.Partitions,
 				Created = topic.Created,
 				LastModified = topic.LastModified,
