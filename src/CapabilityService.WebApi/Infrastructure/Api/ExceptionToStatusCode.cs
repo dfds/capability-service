@@ -36,6 +36,12 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					return new UnprocessableEntityObjectResult(new {exception.Message});
 				case TopicDoesNotExistException _:
 					return new BadRequestObjectResult(new {exception.Message});
+				case ClusterNotSelectedException _:
+					return new BadRequestObjectResult(new {exception.Message});
+				case ClusterDoesNotExistException _:
+					return new BadRequestObjectResult(new {exception.Message});
+				case ClusterIsDisabledException _:
+					return new BadRequestObjectResult(new {exception.Message});
 				default:
 					var resp = new JsonResult(new
 					{

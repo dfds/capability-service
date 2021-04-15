@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClients;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
@@ -96,6 +97,11 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 						var jsonElement = (JsonElement)value;
 						configurations[key] = JsonObjectTools.GetValueFromJsonElement(jsonElement);
 					}
+				}
+
+				if (String.IsNullOrEmpty(input.KafkaClusterId))
+				{
+					throw new ClusterNotSelectedException();
 				}
 				
 				var topic = Topic.Create(
