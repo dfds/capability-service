@@ -54,5 +54,36 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 		{
 			return await _topicRepository.GetAllAsync();
 		}
+
+		public async Task<Cluster> GetClusterByClusterId(string clusterId)
+		{
+			var results = await _clusterRepository.GetAllAsync();
+			try
+			{
+				return results.First(c => c.ClusterId.Equals(clusterId));
+			}
+			catch (Exception)
+			{
+				throw new ClusterDoesNotExistException(clusterId);
+			}
+		}
+
+		public async Task<Cluster> GetClusterById(Guid id)
+		{
+			var results = await _clusterRepository.GetAllAsync();
+			try
+			{
+				return results.First(c => c.Id.Equals(id));
+			}
+			catch (Exception)
+			{
+				throw new ClusterDoesNotExistException(id.ToString());
+			}
+		}
+		
+		public async Task<IEnumerable<Cluster>> GetAllClusters()
+		{
+			return await _clusterRepository.GetAllAsync();
+		}
 	}
 }

@@ -136,11 +136,13 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					dryRun: true
 				);
 
+				var kafkaCluster = await _topicDomainService.GetClusterById(topic.KafkaClusterId);
+
 				if (input.DryRun) { return Ok(DTOs.Topic.CreateFrom(topic)); }
 
 				TaskFactoryExtensions.StartActionWithConsoleExceptions(async () =>
 				{
-					await _kafkaJanitorRestClient.CreateTopic(topic, capability);
+					await _kafkaJanitorRestClient.CreateTopic(topic, capability, kafkaCluster.ClusterId);
 
 					await _topicDomainService.CreateTopic(
 						topic: topic,
