@@ -27,7 +27,7 @@ RUN curl -o /tmp/rds-combined-ca-bundle.pem https://s3.amazonaws.com/rds-downloa
 
 ENV CAPABILITY_SERVICE_KAFKA_SSL_CA_LOCATION=/app/cert.pem
 
-RUN curl -sS -o /app/cert.pem https://curl.haxx.se/ca/cacert.pem
+RUN curl -sS -o /app/cert.pem https://curl.se/ca/cacert.pem
 
 # Datadog APM
 ENV TRACER_VERSION=1.13.0
