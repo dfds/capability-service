@@ -1,3 +1,4 @@
 Id,ClusterId,Name,Description,Enabled
 fca31e5e-3eb9-4cb1-a32b-681c0408088c,lkc-4npj6,Production cluster,,True
-c7590962-0bb1-4973-97d7-e823d1d3e162,lkc-3wqzw,Development cluster #1,,False
+c7590962-0bb1-4973-97d7-e823d1d3e162,lkc-3wqzw,Development cluster #1,,True
+961c254e-6b20-4220-9803-4a2852eb11ca,lkc-9999,Development cluster #2,,False

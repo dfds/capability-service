@@ -16,7 +16,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClient
 			_kafkaJanitorClient = kafkaJanitorClient;
 		}
 
-		public async Task CreateTopic(Topic topic, Capability capability)
+		public async Task CreateTopic(Topic topic, Capability capability, string clusterId)
 		{
 			
 			await _kafkaJanitorClient.Topics.CreateAsync(new KafkaJanitor.RestClient.Features.Topics.Models.Topic
@@ -24,7 +24,8 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClient
 				Name = topic.Name.Name, 
 				Description = topic.Description, 
 				Partitions = topic.Partitions,
-				Configurations = topic.Configurations
+				Configurations = topic.Configurations,
+				ClusterId = clusterId
 			});
 
 			await _kafkaJanitorClient.Access.RequestAsync(
@@ -33,7 +34,8 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClient
 					CapabilityName = capability.Name, 
 					CapabilityId = capability.Id.ToString(),
 					CapabilityRootId = capability.RootId,
-					TopicPrefix = TopicName.CreatePrefix(capability.RootId)
+					TopicPrefix = TopicName.CreatePrefix(capability.RootId),
+					ClusterId = clusterId
 				}
 			);
 		}

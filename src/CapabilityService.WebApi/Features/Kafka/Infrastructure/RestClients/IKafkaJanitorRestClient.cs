@@ -6,6 +6,6 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClient
 {
 	public interface IKafkaJanitorRestClient
 	{
-		Task CreateTopic(Topic topic, Capability capability);
+		Task CreateTopic(Topic topic, Capability capability, string clusterId);
 	}
 }
