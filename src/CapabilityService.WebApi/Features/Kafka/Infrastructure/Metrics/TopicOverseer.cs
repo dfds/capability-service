@@ -46,13 +46,18 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Metrics
 						var kafkaJanitorRestClient = scope.ServiceProvider.GetRequiredService<IRestClient>();
 						
 						var capSvcTopics = await topicDomainService.GetAllTopics();
+
 						var clusters = await topicDomainService.GetAllClusters();
 						var connectedTopics = new List<Topic>();
 						
 						foreach (var cluster in clusters)
 						{
-							var result = await kafkaJanitorRestClient.Topics.GetAllAsync(cluster.ClusterId);
-							connectedTopics.AddRange(result);
+							if (cluster.Enabled)
+							{
+								var result = await kafkaJanitorRestClient.Topics.GetAllAsync(cluster.ClusterId);
+								connectedTopics.AddRange(result);
+								
+							}
 						}
 						topicsEquality.Set(capSvcTopics.Count() - connectedTopics.Count());
 					}
