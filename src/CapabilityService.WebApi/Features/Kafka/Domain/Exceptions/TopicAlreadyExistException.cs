@@ -5,7 +5,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions
 {
 	public class TopicAlreadyExistException : Exception
 	{
-		public TopicAlreadyExistException(TopicName name) : base($"A topic with name \"{name.Name}\" already exist.")
+		public TopicAlreadyExistException(TopicName name) : base($"A topic with name \"{name.Name}\" in the selected cluster.")
 		{
 		}
 	}

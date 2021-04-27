@@ -2,3 +2,4 @@
 
 ALTER TABLE public."KafkaTopic" ADD COLUMN "KafkaClusterId" uuid NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000';
 ALTER TABLE public."KafkaTopic" ALTER COLUMN "KafkaClusterId" DROP DEFAULT;
+ALTER TABLE public."KafkaTopic" ADD UNIQUE ("Name", "KafkaClusterId");
