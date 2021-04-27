@@ -25,7 +25,11 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 			var existingTopics = await _topicRepository.GetAllAsync();
 			var existingClusters = await _clusterRepository.GetAllAsync();
 
-			if (existingTopics.Any(t => t.Name.Equals(topic.Name))) { throw new TopicAlreadyExistException(topic.Name);}
+			if (existingTopics.Any(t =>
+			{
+				return t.Name.Equals(topic.Name) && t.KafkaClusterId.Equals(topic.KafkaClusterId);
+			})) 
+			{ throw new TopicAlreadyExistException(topic.Name);}
 
 			if (!existingClusters.Any(c => c.Id.Equals(topic.KafkaClusterId))) { throw new ClusterDoesNotExistException(topic.KafkaClusterId.ToString());}
 
