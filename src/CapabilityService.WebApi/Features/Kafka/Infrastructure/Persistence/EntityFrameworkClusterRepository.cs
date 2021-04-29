@@ -28,5 +28,24 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 
 			return clusters;
 		}
+
+		public async Task<Cluster> AddAsync(string name, string kafkaClusterId, bool enabled, string description = "")
+		{
+			var cluster = Cluster.Create(kafkaClusterId, name, description, enabled);
+
+			var kafkaDbcontext = new KafkaDbContext(_kafkaDbContextFactory.Create().Options);
+			kafkaDbcontext.Clusters.Add(new EntityFramework.DAOs.Cluster
+			{
+				Id = cluster.Id,
+				Name = cluster.Name,
+				ClusterId = cluster.ClusterId,
+				Description = cluster.Description,
+				Enabled = cluster.Enabled
+			});
+			await kafkaDbcontext.SaveChangesAsync();
+			
+
+			return cluster;
+		}
 	}
 }
