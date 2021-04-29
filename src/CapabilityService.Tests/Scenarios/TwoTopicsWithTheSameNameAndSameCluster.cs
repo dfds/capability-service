@@ -67,7 +67,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 		private async Task And_a_cluster()
 		{
 			var clusterRepository = _serviceProvider.GetService<IClusterRepository>();
-			_cluster = await clusterRepository.AddAsync("Dummy test cluster #1", "lkc-9999", true);
+			_cluster = await clusterRepository.AddAsync("Dummy test cluster #1", "lkc-9999", true, Guid.Empty);
 		}
 
 		private async Task And_a_topic()
@@ -104,7 +104,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 		}
 		
 		private async Task When_a_topic_is_added()
-		{
+			{
 			_topicController = new TopicController(
 				_serviceProvider.GetService<ITopicDomainService>(),
 				_serviceProvider.GetService<ITopicRepository>(),

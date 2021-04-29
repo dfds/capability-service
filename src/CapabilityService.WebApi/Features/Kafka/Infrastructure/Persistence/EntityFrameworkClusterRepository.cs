@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
@@ -29,9 +30,9 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 			return clusters;
 		}
 
-		public async Task<Cluster> AddAsync(string name, string kafkaClusterId, bool enabled, string description = "")
+		public async Task<Cluster> AddAsync(string name, string kafkaClusterId, bool enabled,Guid id, string description = "")
 		{
-			var cluster = Cluster.Create(kafkaClusterId, name, description, enabled);
+			var cluster = Cluster.Create(kafkaClusterId, name, description, enabled, id);
 
 			var kafkaDbcontext = new KafkaDbContext(_kafkaDbContextFactory.Create().Options);
 			kafkaDbcontext.Clusters.Add(new EntityFramework.DAOs.Cluster
