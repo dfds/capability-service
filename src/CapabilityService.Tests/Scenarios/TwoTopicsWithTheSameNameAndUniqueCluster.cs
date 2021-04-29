@@ -66,8 +66,8 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 		private async Task And_two_clusters()
 		{
 			var clusterRepository = _serviceProvider.GetService<IClusterRepository>();
-			_clusterA = await clusterRepository.AddAsync("Dummy test cluster #1", "lkc-9999", true);
-			_clusterB = await clusterRepository.AddAsync("Dummy test cluster #2", "lkc-9998", true);
+			_clusterA = await clusterRepository.AddAsync("Dummy test cluster #1", "lkc-9999", true, Guid.Empty);
+			_clusterB = await clusterRepository.AddAsync("Dummy test cluster #2", "lkc-9998", true, Guid.Empty);
 		}
 
 		private async Task And_a_topic()

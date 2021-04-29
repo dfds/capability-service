@@ -61,7 +61,7 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 		private async Task And_a_cluster()
 		{
 			var clusterRepository = _serviceProvider.GetService<IClusterRepository>();
-			_cluster = await clusterRepository.AddAsync("Dummy test cluster #1", "lkc-9999", true);
+			_cluster = await clusterRepository.AddAsync("Dummy test cluster #1", "lkc-9999", true, Guid.Empty);
 		}
 
 		private async Task When_a_topic_with_too_many_partitions_is_added()
