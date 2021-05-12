@@ -11,6 +11,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public Guid CapabilityId { get; set; }
+		public Guid KafkaClusterId { get; set; }
 		public DateTime Created { get; set; }
 		public DateTime LastModified { get; set; }
 
@@ -26,6 +27,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 				Name = topic.Name.Name,
 				Description = topic.Description,
 				CapabilityId = topic.CapabilityId,
+				KafkaClusterId = topic.KafkaClusterId,
 				Partitions = topic.Partitions,
 				Created = topic.Created,
 				LastModified = topic.LastModified,

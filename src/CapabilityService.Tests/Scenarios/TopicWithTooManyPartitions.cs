@@ -4,6 +4,8 @@ using DFDS.CapabilityService.Tests.Builders;
 using DFDS.CapabilityService.Tests.TestDoubles;
 using DFDS.CapabilityService.WebApi.Application;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClients;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api;
@@ -23,12 +25,15 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 		private Capability _capability;
 		private TopicController _topicController;
 		private IActionResult addTopicToCapabilityActionResult;
+		private Cluster _cluster;
+
 
 		[Fact]
 		public async Task TopicWithTooManyPartitionsRecipe()
 		{
 			      Given_a_service_collection_with_a_imMemoryDb();
 			await And_a_capability();
+			await And_a_cluster();
 			await When_a_topic_with_too_many_partitions_is_added();
 				  Then_Unprocessable_status_obj_is_returned();
 		}
@@ -52,6 +57,12 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 				"This is a capability"
 			);
 		}
+		
+		private async Task And_a_cluster()
+		{
+			var clusterRepository = _serviceProvider.GetService<IClusterRepository>();
+			_cluster = await clusterRepository.AddAsync("Dummy test cluster #1", "lkc-9999", true, Guid.Empty);
+		}
 
 		private async Task When_a_topic_with_too_many_partitions_is_added()
 		{
@@ -69,13 +80,14 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 				{
 					Name = "the topic of the future",
 					Description = "The way topics should be",
-					Partitions = Int32.MaxValue
+					Partitions = Int32.MaxValue,
+					KafkaClusterId = _cluster.Id.ToString()
 				});
 		}
 
 		private void Then_Unprocessable_status_obj_is_returned()
 		{
-			var nobodyCares =
+			var result =
 				(Microsoft.AspNetCore.Mvc.UnprocessableEntityObjectResult)addTopicToCapabilityActionResult;
 		}
 	}

@@ -1,0 +1,6 @@
+Id,ClusterId,Name,Description,Enabled
+fca31e5e-3eb9-4cb1-a32b-681c0408088c,lkc-4npj6,Production cluster (in-memory),,True
+fb4debd4-a77c-4569-9f51-f8dccdfbf8fc,lkc-9998,Development cluster #1 (in-memory),,True
+c7590962-0bb1-4973-97d7-e823d1d3e162,lkc-3wqzw,Development cluster #3,,True
+47d0eacd-6034-4083-a10e-fbc29844c65f,lkc-3m912,Development cluster #4,,True
+961c254e-6b20-4220-9803-4a2852eb11ca,lkc-9999,Development cluster #2 (in-memory,,False

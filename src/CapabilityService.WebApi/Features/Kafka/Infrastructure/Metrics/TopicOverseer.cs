@@ -1,13 +1,17 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
 using KafkaJanitor.RestClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Serilog;
+using Topic = KafkaJanitor.RestClient.Features.Topics.Models.Topic;
 
 namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Metrics
 {
@@ -42,7 +46,19 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Metrics
 						var kafkaJanitorRestClient = scope.ServiceProvider.GetRequiredService<IRestClient>();
 						
 						var capSvcTopics = await topicDomainService.GetAllTopics();
-						var connectedTopics = await kafkaJanitorRestClient.Topics.GetAllAsync();
+
+						var clusters = await topicDomainService.GetAllClusters();
+						var connectedTopics = new List<Topic>();
+						
+						foreach (var cluster in clusters)
+						{
+							if (cluster.Enabled)
+							{
+								var result = await kafkaJanitorRestClient.Topics.GetAllAsync(cluster.ClusterId);
+								connectedTopics.AddRange(result);
+								
+							}
+						}
 						topicsEquality.Set(capSvcTopics.Count() - connectedTopics.Count());
 					}
 				}

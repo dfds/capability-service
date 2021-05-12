@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClients;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
@@ -113,9 +114,15 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 						configurations[key] = JsonObjectTools.GetValueFromJsonElement(jsonElement);
 					}
 				}
+
+				if (String.IsNullOrEmpty(input.KafkaClusterId))
+				{
+					throw new ClusterNotSelectedException();
+				}
 				
 				var topic = Topic.Create(
 					capabilityId,
+					Guid.Parse(input.KafkaClusterId),
 					capability.RootId,
 					input.Name,
 					input.Description,
@@ -129,11 +136,13 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					dryRun: true
 				);
 
+				var kafkaCluster = await _topicDomainService.GetClusterById(topic.KafkaClusterId);
+
 				if (input.DryRun) { return Ok(DTOs.Topic.CreateFrom(topic)); }
 
 				TaskFactoryExtensions.StartActionWithConsoleExceptions(async () =>
 				{
-					await _kafkaJanitorRestClient.CreateTopic(topic, capability);
+					await _kafkaJanitorRestClient.CreateTopic(topic, capability, kafkaCluster.ClusterId);
 
 					await _topicDomainService.CreateTopic(
 						topic: topic,
@@ -150,13 +159,13 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 		}
 
 		[HttpDelete("/api/v1/topics/{name}")]
-		public async Task<IActionResult> DeleteTopicByName(string name)
+		public async Task<IActionResult> DeleteTopicByName(string name, [FromQuery(Name = "clusterId")] string clusterId)
 		{
 			IActionResult actionResult = Ok();
 
 			try
 			{
-				await _topicDomainService.DeleteTopic(name);
+				await _topicDomainService.DeleteTopic(name, clusterId);
 			}
 			catch (Exception exception)
 			{

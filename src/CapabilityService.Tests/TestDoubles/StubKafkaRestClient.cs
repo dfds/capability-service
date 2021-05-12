@@ -22,10 +22,16 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
 			return Task.CompletedTask;
 		}
 
-		public Task<IEnumerable<Topic>> GetAllAsync()
+		public Task<IEnumerable<Topic>> GetAllAsync(string clusterId)
 		{
 			return Task.FromResult(Enumerable.Empty<Topic>());
 		}
+
+		public Task<Topic> DescribeAsync(string topicName, string clusterId)
+		{
+			return Task.FromResult(new Topic(){ClusterId = clusterId, Name = topicName});
+		}
+
 	}
 	
 	class StubAccessClient : IAccessClient
