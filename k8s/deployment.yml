@@ -26,95 +26,101 @@ spec:
     spec:
       priorityClassName: selfservice
       initContainers:
-      - name: dbmigrations
-        image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/capability-service/dbmigrations:$(Build.BuildId)
-        env:
-        - name:  PGDATABASE
-          value: ts
-        - name:  PGHOST
-          value: $(PGHOST)
-        - name:  PGPORT
-          value: "1433"
-        - name:  PGUSER
-          value: $(PGUSER)
-        - name: PGPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: capability-service-db
-              key: password
+        - name: dbmigrations
+          image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/capability-service/dbmigrations:$(Build.BuildId)
+          env:
+            - name: PGDATABASE
+              value: ts
+            - name: PGHOST
+              value: $(PGHOST)
+            - name: PGPORT
+              value: "1433"
+            - name: PGUSER
+              value: $(PGUSER)
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: capability-service-db
+                  key: password
       containers:
-      - name: capability-service
-        image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/capability-service:$(Build.BuildId)
-        ports:
-        - containerPort: 80
-          name: web
-        - containerPort: 8080
-          name: metrics
-        resources:
-          requests:
-            memory: "300Mi"
-            cpu: "100m"
-          limits:
-            memory: "500Mi"
-            cpu: "200m"
-        env:
-        - name: CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING
-          valueFrom:
-            secretKeyRef:
-              name: capability-service-db
-              key: connection-string
-        - name: CAPABILITY_SERVICE_BASIC_AUTH_USER_AND_PASS
-          valueFrom:
-            secretKeyRef:
-              name: capabilityservice-basic-authentication-credentials
-              key: auth
-        - name: CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS
-          value: $(KAFKA_BOOTSTRAP_SERVERS)
-        - name: CAPABILITY_SERVICE_KAFKA_BROKER_VERSION_FALLBACK
-          value: "0.10.0.0"
-        - name: CAPABILITY_SERVICE_KAFKA_API_VERSION_FALLBACK_MS
-          value: "0"
-        - name: CAPABILITY_SERVICE_KAFKA_SASL_USERNAME
-          value: $(KAFKA_SASL_USERNAME)
-        - name: CAPABILITY_SERVICE_KAFKA_SASL_PASSWORD
-          value: $(KAFKA_SASL_PASSWORD)
-        - name: CAPABILITY_SERVICE_KAFKA_SASL_MECHANISMS
-          value: "PLAIN"
-        - name: CAPABILITY_SERVICE_KAFKA_SECURITY_PROTOCOL
-          value: "SASL_SSL"
-        - name: CAPABILITY_SERVICE_KAFKA_GROUP_ID
-          value: "build.selfservice.capability-service-consumer"
-        - name: CAPABILITY_SERVICE_KAFKA_ENABLE_AUTO_COMMIT
-          value: "false"
-        - name: CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY
-          value: "build.selfservice.events.capabilities"
-        - name: CAPABILITY_SERVICE_KAFKA_TOPIC_TOPICS
-          value: "build.selfservice.events.topics"
-        - name: DOTNET_USE_POLLING_FILE_WATCHER
-          value: "true"
-        - name: KAFKAJANITOR_API_ENDPOINT
-          value: "http://kafka-janitor"
-        - name: DD_AGENT_HOST
-          valueFrom:
-            fieldRef:
-              fieldPath: status.hostIP
-        - name: DD_TRACE_GLOBAL_TAGS
-          value: "Service:capability-service"
-        - name: DD_LOGS_INJECTION
-          value: "true"
-        - name: DD_TRACE_ANALYTICS_ENABLED
-          value: "true"
-        livenessProbe:
-          initialDelaySeconds: 5
-          periodSeconds: 60
-          timeoutSeconds: 5
-          httpGet:
-            port: web
-            path: /healthz
-        readinessProbe:
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 5
-          httpGet:
-            port: web
-            path: /healthz
+        - name: capability-service
+          image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/capability-service:$(Build.BuildId)
+          ports:
+            - containerPort: 80
+              name: web
+            - containerPort: 8080
+              name: metrics
+          resources:
+            requests:
+              memory: "300Mi"
+              cpu: "100m"
+            limits:
+              memory: "500Mi"
+              cpu: "200m"
+          env:
+            - name: CAPABILITYSERVICE_DATABASE_CONNECTIONSTRING
+              valueFrom:
+                secretKeyRef:
+                  name: capability-service-db
+                  key: connection-string
+            - name: CAPABILITY_SERVICE_BASIC_AUTH_USER_AND_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: capabilityservice-basic-authentication-credentials
+                  key: auth
+            - name: CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS
+              value: $(KAFKA_BOOTSTRAP_SERVERS)
+            - name: CAPABILITY_SERVICE_KAFKA_BROKER_VERSION_FALLBACK
+              value: "0.10.0.0"
+            - name: CAPABILITY_SERVICE_KAFKA_API_VERSION_FALLBACK_MS
+              value: "0"
+            - name: CAPABILITY_SERVICE_KAFKA_SASL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: capabilityservice-kafka-credentials
+                  key: username
+            - name: CAPABILITY_SERVICE_KAFKA_SASL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: capabilityservice-kafka-credentials
+                  key: password
+            - name: CAPABILITY_SERVICE_KAFKA_SASL_MECHANISMS
+              value: "PLAIN"
+            - name: CAPABILITY_SERVICE_KAFKA_SECURITY_PROTOCOL
+              value: "SASL_SSL"
+            - name: CAPABILITY_SERVICE_KAFKA_GROUP_ID
+              value: "build.selfservice.capability-service-consumer"
+            - name: CAPABILITY_SERVICE_KAFKA_ENABLE_AUTO_COMMIT
+              value: "false"
+            - name: CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY
+              value: "build.selfservice.events.capabilities"
+            - name: CAPABILITY_SERVICE_KAFKA_TOPIC_TOPICS
+              value: "build.selfservice.events.topics"
+            - name: DOTNET_USE_POLLING_FILE_WATCHER
+              value: "true"
+            - name: KAFKAJANITOR_API_ENDPOINT
+              value: "http://kafka-janitor"
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: DD_TRACE_GLOBAL_TAGS
+              value: "Service:capability-service"
+            - name: DD_LOGS_INJECTION
+              value: "true"
+            - name: DD_TRACE_ANALYTICS_ENABLED
+              value: "true"
+          livenessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 60
+            timeoutSeconds: 5
+            httpGet:
+              port: web
+              path: /healthz
+          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            httpGet:
+              port: web
+              path: /healthz
