@@ -23,7 +23,7 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
                 comparer: new PropertiesComparer<IDomainEvent>()
             );
         }
-        
+
         [Fact]
         public async Task rootid_is_generated_when_creating_a_capability()
         {
@@ -31,7 +31,7 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
             var capability = await _capabilityFactory.Create(name,"bar");
 
            Assert.StartsWith($"{name.ToLower()}-", capability.RootId);
-   
+
         }
 
         [Fact]
@@ -43,7 +43,7 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
 
            Assert.NotEqual(capabilityOne.RootId, capabilityTwo.RootId);
         }
-        
+
         [Fact]
         public async Task rootid_is_generated_from_id()
         {
@@ -51,8 +51,17 @@ namespace DFDS.CapabilityService.Tests.Domain.Models
             var capability = await _capabilityFactory.Create(name,"bar");
 
             var idPartFromRootId = capability.RootId.Split('-').First();
-            
+
             Assert.StartsWith(idPartFromRootId, capability.RootId);
+        }
+
+        [Fact]
+        public async Task rootid_is_does_not_contain_double_dash()
+        {
+            var name = "Iamanice-acapab-ility-service";
+            var capability = await _capabilityFactory.Create(name, "bar");
+
+            Assert.DoesNotContain("--", capability.RootId);
         }
 
         [Theory]
