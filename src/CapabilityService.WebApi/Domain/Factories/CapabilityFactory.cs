@@ -38,9 +38,18 @@ namespace DFDS.CapabilityService.WebApi.Domain.Factories
             var microHash = new HashidsNet.Hashids(ROOTID_SALT, 5, "abcdefghijklmnopqrstuvwxyz")
                 .EncodeHex(id.ToString("N")).Substring(0, 5);
 
-            var rootId = (name.Length > maxPreservedNameLength)
-                ? $"{name.Substring(0, maxPreservedNameLength)}-{microHash}"
-                : $"{name}-{microHash}";
+            var rootId = $"{name}-{microHash}";
+
+            if (name.Length > maxPreservedNameLength)
+            {
+                rootId = $"{name.Substring(0, maxPreservedNameLength)}-{microHash}";
+
+                if (rootId.Contains("--"))
+                {
+                    rootId = rootId.Replace("--", "-");
+                }
+            }
+
             return rootId.ToLowerInvariant();
         }
     }
