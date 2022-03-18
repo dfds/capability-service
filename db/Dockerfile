@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.15
 
 RUN apk --update add postgresql-client ca-certificates tzdata && rm -rf /var/cache/apk/*
 
