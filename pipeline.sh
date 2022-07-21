@@ -45,9 +45,9 @@ publish_binaries() {
 
 build_container_image() {
     echo "Building container images..."
-    docker build -f Dockerfile-CapabilityService.WebApi -t ${IMAGE_NAME} .
+    docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile-CapabilityService.WebApi -t ${IMAGE_NAME} .
 
-    docker build -t ${DB_IMAGE_NAME} ./db
+    docker buildx build --platform linux/amd64,linux/arm64 -t ${DB_IMAGE_NAME} ./db
 }
 
 login_to_docker() {
@@ -66,7 +66,7 @@ push_container_image() {
     docker tag ${IMAGE_NAME}:latest ${image_name}
 
     echo "Pushing container image to ECR..."
-    docker push ${image_name}
+    docker buildx build --platform linux/amd64,linux/arm64 -t ${image_name} --push .
 }
 
 push_dbmigration_container_image() {
@@ -80,18 +80,25 @@ push_dbmigration_container_image() {
     docker tag ${DB_IMAGE_NAME}:latest ${image_name}
 
     echo "Pushing container image to ECR..."
-    docker push ${image_name}
+    docker buildx build --platform linux/amd64,linux/arm64 -t ${image_name} --push .
 }
 
-clean_output_folder
+docker-buildx-setup() {
+    echo "Docker setup..."
+    docker run --privileged --rm tonistiigi/binfmt --install all
+	docker buildx create --name mutiarchbuilder --use
+	docker buildx inspect --bootstrap
+}
+
+#clean_output_folder
 
 
 
-restore_dependencies
-run_tests
+#restore_dependencies
+#run_tests
 
 
-publish_binaries
+#publish_binaries
 
 
 
