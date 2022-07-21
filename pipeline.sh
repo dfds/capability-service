@@ -90,15 +90,15 @@ docker-buildx-setup() {
 	docker buildx inspect --bootstrap
 }
 
-#clean_output_folder
+clean_output_folder
 
 
 
-#restore_dependencies
-#run_tests
+restore_dependencies
+run_tests
 
 
-#publish_binaries
+publish_binaries
 
 
 
