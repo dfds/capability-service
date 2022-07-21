@@ -62,8 +62,8 @@ push_container_image() {
     account_id=$(aws sts get-caller-identity --output text --query 'Account')
     image_name="${account_id}.dkr.ecr.${REGION}.amazonaws.com/${IMAGE_NAME}:${BUILD_NUMBER}"
 
-    echo "Tagging container image..."
-    docker tag ${IMAGE_NAME}:latest ${image_name}
+    #echo "Tagging container image..."
+    #docker tag ${IMAGE_NAME}:latest ${image_name}
 
     echo "Pushing container image to ECR..."
     docker buildx build --platform linux/amd64,linux/arm64 -t ${image_name} --push .
@@ -76,8 +76,8 @@ push_dbmigration_container_image() {
     account_id=$(aws sts get-caller-identity --output text --query 'Account')
     image_name="${account_id}.dkr.ecr.${REGION}.amazonaws.com/${DB_IMAGE_NAME}:${BUILD_NUMBER}"
 
-    echo "Tagging container image..."
-    docker tag ${DB_IMAGE_NAME}:latest ${image_name}
+    #echo "Tagging container image..."
+    #docker tag ${DB_IMAGE_NAME}:latest ${image_name}
 
     echo "Pushing container image to ECR..."
     docker buildx build --platform linux/amd64,linux/arm64 -t ${image_name} --push .
