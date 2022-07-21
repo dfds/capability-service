@@ -101,7 +101,7 @@ run_tests
 publish_binaries
 
 
-
+docker-buildx-setup
 build_container_image
 
 if [[ "${BUILD_NUMBER}" != "N/A" ]]; then
