@@ -17,4 +17,15 @@ COPY . .
 
 RUN chmod +x init.sh
 
+#Non-root user settings
+ARG USERNAME=capService
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+RUN addgroup -g $USER_GID -S $USERNAME && \
+    adduser -u $USER_UID -S $USERNAME -G $USERNAME
+
+
+USER $USERNAME
+
 ENTRYPOINT [ "./init.sh" ]
