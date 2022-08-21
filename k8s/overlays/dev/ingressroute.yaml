@@ -1,0 +1,18 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: capability-service-dev
+  namespace: selfservice
+spec:
+  routes:
+    - kind: Rule
+      match: Host(`localhost`) && PathPrefix(`/capability`)
+      priority: 10
+      middlewares:
+        - name: capability-service
+          namespace: selfservice
+      services:
+        - kind: Service
+          name: capability-service
+          namespace: selfservice
+          port: 80
