@@ -70,6 +70,7 @@ patchesJson6902:
 #       name: capability-service
 patchesStrategicMerge:
 - deployment.yaml
-- secrets.yaml
+- secrets-patch.yaml
 resources:
   - ingressroute.yaml
+  - secrets.yaml
