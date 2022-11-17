@@ -63,13 +63,14 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 
                             using (var scope = _serviceProvider.CreateScope())
                             {
-                                _logger.LogInformation($"Received event: Topic: {msg.Topic} Partition: {msg.Partition}, Offset: {msg.Offset} {msg.Value}");
+	                            var msgValue = msg.Message.Value;
+	                            _logger.LogInformation($"Received event: Topic: {msg.Topic} Partition: {msg.Partition}, Offset: {msg.Offset} {msgValue}");
 
                                 try
                                 {
                                     var eventDispatcher =
                                         scope.ServiceProvider.GetRequiredService<IEventDispatcher>();
-                                    await FailedCosumedMessages.CountExceptionsAsync(async () => await eventDispatcher.Send(msg.Value, scope));
+                                    await FailedCosumedMessages.CountExceptionsAsync(async () => await eventDispatcher.Send(msgValue, scope));
                                     await Task.Run(() => consumer.Commit(msg));
                                 }
                                 catch (MessagingHandlerNotAvailable mhnae)
@@ -83,13 +84,13 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
                                 {
                                     _logger.LogWarning(mmi,
                                         "Encountered a message that was irrecoverably incomprehensible. Skipping. Raw message included {@Message} with value '{@MessageValue}'",
-                                        msg, msg.Value);
+                                        msg, msgValue);
                                     await Task.Run(() => consumer.Commit(msg));
                                 }
                                 catch (Exception ex)
                                 {
                                     _logger.LogError(ex, "Error consuming event. Exception message: {ExceptionMessage}. Raw message included {@Message} with value '{@MessageValue}'",
-                                        ex.Message, msg, msg.Value);
+                                        ex.Message, msg, msgValue);
                                     // Do not commit the message, instead halt and wait
                                 }
                             }

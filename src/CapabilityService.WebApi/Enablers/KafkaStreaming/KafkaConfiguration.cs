@@ -42,7 +42,7 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
         }
         
 
-        public IEnumerable<KeyValuePair<string, string>> AsEnumerable()
+        public IDictionary<string, string> AsEnumerable()
         {
             var configurationKeys = new[]
             {
@@ -58,13 +58,12 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
                 "security.protocol",
             };
 
-            var config = configurationKeys
+            var config = new Dictionary<string, string>(configurationKeys
                 .Select(key => GetConfiguration(key))
                 .Where(pair => pair != null)
-                .Select(pair => new KeyValuePair<string, string>(pair.Item1, pair.Item2))
-                .ToList();
+                .Select(pair => new KeyValuePair<string, string>(pair.Item1, pair.Item2)));
                 
-            config.Add(new KeyValuePair<string, string>("request.timeout.ms", "3000"));
+            config.Add("request.timeout.ms", "3000");
 
             return config;
         }
