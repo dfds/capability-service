@@ -73,6 +73,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 					t.Name,
 					t.Description,
 					t.Partitions,
+					t.Status,
 					t.Created,
 					t.LastModified,
 					t.Configurations

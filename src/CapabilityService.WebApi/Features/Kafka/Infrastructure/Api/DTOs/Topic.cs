@@ -12,6 +12,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
         public Guid CapabilityId { get; set; }
         public Guid KafkaClusterId { get; set; }
         public int Partitions { get; set; }
+        public string Status { get; set; }
         public Dictionary<string, object> Configurations { get; set; }
 
         public static Topic CreateFrom(Features.Kafka.Domain.Models.Topic topic)
@@ -24,6 +25,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs
                 CapabilityId = topic.CapabilityId,
                 KafkaClusterId = topic.KafkaClusterId,
                 Partitions = topic.Partitions,
+                Status = topic.Status.ToString("G"),
                 Configurations = topic.Configurations
             };
         }

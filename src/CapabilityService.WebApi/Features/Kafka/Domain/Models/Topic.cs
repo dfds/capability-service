@@ -15,6 +15,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			TopicName name,
 			string description,
 			int partitions,
+			TopicStatus status,
 			DateTime created,
 			DateTime lastModified,
 			Dictionary<string, object> configurations
@@ -26,6 +27,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			Name = name;
 			Description = description;
 			Partitions = partitions;
+			Status = status;
 			Created = created.ToUniversalTime();
 			LastModified = lastModified.ToUniversalTime();
 			Configurations = configurations;
@@ -94,6 +96,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 				name: topicName,
 				description: description,
 				partitions: partitions,
+				status: TopicStatus.Requested,
 				created: DateTime.UtcNow,
 				lastModified: DateTime.UtcNow,
 				configurations: configurations
@@ -111,6 +114,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		public Guid CapabilityId { get; private set; }
 		public Guid KafkaClusterId { get; private set; }
 		public int Partitions { get; private set; }
+		public TopicStatus Status { get; private set; }
 		public DateTime Created { get; private set; }
 		public DateTime LastModified { get; private set; }
 		public Dictionary<string, object> Configurations { get; private set; }
@@ -123,6 +127,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			string name,
 			string description,
 			int partitions,
+			string status,
 			DateTime created,
 			DateTime lastModified,
 			Dictionary<string, object> configurations
@@ -135,10 +140,18 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 				TopicName.FromString(name),
 				description,
 				partitions,
+				Enum.Parse<TopicStatus>(status),
 				created,
 				lastModified,
 				configurations
 			);
 		}
+	}
+
+	public enum TopicStatus
+	{
+		Requested,
+		InProgress,
+		Provisioned
 	}
 }
