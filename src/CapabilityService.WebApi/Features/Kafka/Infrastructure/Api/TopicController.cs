@@ -12,6 +12,7 @@ using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Topic = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models.Topic;
 using ITopicRepository = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories.ITopicRepository;
 
@@ -26,18 +27,21 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 		private readonly ITopicRepository _topicRepository;
 		private readonly ICapabilityRepository _capabilityRepository;
 		private readonly IKafkaJanitorRestClient _kafkaJanitorRestClient;
+		private readonly ILogger<TopicController> _logger;
 
 		public TopicController(
 			ITopicDomainService topicDomainService,
 			ITopicRepository topicRepository,
 			ICapabilityRepository capabilityRepository,
-			IKafkaJanitorRestClient kafkaJanitorRestClient
+			IKafkaJanitorRestClient kafkaJanitorRestClient,
+			ILogger<TopicController> logger
 		)
 		{
 			_topicDomainService = topicDomainService;
 			_topicRepository = topicRepository;
 			_capabilityRepository = capabilityRepository;
 			_kafkaJanitorRestClient = kafkaJanitorRestClient;
+			_logger = logger;
 		}
 
 		[HttpGet("{id}/topics")]
@@ -153,7 +157,10 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 				var topicDto = DTOs.Topic.CreateFrom(topic);
 				actionResult = Ok(topicDto);
 			}
-			catch (Exception exception) when (ExceptionToStatusCode.CanConvert(exception, out actionResult)) { }
+			catch (Exception exception) when (ExceptionToStatusCode.CanConvert(exception, out actionResult))
+			{
+				_logger.LogError(exception, "Failed to create topic");
+			}
 
 			return actionResult;
 		}

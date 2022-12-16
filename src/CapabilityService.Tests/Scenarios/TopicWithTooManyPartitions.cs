@@ -13,6 +13,7 @@ using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
 using KafkaJanitor.RestClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 using Capability = DFDS.CapabilityService.WebApi.Domain.Models.Capability;
 using ITopicRepository = DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories.ITopicRepository;
@@ -70,7 +71,8 @@ namespace DFDS.CapabilityService.Tests.Scenarios
 				_serviceProvider.GetService<ITopicDomainService>(),
 				_serviceProvider.GetService<ITopicRepository>(),
 				_serviceProvider.GetService<ICapabilityRepository>(),
-				_serviceProvider.GetService<IKafkaJanitorRestClient>()
+				_serviceProvider.GetService<IKafkaJanitorRestClient>(),
+				NullLogger<TopicController>.Instance
 			);
 
 
