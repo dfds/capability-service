@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DFDS.CapabilityService.WebApi.Domain.Models;
+using DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Events;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
 
@@ -37,6 +38,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			Guid capabilityId,
 			Guid kafkaClusterId,
 			string capabilityRootId,
+			string clusterId,
 			string name,
 			string description,
 			int partitions,
@@ -47,6 +49,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 				capabilityId,
 				kafkaClusterId,
 				capabilityRootId,
+				clusterId,
 				name,
 				description,
 				partitions,
@@ -59,6 +62,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			Guid capabilityId,
 			Guid kafkaClusterId,
 			string capabilityRootId,
+			string clusterId,
 			string name,
 			string description,
 			int partitions,
@@ -103,6 +107,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			);
 
 			topic.RaiseEvent(new TopicCreated(topic));
+			topic.RaiseEvent(new TopicRequested(capabilityRootId, clusterId, topicName.Name, partitions, configurations.GetRetentionOrDefault(604_800_000)));
 
 
 			return topic;
@@ -145,6 +150,21 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 				lastModified,
 				configurations
 			);
+		}
+	}
+
+	public static class ConfigurationExtensions
+	{
+		public static int GetRetentionOrDefault(this IDictionary<string, object> config, int defaultValue)
+		{
+			try
+			{
+				return Convert.ToInt32(config["retention.ms"]);
+			}
+			catch
+			{
+				return defaultValue;
+			}
 		}
 	}
 

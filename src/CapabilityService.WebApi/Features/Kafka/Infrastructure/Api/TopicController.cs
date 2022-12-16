@@ -119,15 +119,18 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					}
 				}
 
-				if (String.IsNullOrEmpty(input.KafkaClusterId))
+				if (!Guid.TryParse(input.KafkaClusterId, out var kafkaClusterId))
 				{
 					throw new ClusterNotSelectedException();
 				}
-				
+
+				var kafkaCluster = await _topicDomainService.GetClusterById(kafkaClusterId);
+
 				var topic = Topic.Create(
 					capabilityId,
-					Guid.Parse(input.KafkaClusterId),
+					kafkaClusterId,
 					capability.RootId,
+					kafkaCluster.ClusterId,
 					input.Name,
 					input.Description,
 					input.Partitions,
@@ -139,8 +142,6 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					topic: topic,
 					dryRun: true
 				);
-
-				var kafkaCluster = await _topicDomainService.GetClusterById(topic.KafkaClusterId);
 
 				if (input.DryRun) { return Ok(DTOs.Topic.CreateFrom(topic)); }
 
