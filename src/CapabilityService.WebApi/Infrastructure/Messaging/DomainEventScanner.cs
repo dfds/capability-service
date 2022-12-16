@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DFDS.CapabilityService.WebApi.Domain.Events;
+using DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming;
 
 namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
 {
@@ -32,8 +33,8 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Messaging
                 return false;
             }
 
-            return type.IsClass && typeof(IDomainEvent).IsAssignableFrom(type);
-        }
+            return type.IsClass && typeof(IDomainEvent).IsAssignableFrom(type)
+                                && !typeof(IUseStandardContract).IsAssignableFrom(type);}
 
         public void EnsureNoUnregisteredDomainEventsIn(Assembly assembly)
         {
