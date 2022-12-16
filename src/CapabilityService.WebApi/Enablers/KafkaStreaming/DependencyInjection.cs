@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dafda.Configuration;
+using Dafda.Consuming;
 using Dafda.Outbox;
 using Dafda.Serializing;
 using DFDS.CapabilityService.WebApi.Domain.Events;
 using DFDS.CapabilityService.WebApi.Domain.Models;
+using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Enablers.CorrelationId;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistence;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using Microsoft.Extensions.Configuration;
@@ -30,8 +34,18 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 
 		public static void ConfigureStandardMessaging(this IServiceCollection services, IConfiguration configuration)
 		{
+			var confluentTopic = configuration["CAPABILITY_SERVICE_KAFKA_TOPIC_CONFLUENT"];
 			var selfServiceTopic = configuration["CAPABILITY_SERVICE_KAFKA_TOPIC_SELF_SERVICE"];
 			var capabilitiesTopicsTopicName = configuration["CAPABILITY_SERVICE_KAFKA_TOPIC_TOPICS"];
+
+			services.AddConsumer(options =>
+			{
+				options.WithConfigurationSource(configuration);
+				options.WithEnvironmentStyle("CAPABILITY_SERVICE_KAFKA");
+
+				options.RegisterMessageHandler<TopicProvisioningBegun, TopicProvisionHandlers>(confluentTopic, TopicProvisioningBegun.EventType);
+				options.RegisterMessageHandler<TopicProvisioned, TopicProvisionHandlers>(confluentTopic, TopicProvisioned.EventType);
+			});
 
 			services.AddScoped<StandardOutbox>();
 
@@ -151,5 +165,80 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 
 			return Task.FromResult(MessagingHelper.CreateMessageFrom(evt));
 		}
+	}
+
+	public class TopicProvisioningBegun
+	{
+		public const string EventType = "topic_provisioning_begun";
+
+		public string CapabilityRootId { get; set; }
+		public string ClusterId { get; set; }
+		public string TopicName { get; set; }
+	}
+
+	public class TopicProvisioned
+	{
+		public const string EventType = "topic_provisioned";
+
+		public string CapabilityRootId { get; set; }
+		public string ClusterId { get; set; }
+		public string TopicName { get; set; }
+	}
+
+	public class TopicProvisionHandlers :
+		IMessageHandler<TopicProvisioned>,
+		IMessageHandler<TopicProvisioningBegun>
+	{
+		private readonly KafkaDbContext _dbContext;
+		private readonly ICapabilityRepository _capabilityRepository;
+		private readonly IClusterRepository _clusterRepository;
+		private readonly ITopicRepository _topicRepository;
+
+		public TopicProvisionHandlers(KafkaDbContext dbContext, ICapabilityRepository capabilityRepository, IClusterRepository clusterRepository, ITopicRepository topicRepository)
+		{
+			_dbContext = dbContext;
+			_capabilityRepository = capabilityRepository;
+			_clusterRepository = clusterRepository;
+			_topicRepository = topicRepository;
+		}
+
+		public async Task Handle(TopicProvisioned message, MessageHandlerContext context)
+		{
+			var topic = await GetTopic(message.CapabilityRootId, message.ClusterId, message.TopicName);
+
+			topic.Status = TopicStatus.Provisioned;
+
+			await _dbContext.SaveChangesAsync();
+		}
+
+		private async Task<Topic> GetTopic(string capabilityRootId, string clusterId, string topicName)
+		{
+			var capability = await _capabilityRepository.GetByRootId(capabilityRootId);
+			if (capability == null)
+			{
+				throw new InvalidOperationException($"Unknown capability '{capabilityRootId}'");
+			}
+
+			var cluster = await _clusterRepository.GetByClusterId(clusterId);
+			if (cluster == null)
+			{
+				throw new InvalidOperationException($"Unknown cluster '{clusterId}'");
+			}
+
+			var topic = await _topicRepository.GetAsync(capability.Id, cluster.Id, topicName);
+			if (topic == null)
+			{
+				throw new InvalidOperationException($"Unknown topic '{topicName}'");
+			}
+			return topic;
+		}
+
+		public async Task Handle(TopicProvisioningBegun message, MessageHandlerContext context)
+		{
+			var topic = await GetTopic(message.CapabilityRootId, message.ClusterId, message.TopicName);
+
+			topic.Status = TopicStatus.InProgress;
+
+			await _dbContext.SaveChangesAsync();		}
 	}
 }

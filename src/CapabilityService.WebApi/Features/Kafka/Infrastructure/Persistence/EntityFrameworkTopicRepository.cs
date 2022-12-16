@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -43,6 +44,35 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 
 			kafkaDbContext.Topics.Remove(daoTopic);
 			await kafkaDbContext.SaveChangesAsync();
+		}
+
+		public async Task<Topic> GetAsync(Guid capabilityId, Guid kafkaClusterId, string topicName)
+		{
+			var kafkaDbContext = new KafkaDbContext(_kafkaDbContextFactory.Create().Options);
+
+			var t = await kafkaDbContext.Topics
+				.Where(x => x.CapabilityId==capabilityId)
+				.Where(x => x.KafkaClusterId==kafkaClusterId)
+				.Where(x => x.Name==topicName)
+				.SingleOrDefaultAsync();
+
+			if (t == null)
+			{
+				return null;
+			}
+
+			return Topic.FromSimpleTypes(
+				t.Id.ToString(),
+				t.CapabilityId.ToString(),
+				t.KafkaClusterId.ToString(),
+				t.Name,
+				t.Description,
+				t.Partitions,
+				t.Status,
+				t.Created,
+				t.LastModified,
+				t.Configurations
+			);
 		}
 
 		public async Task<IEnumerable<Topic>> GetAllAsync()

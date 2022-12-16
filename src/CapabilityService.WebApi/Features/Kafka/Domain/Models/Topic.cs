@@ -119,7 +119,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		public Guid CapabilityId { get; private set; }
 		public Guid KafkaClusterId { get; private set; }
 		public int Partitions { get; private set; }
-		public TopicStatus Status { get; private set; }
+		public TopicStatus Status { get; set; }
 		public DateTime Created { get; private set; }
 		public DateTime LastModified { get; private set; }
 		public Dictionary<string, object> Configurations { get; private set; }

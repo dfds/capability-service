@@ -50,5 +50,14 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             
             return capability;
         }
+
+        public async Task<Capability> GetByRootId(string capabilityRootId)
+        {
+	        return await _dbContext
+		        .Capabilities
+		        .Include(x => x.Memberships)
+		        .Include(x => x.Contexts)
+		        .SingleOrDefaultAsync(x => x.RootId==capabilityRootId);
+        }
     }
 }

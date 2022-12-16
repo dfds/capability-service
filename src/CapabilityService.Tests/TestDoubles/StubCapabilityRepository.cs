@@ -39,6 +39,11 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
             return Task.FromResult(capability);
         }
 
+        public Task<Capability> GetByRootId(string capabilityRootId)
+        {
+	        throw new NotImplementedException();
+        }
+
         public void Remove(Capability capability)
         {
             _capabilities.Remove(capability);
