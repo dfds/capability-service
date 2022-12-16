@@ -54,6 +54,7 @@ namespace DFDS.CapabilityService.WebApi
             ConfigureApplicationServices(services, connectionString);
             services.AddKafka(connectionString);
             services.AddKafkaStreaming();
+            services.ConfigureStandardMessaging(Configuration);
             ConfigureDomainEvents(services);
             services.AddMetrics();
 
