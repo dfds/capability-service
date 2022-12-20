@@ -31,5 +31,10 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		{
 			return new TopicId(Guid.NewGuid());
 		}
+
+		public override string ToString()
+		{
+			return Id.ToString();
+		}
 	}
 }
