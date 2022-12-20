@@ -7,11 +7,16 @@ GET http://localhost:50900/api/v1/capabilities/0d03e3ad-2118-46b7-970e-0ca87b59a
 ###
 
 # Add a topic
-POST http://localhost:50900/api/v1/capabilities/0d03e3ad-2118-46b7-970e-0ca87b59a202/topics HTTP/1.1
+POST http://localhost:5000/api/v1/capabilities/0d03e3ad-2118-46b7-970e-0ca87b59a202/topics HTTP/1.1
 content-type: application/json
 
 {
-    "name": "topic.{{$guid}}",
+    "name": "topic-1",
+	"kafkaClusterId": "fca31e5e-3eb9-4cb1-a32b-681c0408088c",
     "description": "I won't tell",
-    "partitions": 3
+    "partitions": 3,
+	"availability": "public",
+	"configurations": {
+		"retentions.ms": "3600000"
+	}
 }
