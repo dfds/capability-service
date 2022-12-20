@@ -35,20 +35,80 @@ services:
       - "PGPASSWORD=p"                # same as above
       - "PGSSLMODE=disable"           # ignore SSLMODE for local development (overwritten - see ./db/Dockerfile)
 
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.0
+    networks:
+      development:
+        aliases:
+          - zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
   kafka:
-    hostname: kafka
-    image: spotify/kafka    
+    image: confluentinc/cp-kafka:7.0.0
     networks:
       development:
         aliases:
           - kafka
+    depends_on:
+      - zookeeper
     ports:
-      - "2181:2181"
-      - "9092:9092"
+      - 9092:9092
     environment:
-      - "ADVERTISED_HOST=127.0.0.1"
-      - "ADVERTISED_PORT=9092"
-      - "AUTO_CREATE_TOPICS=true"
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://0.0.0.0:9092 
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
+    healthcheck:
+      test: "cub kafka-ready -b localhost:9092 1 2"
+      interval: 2s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  kafka-setup:
+    image: confluentinc/cp-kafka:7.0.0
+    networks:
+      development:
+        aliases:
+          - kafka-setup
+    depends_on:
+      kafka:
+        condition: service_healthy
+    command: "bash -c 'echo Waiting for Kafka to be ready... && \
+                      sleep 5 && \
+                      cub kafka-ready -b kafka:29092 1 20 && \
+                      kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --partitions 1 --replication-factor 1 --topic build.selfservice.events.capabilities && \
+                      kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --partitions 1 --replication-factor 1 --topic build.selfservice.events.topics && \
+                      kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --partitions 1 --replication-factor 1 --topic cloudengineering.selfservice.kafkatopic && \
+                      kafka-topics --create --if-not-exists --bootstrap-server kafka:29092 --partitions 1 --replication-factor 1 --topic cloudengineering.confluentgateway.provisioning'"
+    environment:
+      KAFKA_BROKER_ID: ignored
+      KAFKA_ZOOKEEPER_CONNECT: ignored
+
+  outbox:
+    image: public.ecr.aws/d8r0z9h2/dafda-gendis:0.9.1
+    networks:
+      development:
+        aliases:
+          - outbox
+    depends_on:
+      kafka-setup:
+        condition: service_completed_successfully
+    environment:
+      - DEFAULT_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - DB_CONNECTION_STRING=User ID=postgres;Password=p;Host=database;Port=5432;Database=capabilitydb
+
+    #   - DAFDA_OUTBOX_NOTIFICATION_CHANNEL=dafda_outbox
+    #   - GENDIS_PREFIX_FOR_KAFKA=GENDIS_KAFKA_
+    #   - GENDIS_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    ports:
+      - 5051:5051
 
 networks:
   development:
