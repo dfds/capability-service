@@ -54,6 +54,12 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 			}
 		}
 
+		public Task TopicProvisioned(Topic topic)
+		{
+			topic.Status = TopicStatus.Provisioned;
+			return _topicRepository.Update(topic);
+		}
+
 		public async Task<IEnumerable<Topic>> GetAllTopics()
 		{
 			return await _topicRepository.GetAllAsync();

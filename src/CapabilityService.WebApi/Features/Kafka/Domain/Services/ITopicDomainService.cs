@@ -15,5 +15,6 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 		Task<Cluster> GetClusterById(Guid id);
 
 		Task DeleteTopic(string name, string clusterId);
+		Task TopicProvisioned(Topic topic);
 	}
 }

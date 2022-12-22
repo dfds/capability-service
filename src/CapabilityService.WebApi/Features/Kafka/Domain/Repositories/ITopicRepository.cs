@@ -13,5 +13,6 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories
 
 		Task DeleteAsync(Topic topic);
 		Task<Topic> GetAsync(Guid capabilityId, Guid kafkaClusterId, string topicName);
+		Task Update(Topic topic);
 	}
 }

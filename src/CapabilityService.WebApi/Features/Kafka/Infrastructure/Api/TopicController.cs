@@ -150,6 +150,16 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 					dryRun: input.DryRun
 				);
 
+				if (!topic.Name.Name.EndsWith("-cg"))
+				{
+					TaskFactoryExtensions.StartActionWithConsoleExceptions(async () =>
+					{
+						await _kafkaJanitorRestClient.CreateTopic(topic, capability, kafkaCluster.ClusterId);
+
+						await _topicDomainService.TopicProvisioned(topic);
+					});
+				}
+
 				var topicDto = DTOs.Topic.CreateFrom(topic);
 				actionResult = Ok(topicDto);
 			}
