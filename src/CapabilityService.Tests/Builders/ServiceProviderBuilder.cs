@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using DFDS.CapabilityService.Tests.Features.Kafka.Persistence;
 using DFDS.CapabilityService.Tests.Infrastructure.Persistence;
@@ -26,7 +27,17 @@ namespace DFDS.CapabilityService.Tests.Builders
 
 		public ServiceProviderBuilder WithServicesFromStartup()
 		{
-			var configuration = new ConfigurationBuilder().Build();
+			var configuration = new ConfigurationBuilder()
+				.AddInMemoryCollection(new Dictionary<string, string>()
+				{
+					{"CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS", "localhost:9092"},
+					{"CAPABILITY_SERVICE_KAFKA_GROUP_ID", "capability-service-consumer"},
+					{"CAPABILITY_SERVICE_KAFKA_TOPIC_CAPABILITY", "build.selfservice.events.capabilities"},
+					{"CAPABILITY_SERVICE_KAFKA_TOPIC_TOPICS", "build.selfservice.events.topics"},
+					{"CAPABILITY_SERVICE_KAFKA_TOPIC_SELF_SERVICE", "cloudengineering.selfservice.kafkatopic"},
+					{"CAPABILITY_SERVICE_KAFKA_TOPIC_CONFLUENT", "cloudengineering.confluentgateway.provisioning"}
+				})
+				.Build();
 
 			var startup = new Startup(configuration);
 			startup.ConfigureServices(_serviceCollection);
