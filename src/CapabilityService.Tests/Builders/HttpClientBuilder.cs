@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 
 namespace DFDS.CapabilityService.Tests.Builders
 {
@@ -65,10 +66,21 @@ namespace DFDS.CapabilityService.Tests.Builders
 				.UseSetting(WebHostDefaults.ApplicationKey, typeof(Startup).Assembly.GetName().Name) // We need to look for controllers in the same assembly as the startup file
 				.ConfigureTestServices(services =>
 				{
+					var hostedServiceDescriptors = services
+						.Where(x => x.ServiceType == typeof(IHostedService))
+						.ToList();
+
+					foreach (var serviceDescriptor in hostedServiceDescriptors)
+					{
+						services.Remove(serviceDescriptor);
+					}
+
 					_serviceDescriptors
 						.Values
 						.ToList()
 						.ForEach(serviceOverride => services.Replace(serviceOverride));
+					
+					
 				});
 			return testWebHostBuilder;
 		}

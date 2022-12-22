@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace DFDS.CapabilityService.Tests.Builders
 {
@@ -62,6 +63,15 @@ namespace DFDS.CapabilityService.Tests.Builders
 
 		public IServiceProvider Build()
 		{
+			var hostedServiceDescriptors  = _serviceCollection
+				.Where(x => x.ServiceType==typeof(IHostedService))
+				.ToList();
+
+			foreach (var serviceDescriptor in hostedServiceDescriptors)
+			{
+				_serviceCollection.Remove(serviceDescriptor);
+			}
+			
 			var serviceProvider = _serviceCollection.BuildServiceProvider();
 
 			return serviceProvider;
