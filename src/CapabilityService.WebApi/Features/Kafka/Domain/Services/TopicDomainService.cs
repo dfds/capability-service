@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories;
@@ -53,13 +52,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services
 				throw new TopicDoesNotExistException(TopicName.FromString(name));
 			}
 		}
-
-		public Task TopicProvisioned(Topic topic)
-		{
-			topic.Status = TopicStatus.Provisioned;
-			return _topicRepository.Update(topic);
-		}
-
+		
 		public async Task<IEnumerable<Topic>> GetAllTopics()
 		{
 			return await _topicRepository.GetAllAsync();

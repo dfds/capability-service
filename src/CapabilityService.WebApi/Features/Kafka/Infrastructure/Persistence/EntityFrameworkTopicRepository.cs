@@ -74,14 +74,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 				t.Configurations
 			);
 		}
-
-		public Task Update(Topic topic)
-		{
-			var kafkaDbContext = new KafkaDbContext(_kafkaDbContextFactory.Create().Options);
-			kafkaDbContext.Update(topic);
-			return kafkaDbContext.SaveChangesAsync();
-		}
-
+		
 		public async Task<IEnumerable<Topic>> GetAllAsync()
 		{
 			var kafkaDbContext = new KafkaDbContext(_kafkaDbContextFactory.Create().Options);

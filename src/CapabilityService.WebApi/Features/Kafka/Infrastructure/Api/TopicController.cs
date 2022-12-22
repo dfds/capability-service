@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DFDS.CapabilityService.WebApi.Domain.Models;
 using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Exceptions;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.RestClients;
 using DFDS.CapabilityService.WebApi.Infrastructure.Api.DTOs;
@@ -145,18 +146,25 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Api
 
 				if (input.DryRun) { return Ok(DTOs.Topic.CreateFrom(topic)); }
 
-				await _topicDomainService.CreateTopic(
-					topic: topic,
-					dryRun: input.DryRun
-				);
-
-				if (!topic.Name.Name.EndsWith("-cg"))
+				if (topic.Name.Name.EndsWith("-cg"))
+				{
+					await _topicDomainService.CreateTopic(
+						topic: topic,
+						dryRun: input.DryRun
+					);
+				}
+				else
 				{
 					TaskFactoryExtensions.StartActionWithConsoleExceptions(async () =>
 					{
 						await _kafkaJanitorRestClient.CreateTopic(topic, capability, kafkaCluster.ClusterId);
 
-						await _topicDomainService.TopicProvisioned(topic);
+						topic.Status = TopicStatus.Provisioned;
+
+						await _topicDomainService.CreateTopic(
+							topic: topic,
+							dryRun: input.DryRun
+						);
 					});
 				}
 
