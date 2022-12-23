@@ -107,13 +107,12 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			);
 
 			topic.RaiseEvent(new TopicCreated(topic));
-			topic.RaiseEvent(new TopicRequested(capabilityRootId, clusterId, topicName.Name, partitions, configurations.GetRetentionOrDefault(604_800_000)));
+			topic.RaiseEvent(new TopicRequested(capabilityRootId, clusterId, topicName.Name, partitions, configurations.GetRetentionOrDefault()));
 
 
 			return topic;
 		}
-
-
+		
 		public TopicName Name { get; private set; }
 		public string Description { get; private set; }
 		public Guid CapabilityId { get; private set; }
@@ -155,15 +154,16 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 
 	public static class ConfigurationExtensions
 	{
-		public static int GetRetentionOrDefault(this IDictionary<string, object> config, int defaultValue)
+		public static Retention GetRetentionOrDefault(this IDictionary<string, object> configurations)
 		{
 			try
 			{
-				return Convert.ToInt32(config["retention.ms"]);
+				var retentionInMs = Convert.ToInt64(configurations["retention.ms"]);
+				return Retention.Parse(retentionInMs);
 			}
 			catch
 			{
-				return defaultValue;
+				return Retention.Default;
 			}
 		}
 	}

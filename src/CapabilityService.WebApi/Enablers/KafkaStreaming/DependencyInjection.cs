@@ -83,7 +83,7 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 	{
 		public const string EventType = "topic_requsted";
 
-		public TopicRequested(string capabilityRootId, string clusterId, string topicName, int partitions, int retention)
+		public TopicRequested(string capabilityRootId, string clusterId, string topicName, int partitions, string retention)
 		{
 			CapabilityRootId = capabilityRootId;
 			ClusterId = clusterId;
@@ -96,7 +96,7 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 		public string ClusterId { get; }
 		public string TopicName { get; }
 		public int Partitions { get; }
-		public int Retention { get; }
+		public string Retention { get; }
 	}
 
 	public interface IUseStandardContract
