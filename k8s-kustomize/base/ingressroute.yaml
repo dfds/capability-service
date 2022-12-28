@@ -1,0 +1,27 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: capability-service
+spec:
+  routes:
+    - kind: Rule
+      match: Host(`api.hellman.oxygen.dfds.cloud`) && PathPrefix(`/capability`)
+      priority: 10
+      middlewares:
+        - name: capability-service
+          namespace: $(kubernetes-namespace)
+      services:
+        - kind: Service
+          name: capability-service
+          namespace: $(kubernetes-namespace)
+          port: 80
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: capability-service
+spec:
+  stripPrefix:
+    prefixes:
+    - /capability

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: capability-service
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: dbmigrations
+          image: ce/capability-service-dbmigrations:latest
+          imagePullPolicy: Always
+          env:
+            - name: PGDATABASE
+              value: ts
+            - name: PGHOST
+              value: capsvc-db-postgresql
+            - name: PGPORT
+              value: "5432"
+            - name: PGUSER
+              value: capsvc
+            - name: PGSSLMODE
+              value: disable
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: capability-service-db
+                  key: password
+      containers:
+        - name: capability-service
+          image: ce/capability-service:latest
+          imagePullPolicy: Always
+          env:
+            - name: CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka.selfservice.svc.cluster.local
+            - name: CAPABILITY_SERVICE_KAFKA_SECURITY_PROTOCOL
+              value: ""
+            - name: CAPABILITY_SERVICE_KAFKA_SASL_MECHANISMS
+              value: ""
+            - name: CAPABILITY_SERVICE_KAFKA_SASL_USERNAME
+              value: ""
+            - name: CAPABILITY_SERVICE_KAFKA_SASL_PASSWORD
+              value: ""
