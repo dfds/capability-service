@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: capability-service
-  namespace: $(kubernetes-namespace)
+  namespace: selfservice
   labels:
     project: selfservice
     department: devex
@@ -27,24 +27,14 @@ spec:
       priorityClassName: selfservice
       initContainers:
         - name: dbmigrations
-          image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/capability-service/dbmigrations:$(Build.BuildId)
-          env:
-            - name: PGDATABASE
-              value: ts
-            - name: PGHOST
-              value: $(PGHOST)
-            - name: PGPORT
-              value: "1433"
-            - name: PGUSER
-              value: $(PGUSER)
-            - name: PGPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: capability-service-db
-                  key: password
+          image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/capability-service/dbmigrations:${BUILD_BUILDID}
+          envFrom:
+            - secretRef:
+                name: capability-service-db
+
       containers:
         - name: capability-service
-          image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/capability-service:$(Build.BuildId)
+          image: 579478677147.dkr.ecr.eu-central-1.amazonaws.com/ded/capability-service:${BUILD_BUILDID}
           ports:
             - containerPort: 80
               name: web
