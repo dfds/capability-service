@@ -20,6 +20,8 @@ spec:
               value: capsvc
             - name: PGSSLMODE
               value: disable
+            - name: LOCAL_DEVELOPMENT
+              value: "1"
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
