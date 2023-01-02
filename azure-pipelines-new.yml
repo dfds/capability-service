@@ -16,23 +16,24 @@ stages:
         pool: 
           vmImage: 'ubuntu-latest'
         steps:
-        - task: UseDotNet@2
-          displayName: 'Install .NET Core sdk'
-          inputs:
-            packageType: sdk
-            version: 3.1.100
-            installationPath: $(Agent.ToolsDirectory)/dotnet
-        - bash: |
-            set -eu -o pipefail
-            sudo pip install setuptools
-            sudo pip install awscli
-            chmod +x ./pipeline.sh
-            ./pipeline.sh $(Build.BuildId) $(System.DefaultWorkingDirectory)
-          displayName: Pipeline Bash Script
-          env:
-            AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        # - task: UseDotNet@2
+        #   displayName: 'Install .NET Core sdk'
+        #   inputs:
+        #     packageType: sdk
+        #     version: 3.1.100
+        #     installationPath: $(Agent.ToolsDirectory)/dotnet
+        # - bash: |
+        #     set -eu -o pipefail
+        #     sudo pip install setuptools
+        #     sudo pip install awscli
+        #     chmod +x ./pipeline.sh
+        #     ./pipeline.sh $(Build.BuildId) $(System.DefaultWorkingDirectory)
+        #   displayName: Pipeline Bash Script
+        #   env:
+        #     AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
 
         - bash: |
+            mkdir -p $(System.DefaultWorkingDirectory)/output/manifests
             cat '$(System.DefaultWorkingDirectory)/k8s/deployment.yml' | envsubst > '$(System.DefaultWorkingDirectory)/output/manifests/deployment.yml'
             cat '$(System.DefaultWorkingDirectory)/k8s/ingressroute.yml' | envsubst > '$(System.DefaultWorkingDirectory)/output/manifests/ingressroute.yml'
             cat '$(System.DefaultWorkingDirectory)/k8s/service.yml' | envsubst > '$(System.DefaultWorkingDirectory)/output/manifests/service.yml'
