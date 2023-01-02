@@ -86,6 +86,10 @@ spec:
               value: "build.selfservice.events.capabilities"
             - name: CAPABILITY_SERVICE_KAFKA_TOPIC_TOPICS
               value: "build.selfservice.events.topics"
+            - name: CAPABILITY_SERVICE_KAFKA_TOPIC_SELF_SERVICE
+              value: "cloudengineering.selfservice.kafkatopic"
+            - name: CAPABILITY_SERVICE_KAFKA_TOPIC_CONFLUENT
+              value: "cloudengineering.confluentgateway.provisioning"
             - name: DOTNET_USE_POLLING_FILE_WATCHER
               value: "true"
             - name: KAFKAJANITOR_API_ENDPOINT
