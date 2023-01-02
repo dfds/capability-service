@@ -1,0 +1,76 @@
+name: $(Build.BuildId)
+
+trigger:
+  branches:
+    include:
+    - master
+
+variables:
+  agent-pool: 'Docker-pool'
+  group: 'AWS ECR-PUSH PROD'
+
+stages:
+  - stage: CD
+    displayName: 'Build, test, deliver deployment artifacts'
+    jobs:
+      - job: CD
+        pool: 
+          vmImage: 'ubuntu-latest'
+        steps:
+        - task: UseDotNet@2
+          displayName: 'Install .NET Core sdk'
+          inputs:
+            packageType: sdk
+            version: 3.1.100
+            installationPath: $(Agent.ToolsDirectory)/dotnet
+        - bash: |
+            set -eu -o pipefail
+            sudo pip install setuptools
+            sudo pip install awscli
+            chmod +x ./pipeline.sh
+            ./pipeline.sh $(Build.BuildId) $(System.DefaultWorkingDirectory)
+          displayName: Pipeline Bash Script
+          env:
+            AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+
+        - bash: |
+            cat '$(System.DefaultWorkingDirectory)/k8s/deployment.yml' | envsubst > '$(System.DefaultWorkingDirectory)/output/manifests/deployment.yml'
+            cat '$(System.DefaultWorkingDirectory)/k8s/ingressroute.yml' | envsubst > '$(System.DefaultWorkingDirectory)/output/manifests/ingressroute.yml'
+            cat '$(System.DefaultWorkingDirectory)/k8s/service.yml' | envsubst > '$(System.DefaultWorkingDirectory)/output/manifests/service.yml'
+          displayName: Prepare k8s manifests
+          env:
+            AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+
+        - task: PublishBuildArtifacts@1
+          displayName: "Publish Artifact: manifests"
+          inputs:
+            PathtoPublish: '$(System.DefaultWorkingDirectory)/output/manifests'
+            ArtifactName: manifests
+
+
+
+
+
+  # - stage: Deploy
+  #   dependsOn: CD
+  #   displayName: 'Deployments'
+  #   jobs:
+  #     - job: Production
+  #       pool: 
+  #         vmImage: 'ubuntu-latest'
+  #       steps:
+  #         - checkout: none
+  #         - download: current
+  #           artifact: manifests
+  #           displayName: 'Download build artifacts'
+  #         - publish: '$(Pipeline.Workspace)/manifests/'
+  #           artifact: deployed-manifests
+  #           displayName: 'Publish manifests'
+  #         - task: Kubernetes@1
+  #           displayName: kubectl apply
+  #           inputs:
+  #             connectionType: Kubernetes Service Connection
+  #             kubernetesServiceEndpoint: Kubernetes-Hellman-selfservice-deploy
+  #             cwd: '$(Pipeline.Workspace)/manifests/'
+  #             command: apply
+  #             arguments: -f .
