@@ -2,7 +2,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: capability-service
-  namespace: $(kubernetes-namespace)
+  namespace: selfservice
 spec:
   routes:
     - kind: Rule
@@ -10,11 +10,11 @@ spec:
       priority: 10
       middlewares:
         - name: capability-service
-          namespace: $(kubernetes-namespace)
+          namespace: selfservice
       services:
         - kind: Service
           name: capability-service
-          namespace: $(kubernetes-namespace)
+          namespace: selfservice
           port: 80
 
 ---
@@ -22,7 +22,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
   name: capability-service
-  namespace: $(kubernetes-namespace)
+  namespace: selfservice
 spec:
   stripPrefix:
     prefixes:
