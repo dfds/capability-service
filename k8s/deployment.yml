@@ -59,7 +59,7 @@ spec:
                   name: capabilityservice-basic-authentication-credentials
                   key: auth
             - name: CAPABILITY_SERVICE_KAFKA_BOOTSTRAP_SERVERS
-              value: $(KAFKA_BOOTSTRAP_SERVERS)
+              value: "pkc-e8wrm.eu-central-1.aws.confluent.cloud:9092"
             - name: CAPABILITY_SERVICE_KAFKA_BROKER_VERSION_FALLBACK
               value: "0.10.0.0"
             - name: CAPABILITY_SERVICE_KAFKA_API_VERSION_FALLBACK_MS
