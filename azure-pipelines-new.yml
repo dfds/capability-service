@@ -6,8 +6,7 @@ trigger:
     - master
 
 variables:
-  agent-pool: 'Docker-pool'
-  group: 'AWS ECR-PUSH PROD'
+  - group: 'AWS ECR-PUSH PROD'
 
 stages:
   - stage: CD
