@@ -122,7 +122,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dafda-gendis-test
+  name: capability-service-gendis
   namespace: selfservice
   labels:
     project: selfservice
@@ -160,6 +160,8 @@ spec:
                 secretKeyRef:
                   name: capability-service-db
                   key: connection-string
+            - name: SELFSERVICE_KAFKA_BOOTSTRAP_SERVERS
+              value: "pkc-e8wrm.eu-central-1.aws.confluent.cloud:9092"
           envFrom:
             - secretRef:
                 name: kafka-credentials
