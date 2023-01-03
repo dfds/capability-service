@@ -118,3 +118,55 @@ spec:
             httpGet:
               port: web
               path: /healthz
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dafda-gendis-test
+  namespace: selfservice
+  labels:
+    project: selfservice
+    department: devex
+    app: capability-service-gendis
+    component: capability-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: capability-service-gendis
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5225"
+      labels:
+        app: capability-service-gendis
+        project: selfservice
+        department: devex
+    spec:
+      containers:
+        - name: app
+          image: public.ecr.aws/d8r0z9h2/dafda-gendis:0.9.1
+          ports:
+            - name: metrics
+              containerPort: 5225
+          env:
+            - name: DAFDA_OUTBOX_NOTIFICATION_CHANNEL
+              value: dafda_outbox
+            - name: GENDIS_PREFIX_FOR_KAFKA
+              value: SELFSERVICE_KAFKA_
+            - name: DB_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: capability-service-db
+                  key: connection-string
+          envFrom:
+            - secretRef:
+                name: kafka-credentials
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "50m"
+            limits:
+              memory: "200Mi"
+              cpu: "200m"
