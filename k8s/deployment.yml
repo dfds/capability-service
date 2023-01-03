@@ -151,17 +151,11 @@ spec:
             - name: metrics
               containerPort: 5225
           env:
-            - name: DAFDA_OUTBOX_NOTIFICATION_CHANNEL
-              value: dafda_outbox
-            - name: GENDIS_PREFIX_FOR_KAFKA
-              value: SELFSERVICE_KAFKA_
             - name: DB_CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
                   name: capability-service-db
                   key: connection-string
-            - name: SELFSERVICE_KAFKA_BOOTSTRAP_SERVERS
-              value: "pkc-e8wrm.eu-central-1.aws.confluent.cloud:9092"
           envFrom:
             - secretRef:
                 name: kafka-credentials
