@@ -46,7 +46,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 			await kafkaDbContext.SaveChangesAsync();
 		}
 
-		public async Task<Topic> GetAsync(Guid capabilityId, Guid kafkaClusterId, string topicName)
+		public async Task GetAsync(Guid capabilityId, Guid kafkaClusterId, string topicName, TopicStatus topicStatus)
 		{
 			var kafkaDbContext = new KafkaDbContext(_kafkaDbContextFactory.Create().Options);
 
@@ -57,23 +57,15 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistenc
 				.SingleOrDefaultAsync();
 
 			if (t == null)
-			{
-				return null;
+      {
+        throw new InvalidOperationException($"Unknown topic '{topicName}");
+        return;
 			}
 
-			return Topic.FromSimpleTypes(
-				t.Id.ToString(),
-				t.CapabilityId.ToString(),
-				t.KafkaClusterId.ToString(),
-				t.Name,
-				t.Description,
-				t.Partitions,
-				t.Status,
-				t.Created,
-				t.LastModified,
-				t.Configurations
-			);
-		}
+      t.Status = topicStatus.ToString("G");
+
+      await kafkaDbContext.SaveChangesAsync();
+    }
 		
 		public async Task<IEnumerable<Topic>> GetAllAsync()
 		{

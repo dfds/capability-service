@@ -189,29 +189,23 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 		IMessageHandler<TopicProvisioned>,
 		IMessageHandler<TopicProvisioningBegun>
 	{
-		private readonly KafkaDbContext _dbContext;
 		private readonly ICapabilityRepository _capabilityRepository;
 		private readonly IClusterRepository _clusterRepository;
 		private readonly ITopicRepository _topicRepository;
 
-		public TopicProvisionHandlers(KafkaDbContext dbContext, ICapabilityRepository capabilityRepository, IClusterRepository clusterRepository, ITopicRepository topicRepository)
+		public TopicProvisionHandlers(ICapabilityRepository capabilityRepository, IClusterRepository clusterRepository, ITopicRepository topicRepository)
 		{
-			_dbContext = dbContext;
 			_capabilityRepository = capabilityRepository;
 			_clusterRepository = clusterRepository;
 			_topicRepository = topicRepository;
 		}
 
-		public async Task Handle(TopicProvisioned message, MessageHandlerContext context)
+		public  Task Handle(TopicProvisioned message, MessageHandlerContext context)
 		{
-			var topic = await GetTopic(message.CapabilityRootId, message.ClusterId, message.TopicName);
-
-			topic.Status = TopicStatus.Provisioned;
-
-			await _dbContext.SaveChangesAsync();
+			return ChangeTopicStatus(message.CapabilityRootId, message.ClusterId, message.TopicName, TopicStatus.Provisioned);
 		}
 
-		private async Task<Topic> GetTopic(string capabilityRootId, string clusterId, string topicName)
+		private async Task ChangeTopicStatus(string capabilityRootId, string clusterId, string topicName, TopicStatus topicStatus)
 		{
 			var capability = await _capabilityRepository.GetByRootId(capabilityRootId);
 			if (capability == null)
@@ -225,20 +219,12 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 				throw new InvalidOperationException($"Unknown cluster '{clusterId}'");
 			}
 
-			var topic = await _topicRepository.GetAsync(capability.Id, cluster.Id, topicName);
-			if (topic == null)
-			{
-				throw new InvalidOperationException($"Unknown topic '{topicName}'");
-			}
-			return topic;
+			await _topicRepository.GetAsync(capability.Id, cluster.Id, topicName, topicStatus);
 		}
 
-		public async Task Handle(TopicProvisioningBegun message, MessageHandlerContext context)
+		public Task Handle(TopicProvisioningBegun message, MessageHandlerContext context)
 		{
-			var topic = await GetTopic(message.CapabilityRootId, message.ClusterId, message.TopicName);
-
-			topic.Status = TopicStatus.InProgress;
-
-			await _dbContext.SaveChangesAsync();		}
+			return ChangeTopicStatus(message.CapabilityRootId, message.ClusterId, message.TopicName, TopicStatus.InProgress);		
+    }
 	}
 }
