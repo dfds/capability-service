@@ -81,7 +81,7 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 
 	public class TopicRequested : IDomainEvent, IUseStandardContract
 	{
-		public const string EventType = "topic_requsted";
+		public const string EventType = "topic_requested";
 
 		public TopicRequested(string capabilityRootId, string clusterId, string topicName, int partitions, string retention)
 		{
