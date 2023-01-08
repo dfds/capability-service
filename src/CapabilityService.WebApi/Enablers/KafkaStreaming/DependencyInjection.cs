@@ -12,6 +12,7 @@ using DFDS.CapabilityService.WebApi.Domain.Repositories;
 using DFDS.CapabilityService.WebApi.Enablers.CorrelationId;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Repositories;
+using DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Services;
 using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistence;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using Microsoft.Extensions.Configuration;
@@ -45,6 +46,7 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 
 				options.RegisterMessageHandler<TopicProvisioningBegun, TopicProvisionHandlers>(confluentTopic, TopicProvisioningBegun.EventType);
 				options.RegisterMessageHandler<TopicProvisioned, TopicProvisionHandlers>(confluentTopic, TopicProvisioned.EventType);
+				options.RegisterMessageHandler<TopicDeleted, TopicProvisionHandlers>(confluentTopic, TopicDeleted.EventType);
 			});
 
 			services.AddScoped<StandardOutbox>();
@@ -185,20 +187,33 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 		public string TopicName { get; set; }
 	}
 
+	public class TopicDeleted
+	{
+		public const string EventType = "topic_deleted";
+
+		public string CapabilityRootId { get; set; }
+		public string ClusterId { get; set; }
+		public string TopicName { get; set; }
+	}
+	
 	public class TopicProvisionHandlers :
 		IMessageHandler<TopicProvisioned>,
-		IMessageHandler<TopicProvisioningBegun>
+		IMessageHandler<TopicProvisioningBegun>,
+		IMessageHandler<TopicDeleted>
 	{
 		private readonly ICapabilityRepository _capabilityRepository;
 		private readonly IClusterRepository _clusterRepository;
 		private readonly ITopicRepository _topicRepository;
+		private readonly ITopicDomainService _topicDomainService;
 
-		public TopicProvisionHandlers(ICapabilityRepository capabilityRepository, IClusterRepository clusterRepository, ITopicRepository topicRepository)
+		public TopicProvisionHandlers(ICapabilityRepository capabilityRepository, IClusterRepository clusterRepository, ITopicRepository topicRepository, ITopicDomainService topicDomainService)
 		{
 			_capabilityRepository = capabilityRepository;
 			_clusterRepository = clusterRepository;
 			_topicRepository = topicRepository;
+			_topicDomainService = topicDomainService;
 		}
+
 
 		public  Task Handle(TopicProvisioned message, MessageHandlerContext context)
 		{
@@ -225,6 +240,17 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 		public Task Handle(TopicProvisioningBegun message, MessageHandlerContext context)
 		{
 			return ChangeTopicStatus(message.CapabilityRootId, message.ClusterId, message.TopicName, TopicStatus.InProgress);		
-    }
+		}
+		
+		public async Task Handle(TopicDeleted message, MessageHandlerContext context)
+		{
+			var cluster = await _clusterRepository.GetByClusterId(message.ClusterId);
+			if (cluster == null)
+			{
+				throw new InvalidOperationException($"Unknown cluster '{message.ClusterId}'");
+			}
+
+			await _topicDomainService.DeleteTopic(message.TopicName, cluster.Id.ToString());
+		}
 	}
 }
