@@ -2,4 +2,5 @@ Capability.csv
 Context.csv
 KafkaTopic.csv
 KafkaCluster.csv
+ServiceCatalogue.csv
 ## You need this newline for the while loop to function properly
