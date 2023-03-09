@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 {
@@ -16,6 +17,10 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 		{
 			_retentionInMs = retentionInMs;
 		}
+
+		public string Days => _retentionInMs == ForeverDesignator
+			? "forever"
+			: $"{_retentionInMs / DayInMs}d";
 
 		public static Retention Parse(long retentionInMs)
 		{

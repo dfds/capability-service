@@ -29,7 +29,19 @@ namespace DFDS.CapabilityService.Tests.Features.Kafka.Domain.Models
 
 			Assert.Equal(expected, sut);
 		}
-		
+
+		[Theory]
+		[InlineData(-1L, "forever")]
+		[InlineData(604_800_000L, "7d")]
+		[InlineData(2_678_400_000L, "31d")]
+		[InlineData(31_536_000_000L, "365d")]
+		public void Retention_in_days(Int64 retentionInMs, string expected)
+		{
+			var sut = Retention.Parse(retentionInMs);
+
+			Assert.Equal(expected, sut.Days);
+		}
+
 		[Theory]
 		[InlineData(-2L)]
 		[InlineData(0)]
