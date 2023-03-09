@@ -44,6 +44,8 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 				options.WithConfigurationSource(configuration);
 				options.WithEnvironmentStyle("CAPABILITY_SERVICE_KAFKA");
 
+				options.RegisterMessageHandler<TopicRequested, TopicRequestedHandler>(selfServiceTopic, TopicRequested.EventType);
+
 				options.RegisterMessageHandler<TopicProvisioningBegun, TopicProvisionHandlers>(confluentTopic, TopicProvisioningBegun.EventType);
 				options.RegisterMessageHandler<TopicProvisioned, TopicProvisionHandlers>(confluentTopic, TopicProvisioned.EventType);
 				options.RegisterMessageHandler<TopicDeleted, TopicProvisionHandlers>(confluentTopic, TopicDeleted.EventType);
@@ -53,10 +55,6 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 
 			services.AddOutbox(options =>
 			{
-				// new messages
-				options.Register<TopicRequested>(selfServiceTopic, TopicRequested.EventType, @event => @event.CapabilityRootId);
-
-				// old messages
 				options.Register<DomainEventEnvelope>(capabilitiesTopicsTopicName, "topic_created", @event => @event.AggregateId);
 
 				options.WithOutboxEntryRepository<OutboxEntryRepository>();
@@ -85,20 +83,60 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 	{
 		public const string EventType = "topic_requested";
 
-		public TopicRequested(string capabilityRootId, string clusterId, string topicName, int partitions, string retention)
+		public string CapabilityRootId { get; set; }
+		public string ClusterId { get; set; }
+		public string TopicName { get; set; }
+		public int Partitions { get; set; }
+		public string Retention { get; set; }
+	}
+
+	public class TopicRequestedHandler : IMessageHandler<TopicRequested>
+	{
+		private readonly ICapabilityRepository _capabilityRepository;
+		private readonly IClusterRepository _clusterRepository;
+		private readonly ITopicDomainService _topicDomainService;
+
+		public TopicRequestedHandler(ICapabilityRepository capabilityRepository, IClusterRepository clusterRepository, ITopicDomainService topicDomainService)
 		{
-			CapabilityRootId = capabilityRootId;
-			ClusterId = clusterId;
-			TopicName = topicName;
-			Partitions = partitions;
-			Retention = retention;
+			_capabilityRepository = capabilityRepository;
+			_clusterRepository = clusterRepository;
+			_topicDomainService = topicDomainService;
 		}
 
-		public string CapabilityRootId { get; }
-		public string ClusterId { get; }
-		public string TopicName { get; }
-		public int Partitions { get; }
-		public string Retention { get; }
+		public async Task Handle(TopicRequested message, MessageHandlerContext context)
+		{
+			var capability = await _capabilityRepository.GetByRootId(message.CapabilityRootId);
+			if (capability == null)
+			{
+				throw new InvalidOperationException($"Unknown capability '{message.CapabilityRootId}'");
+			}
+
+			var cluster = await _clusterRepository.GetByClusterId(message.ClusterId);
+			if (cluster == null)
+			{
+				throw new InvalidOperationException($"Unknown cluster '{message.ClusterId}'");
+			}
+
+			var topic = Topic.Create(
+				capability.Id,
+				cluster.Id,
+				capability.RootId,
+				message.ClusterId,
+				message.TopicName,
+				description: "",
+				message.Partitions,
+				message.TopicName.StartsWith("pub.") ? "public" : "private",
+				new Dictionary<string, object>
+				{
+					["retention.ms"] = message.Retention
+				}
+			);
+
+			await _topicDomainService.CreateTopic(
+				topic: topic,
+				dryRun: false
+			);
+		}
 	}
 
 	public interface IUseStandardContract
