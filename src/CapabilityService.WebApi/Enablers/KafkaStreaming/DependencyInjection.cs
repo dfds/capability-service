@@ -85,10 +85,11 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 	{
 		public const string EventType = "topic_requested";
 
-		public TopicRequested(string capabilityRootId, string clusterId, string topicName, int partitions, string retention)
+		public TopicRequested(string capabilityRootId, string clusterId, string topicId, string topicName, int partitions, string retention)
 		{
 			CapabilityRootId = capabilityRootId;
 			ClusterId = clusterId;
+      KafkaTopicId = topicId;
 			TopicName = topicName;
 			Partitions = partitions;
 			Retention = retention;
@@ -96,6 +97,7 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 
 		public string CapabilityRootId { get; }
 		public string ClusterId { get; }
+		public string KafkaTopicId { get; }
 		public string TopicName { get; }
 		public int Partitions { get; }
 		public string Retention { get; }

@@ -107,7 +107,7 @@ namespace DFDS.CapabilityService.WebApi.Features.Kafka.Domain.Models
 			);
 
 			topic.RaiseEvent(new TopicCreated(topic, capabilityRootId, clusterId));
-			topic.RaiseEvent(new TopicRequested(capabilityRootId, clusterId, topicName.Name, partitions, configurations.GetRetentionOrDefault()));
+			topic.RaiseEvent(new TopicRequested(capabilityRootId, clusterId,  topic.Id.ToString(), topicName.Name, partitions, configurations.GetRetentionOrDefault()));
 
 			return topic;
 		}
