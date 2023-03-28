@@ -17,6 +17,7 @@ using DFDS.CapabilityService.WebApi.Features.Kafka.Infrastructure.Persistence;
 using DFDS.CapabilityService.WebApi.Infrastructure.Messaging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -202,14 +203,16 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 		IMessageHandler<TopicProvisioned>,
 		IMessageHandler<TopicProvisioningBegun>,
 		IMessageHandler<TopicDeleted>
-	{
+  {
+    private readonly ILogger<TopicProvisionHandlers> _logger;
 		private readonly ICapabilityRepository _capabilityRepository;
 		private readonly IClusterRepository _clusterRepository;
 		private readonly ITopicRepository _topicRepository;
 		private readonly ITopicDomainService _topicDomainService;
 
-		public TopicProvisionHandlers(ICapabilityRepository capabilityRepository, IClusterRepository clusterRepository, ITopicRepository topicRepository, ITopicDomainService topicDomainService)
-		{
+		public TopicProvisionHandlers(ILogger<TopicProvisionHandlers> logger, ICapabilityRepository capabilityRepository, IClusterRepository clusterRepository, ITopicRepository topicRepository, ITopicDomainService topicDomainService)
+    {
+      _logger = logger;
 			_capabilityRepository = capabilityRepository;
 			_clusterRepository = clusterRepository;
 			_topicRepository = topicRepository;
@@ -227,7 +230,8 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 			var capability = await _capabilityRepository.GetByRootId(capabilityRootId);
 			if (capability == null)
 			{
-				throw new InvalidOperationException($"Unknown capability '{capabilityRootId}'");
+        _logger.LogInformation("Ignoring unknown capability {CapabilityId}", capabilityRootId);
+        return;
 			}
 
 			var cluster = await _clusterRepository.GetByClusterId(clusterId);
