@@ -240,7 +240,14 @@ namespace DFDS.CapabilityService.WebApi.Enablers.KafkaStreaming
 				throw new InvalidOperationException($"Unknown cluster '{clusterId}'");
 			}
 
-			await _topicRepository.GetAsync(capability.Id, cluster.Id, topicName, topicStatus);
+      try
+      {
+        await _topicRepository.GetAsync(capability.Id, cluster.Id, topicName, topicStatus);
+      }
+      catch (Exception err)
+      {
+        _logger.LogError(err, "Failed at changing topic status for {TopicName}", topicName);
+      }
 		}
 
 		public Task Handle(TopicProvisioningBegun message, MessageHandlerContext context)
