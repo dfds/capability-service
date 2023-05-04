@@ -145,7 +145,7 @@ namespace DFDS.CapabilityService.Tests.Application
             
 
             await Assert.ThrowsAsync<ContextDoesNotExistException>(() => 
-                sut.UpdateContext(capability.Id, nonExistingContextId, dummyAccountId, dummyArn,dummyEmail));
+                sut.UpdateContext(capability.Id.ToString(), nonExistingContextId.ToString(), dummyAccountId, dummyArn,dummyEmail));
         }
         
         [Fact]
@@ -164,7 +164,7 @@ namespace DFDS.CapabilityService.Tests.Application
             var newEmail = "dummy@mail.com";
             var newRoleArn = "mynameisarne";
 
-            await sut.UpdateContext(capability.Id, context.Id, newAccountId, newRoleArn, newEmail);
+            await sut.UpdateContext(capability.Id.ToString(), context.Id.ToString(), newAccountId, newRoleArn, newEmail);
 
             var contextFromCapability = capability.Contexts.Single();
             Assert.Equal(contextFromCapability.AWSAccountId, newAccountId);

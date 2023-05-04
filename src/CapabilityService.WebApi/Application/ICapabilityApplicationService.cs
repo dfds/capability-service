@@ -15,7 +15,7 @@ namespace DFDS.CapabilityService.WebApi.Application
         Task JoinCapability(Guid capabilityId, string memberEmail);
         Task LeaveCapability(Guid capabilityId, string memberEmail);
         Task AddContext(Guid capabilityId, string contextName);
-        Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail);
+        Task UpdateContext(string capabilityId, string contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail);
 
     }
 }

@@ -88,7 +88,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             }
         }
 
-        public async Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
+        public async Task UpdateContext(string capabilityId, string contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
         {
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {

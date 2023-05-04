@@ -75,18 +75,31 @@ namespace DFDS.CapabilityService.WebApi.Application
             capability.AddContext(contextName);
         }
 
-        public async Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn,
-            string awsRoleEmail)
+        public async Task UpdateContext(string capabilityId,
+          string contextId,
+          string awsAccountId,
+          string awsRoleArn,
+          string awsRoleEmail)
         {
-            var capability = await _capabilityRepository.Get(capabilityId);
-        
-            var context = capability.Contexts.FirstOrDefault(c => c.Id == contextId);
-            if (context == null)
-            {
-                throw new ContextDoesNotExistException();
-            }
 
-            capability.UpdateContext(context.Id, awsAccountId, awsRoleArn, awsRoleEmail);
+          if (!Guid.TryParse(capabilityId, out var typedCapabilityId))
+          {
+            throw new ContextDoesNotExistException();
+          }
+          if (!Guid.TryParse(capabilityId, out var typedContextId))
+          {
+            throw new ContextDoesNotExistException();
+          }
+
+          var capability = await _capabilityRepository.Get(typedCapabilityId);
+
+          var context = capability.Contexts.FirstOrDefault(c => c.Id == typedContextId);
+          if (context == null)
+          {
+            throw new ContextDoesNotExistException();
+          }
+
+          capability.UpdateContext(context.Id, awsAccountId, awsRoleArn, awsRoleEmail);
         }
     }
 }

@@ -78,7 +78,7 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Persistence
             await QueueDomainEvents();
         }
 
-        public async Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
+        public async Task UpdateContext(string capabilityId, string contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
         {
             await _inner.UpdateContext(capabilityId, contextId, awsAccountId, awsRoleArn, awsRoleEmail);
             await QueueDomainEvents();

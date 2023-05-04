@@ -68,7 +68,7 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
             return Task.CompletedTask;
         }
 
-        public Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
+        public Task UpdateContext(string capabilityId, string contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
         {
             return Task.CompletedTask;
         }
@@ -123,7 +123,7 @@ namespace DFDS.CapabilityService.Tests.TestDoubles
             throw _exceptionToThrow;
         }
 
-        public Task UpdateContext(Guid capabilityId, Guid contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
+        public Task UpdateContext(string capabilityId, string contextId, string awsAccountId, string awsRoleArn, string awsRoleEmail)
         {
             throw _exceptionToThrow;
         }

@@ -25,16 +25,16 @@ namespace DFDS.CapabilityService.WebApi.Infrastructure.Events
 
     public class AWSContextAccountCreatedData
     {
-        public Guid CapabilityId { get; }
+        public string CapabilityId { get; }
         public string CapabilityName { get; }
         public string CapabilityRootId { get; }
-        public Guid ContextId { get; }
+        public string ContextId { get; }
         public string ContextName { get; }
         public string AccountId { get;  }
         public string RoleArn { get; }
         public string RoleEmail { get;  }
         
-        public AWSContextAccountCreatedData(Guid capabilityId, string capabilityName, string capabilityRootId, Guid contextId, string contextName, string accountId, string roleArn, string roleEmail)
+        public AWSContextAccountCreatedData(string capabilityId, string capabilityName, string capabilityRootId, string contextId, string contextName, string accountId, string roleArn, string roleEmail)
         {
             CapabilityId = capabilityId;
             CapabilityName = capabilityName;
