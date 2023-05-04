@@ -86,7 +86,7 @@ namespace DFDS.CapabilityService.WebApi.Application
           {
             throw new ContextDoesNotExistException();
           }
-          if (!Guid.TryParse(capabilityId, out var typedContextId))
+          if (!Guid.TryParse(contextId, out var typedContextId))
           {
             throw new ContextDoesNotExistException();
           }
