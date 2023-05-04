@@ -84,11 +84,13 @@ namespace DFDS.CapabilityService.WebApi.Application
 
           if (!Guid.TryParse(capabilityId, out var typedCapabilityId))
           {
-            throw new ContextDoesNotExistException();
+            // ignore - does not exists as it originated from the new selfservice-api
+            return;
           }
           if (!Guid.TryParse(contextId, out var typedContextId))
           {
-            throw new ContextDoesNotExistException();
+            // ignore - does not exists as it originated from the new selfservice-api
+            return;
           }
 
           var capability = await _capabilityRepository.Get(typedCapabilityId);
